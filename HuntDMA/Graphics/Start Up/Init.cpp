@@ -87,7 +87,6 @@ std::shared_ptr<CheatFunction> Cache = std::make_shared<CheatFunction>(8000, [] 
 		return;
 	if (EnvironmentInstance->GetObjectCount() == 0)
 		return;
-	EnvironmentInstance->GetEntityList();
 	EnvironmentInstance->CacheEntities();
 });
 

@@ -4,7 +4,7 @@
 #include "ConfigUtilities.h"
 void Camera::UpdateCamera(VMMDLL_SCATTER_HANDLE handle)
 {
-	TargetProcess.AddScatterReadRequest(handle, EnvironmentInstance->GetpSystem() +  CameraBase + CameraPosOffset,&Position,sizeof(Vector3));
+	TargetProcess.AddScatterReadRequest(handle, EnvironmentInstance->GetpSystem() + CameraBase + CameraPosOffset,&Position,sizeof(Vector3));
 	TargetProcess.AddScatterReadRequest(handle, EnvironmentInstance->GetpSystem() + CameraBase + ViewMatrixOffset, &RenderMatrix, sizeof(ViewMatrix));
 	TargetProcess.AddScatterReadRequest(handle, EnvironmentInstance->GetpSystem() + CameraBase + ProjectionMatrixOffset, &ProjectionMatrix, sizeof(ViewMatrix));
 }

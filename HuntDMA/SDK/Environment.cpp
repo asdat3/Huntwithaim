@@ -8,13 +8,13 @@ Environment::Environment()
 {
 	SystemGlobalEnvironment = TargetProcess.Read<uint64_t>(TargetProcess.GetBaseAddress("GameHunt.dll") + SystemGlobalEnvironment);
 	printf(LIT("SystemGlobalEnvironment: 0x%X\n"), SystemGlobalEnvironment);
-	EntitySystem = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + EntitySystem);
+	EntitySystem = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + EntitySystemOffset);
 	printf(LIT("EntitySystem: 0x%X\n"), EntitySystem);
-	pSystem = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + pSystem);
+	pSystem = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + pSystemOffset);
 	printf(LIT("pSystem: 0x%X\n"), pSystem);
 }
 
-void Environment::GetEntitys()
+void Environment::GetEntities()
 {
 	ObjectCount = TargetProcess.Read<uint16_t>(EntitySystem + ObjectCountOffset);
 	printf(LIT("ObjectCount: %d\n"), ObjectCount);
@@ -109,7 +109,7 @@ void Environment::UpdateBossesList()
 
 void Environment::CacheEntities()
 {
-	GetEntitys();
+	GetEntities();
 	std::vector<uint64_t> entitylist;
 	entitylist.resize(ObjectCount);
 	std::unique_ptr<uint64_t[]> object_raw_ptr = std::make_unique<uint64_t[]>(ObjectCount);
