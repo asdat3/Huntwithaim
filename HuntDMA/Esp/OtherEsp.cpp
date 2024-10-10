@@ -71,7 +71,7 @@ void DrawSupply()
 
 		std::wstring wname = Configs.Supply.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.Supply.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Supply.FontSize, Configs.Supply.TextColour, Centre);
+		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Supply.FontSize, Configs.Supply.TextColour, Center);
 	}
 }
 
@@ -102,7 +102,7 @@ void DrawBloodBonds()
 
 		std::wstring wname = Configs.BloodBonds.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.BloodBonds.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.BloodBonds.FontSize, Configs.BloodBonds.TextColour, Centre);
+		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.BloodBonds.FontSize, Configs.BloodBonds.TextColour, Center);
 	}
 }
 
@@ -120,6 +120,18 @@ void DrawTraps()
 		if (ent == nullptr)
 			continue;
 
+		auto type = ent->GetType();
+		if (!Configs.Trap.ShowBeartrap && (type == EntityType::BearTrap))
+			continue;
+		if (!Configs.Trap.ShowTripmines && (type == EntityType::TripMine))
+			continue;
+		if (!Configs.Trap.ShowGunpowderBurrels && (type == EntityType::GunpowderBarrel))
+			continue;
+		if (!Configs.Trap.ShowOilBurrels && (type == EntityType::OilBarrel))
+			continue;
+		if (!Configs.Trap.ShowBioBurrels && (type == EntityType::BioBarrel))
+			continue;
+
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
 		if (distance <= 0)
 			continue;
@@ -133,7 +145,10 @@ void DrawTraps()
 
 		std::wstring wname = Configs.Trap.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.Trap.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Trap.FontSize, Configs.Trap.TextColour, Centre);
+		if (type == EntityType::BearTrap || type == EntityType::TripMine)
+			DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Trap.FontSize, Configs.Trap.TrapColour, Center);
+		else
+			DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Trap.FontSize, Configs.Trap.BarrelColour, Center);
 	}
 }
 
@@ -151,6 +166,24 @@ void DrawPOI()
 		if (ent == nullptr)
 			continue;
 
+		auto type = ent->GetType();
+		if (!Configs.POI.ShowExtraction && (type == EntityType::ExtractionPoint))
+			continue;
+		if (!Configs.POI.ShowCashRegisters && (type == EntityType::CashRegister))
+			continue;
+		if (!Configs.POI.ShowPouches && (type == EntityType::Pouch))
+			continue;
+		if (!Configs.POI.ShowPosters && (type == EntityType::Poster))
+			continue;
+		if (!Configs.POI.ShowBlueprints && (type == EntityType::WorkbenchUpgrade))
+			continue;
+		if (!Configs.POI.ShowGunOil && (type == EntityType::WorkbenchOil))
+			continue;
+		if (!Configs.POI.ShowClues && (type == EntityType::Clue))
+			continue;
+		if (!Configs.POI.ShowTraits && (type == EntityType::Trait))
+			continue;
+
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
 		if (distance <= 0)
 			continue;
@@ -165,7 +198,7 @@ void DrawPOI()
 
 		std::wstring wname = Configs.POI.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.POI.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.POI.FontSize, Configs.POI.TextColour, Centre);
+		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.POI.FontSize, Configs.POI.TextColour, Center);
 	}
 }
 

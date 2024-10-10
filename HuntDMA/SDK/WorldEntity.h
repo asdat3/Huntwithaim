@@ -19,8 +19,11 @@ struct EntityNameStruct {
 };
 enum class EntityType : int
 {
+	Unknown,
+
 	EnemyPlayer,
 	FriendlyPlayer,
+	DeadPlayer,
 
 	Butcher,
 	Spider,
@@ -29,16 +32,23 @@ enum class EntityType : int
 	Rotjaw,
 	Hellborn,
 
-	CurrencyCollection,
 	CashRegister,
 	GoldCashRegister,
 
+	Pouch,
+	Poster,
+	WorkbenchUpgrade,
+	WorkbenchOil,
+	Trait,
+
 	ExtractionPoint,
+	Clue,
 
 	BearTrap,
 	TripMine,
 
-	Barrel,
+	OilBarrel,
+	GunpowderBarrel,
 	BioBarrel,
 
 	AmmoSwapBox,
@@ -104,8 +114,11 @@ private:
 
 	bool Valid = true;
 	std::unordered_map<EntityType, std::wstring> Names = {
-		{EntityType::EnemyPlayer, L"Enemy Player"},
+		{EntityType::Unknown, L"???"},
+
+		{EntityType::EnemyPlayer, L"Hunter"},
 		{EntityType::FriendlyPlayer, L"Teammate"},
+		{EntityType::DeadPlayer, L"Dead"},
 
 		{EntityType::Butcher, L"Butcher"},
 		{EntityType::Assassin, L"Assassin"},
@@ -114,16 +127,23 @@ private:
 		{EntityType::Rotjaw, L"Rotjaw"},
 		{EntityType::Hellborn, L"Hellborn"},
 
-		{EntityType::CurrencyCollection, L"BB"},
 		{EntityType::CashRegister, L"Cash Register"},
-		{EntityType::GoldCashRegister, L"GOLD Cash Register"},
+		{EntityType::GoldCashRegister, L"GOLD CASH REGISTER (STONKS)"},
+
+		{EntityType::Pouch, L"Pouch"},
+		{EntityType::Poster, L"Poster"},
+		{EntityType::WorkbenchUpgrade, L"Blueprint"},
+		{EntityType::WorkbenchOil, L"Gun Oil"},
+		{EntityType::Trait, L"Trait"},
 
 		{EntityType::ExtractionPoint, L"Extraction"},
+		{EntityType::Clue, L"Clue"},
 
 		{EntityType::BearTrap, L"Bear Trap"},
 		{EntityType::TripMine, L"Trip Mine"},
 
-		{EntityType::Barrel, L"Barrel"},
+		{EntityType::OilBarrel, L"Oil Barrel"},
+		{EntityType::GunpowderBarrel, L"Barrel"},
 		{EntityType::BioBarrel, L"Bio Barrel"},
 
 		{EntityType::AmmoSwapBox, L"AmmoSwap Box"},

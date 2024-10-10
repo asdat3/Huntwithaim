@@ -14,6 +14,10 @@ public:
     int Height = 1080;
     bool ShowFPS = true;
     int FpsFontSize = 15;
+    D2D1::ColorF FpsColour = Colour(144, 144, 144);
+    bool ShowObjectCount = true;
+    int ObjectCountFontSize = 13;
+    D2D1::ColorF ObjectCountColour = Colour(144, 144, 144);
     int CrosshairType = 0;
     int CrosshairSize = 3;
     D2D1::ColorF CrosshairColour = Colour(0, 150, 255);
@@ -44,9 +48,13 @@ public:
         j[ConfigName][LIT("Height")] = Height;
         j[ConfigName][LIT("ShowFPS")] = ShowFPS;
         j[ConfigName][LIT("FpsFontSize")] = FpsFontSize;
+        j[ConfigName][LIT("ShowObjectCount")] = ShowObjectCount;
+        j[ConfigName][LIT("ObjectCountFontSize")] = ObjectCountFontSize;
         j[ConfigName][LIT("CrosshairType")] = CrosshairType;
         j[ConfigName][LIT("CrosshairSize")] = CrosshairSize;
         ToJsonColour(&j, LIT("CrosshairColour"), &CrosshairColour);
+        ToJsonColour(&j, LIT("FpsColour"), &FpsColour);
+        ToJsonColour(&j, LIT("ObjectCountColour"), &ObjectCountColour);
 
         return j;
     }
@@ -64,11 +72,17 @@ public:
             ShowFPS = j[ConfigName][LIT("ShowFPS")];
         if (j[ConfigName].contains(LIT("FpsFontSize")))
             FpsFontSize = j[ConfigName][LIT("FpsFontSize")];
+        if (j[ConfigName].contains(LIT("ShowObjectCount")))
+            ShowObjectCount = j[ConfigName][LIT("ShowObjectCount")];
+        if (j[ConfigName].contains(LIT("ObjectCountFontSize")))
+            ObjectCountFontSize = j[ConfigName][LIT("ObjectCountFontSize")];
         if (j[ConfigName].contains(LIT("CrosshairType")))
             CrosshairType = j[ConfigName][LIT("CrosshairType")];
         if (j[ConfigName].contains(LIT("CrosshairSize")))
             CrosshairSize = j[ConfigName][LIT("CrosshairSize")];
         FromJsonColour(j, LIT("CrosshairColour"), &CrosshairColour);
+        FromJsonColour(j, LIT("FpsColour"), &FpsColour);
+        FromJsonColour(j, LIT("ObjectCountColour"), &ObjectCountColour);
     }
 };
 

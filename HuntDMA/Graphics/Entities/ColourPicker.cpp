@@ -216,7 +216,7 @@ void ColourPicker::Draw()
 
 			if (IsMouseInRectangle(ColourPicker::ContextPos.x, ColourPicker::ContextPos.y + (i * 20), ColourPicker::ContextSize.x, 20))
 				FilledRectangle(ColourPicker::ContextPos.x, ColourPicker::ContextPos.y + (i * 20), ColourPicker::ContextSize.x, 20, Colour(120, 120, 120, 255));
-			DrawText(ColourPicker::ContextPos.x + (ColourPicker::ContextSize.x / 2), ColourPicker::ContextPos.y + (i * 20) + 10, pair.first, LIT("Verdana"), 11, Colour(255, 255, 255, 255), CentreCentre);
+			DrawText(ColourPicker::ContextPos.x + (ColourPicker::ContextSize.x / 2), ColourPicker::ContextPos.y + (i * 20) + 10, pair.first, LIT("Verdana"), 11, Colour(255, 255, 255, 255), CenterCenter);
 
 			i++;
 		}

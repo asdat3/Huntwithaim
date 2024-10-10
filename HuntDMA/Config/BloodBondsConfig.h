@@ -14,7 +14,7 @@ public:
     bool Distance = true;
     int MaxDistance = 1500;
     D2D1::ColorF TextColour = Colour(255, 165, 0);
-    int FontSize = 13;
+    int FontSize = 16;
     void ToJsonColour(json* j, const std::string& name, D2D1::ColorF* colour)
     {
         (*j)[ConfigName][name][LIT("r")] = colour->r;

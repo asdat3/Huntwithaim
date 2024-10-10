@@ -19,6 +19,9 @@ public:
     int ChamMode = 5;
     bool DrawFriends = false;
     D2D1::ColorF FriendColour = Colour(0, 255, 0);
+    bool ShowPlayerList = true;
+    int PlayerListFontSize = 15;
+    D2D1::ColorF PlayerListColour = Colour(206, 206, 206);
     void ToJsonColour(json* j, const std::string& name, D2D1::ColorF* colour)
     {
         (*j)[ConfigName][name][LIT("r")] = colour->r;
@@ -49,8 +52,11 @@ public:
         j[ConfigName][LIT("Chams")] = Chams;
         j[ConfigName][LIT("ChamMode")] = ChamMode;
         j[ConfigName][LIT("DrawFriends")] = DrawFriends;
+        j[ConfigName][LIT("ShowPlayerList")] = ShowPlayerList;
+        j[ConfigName][LIT("PlayerListFontSize")] = PlayerListFontSize;
         ToJsonColour(&j, LIT("TextColour"), &TextColour);
         ToJsonColour(&j, LIT("FriendColour"), &FriendColour);
+        ToJsonColour(&j, LIT("PlayerListColour"), &PlayerListColour);
 
         return j;
     }
@@ -74,8 +80,13 @@ public:
             ChamMode = j[ConfigName][LIT("ChamMode")];
         if (j[ConfigName].contains(LIT("DrawFriends")))
             DrawFriends = j[ConfigName][LIT("DrawFriends")];
+        if (j[ConfigName].contains(LIT("ShowPlayerList")))
+            ShowPlayerList = j[ConfigName][LIT("ShowPlayerList")];
+        if (j[ConfigName].contains(LIT("PlayerListFontSize")))
+            PlayerListFontSize = j[ConfigName][LIT("PlayerListFontSize")];
         FromJsonColour(j, LIT("FriendColour"), &FriendColour);
         FromJsonColour(j, LIT("TextColour"), &TextColour);
+        FromJsonColour(j, LIT("PlayerListColour"), &PlayerListColour);
     }
 };
 

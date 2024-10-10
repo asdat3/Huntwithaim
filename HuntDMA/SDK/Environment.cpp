@@ -43,10 +43,10 @@ void Environment::UpdatePlayerList()
 		}	
 		if (!(ent->GetClass() > 0x2000000 && ent->GetClass() < 0x7FFFFFFFFFFF))
 		{
-			ent->SetValid(false); // check if the player is still alive/ active
+			ent->SetValid(false); // check if the player is still alive/active
 			continue;
 		}
-		if (Configs.Player.Chams && (Configs.Player.DrawFriends || ent->GetType() != EntityType::FriendlyPlayer))
+		if (Configs.Player.Chams && ent->GetType() != EntityType::FriendlyPlayer)
 			ent->WriteNode(writehandle, Configs.Player.ChamMode, Configs.Player.Chams);
 		ent->UpdateNode(handle);
 		ent->UpdatePosition(handle);
@@ -165,6 +165,8 @@ void Environment::CacheEntities()
 
 	// doing this after we have read class names fully to avoid reading things we don't need
 
+	std::list<std::string> entitiesDump;
+
 	std::vector<std::shared_ptr<WorldEntity>> templayerlist;
 	std::vector<std::shared_ptr<WorldEntity>> tempbosseslist;
 	std::vector<std::shared_ptr<WorldEntity>> tempsupplylist;
@@ -178,90 +180,66 @@ void Environment::CacheEntities()
 		char* entityName = ent->GetEntityName().name;
 		char* entityClassName = ent->GetEntityClassName().name;
 
-		if (((std::string)entityName) == "Hunter_Loot")
-		{
-			continue;
-		}
-		else if (strstr(entityClassName, "HunterBasic") != NULL)
-		{
-			// print ent->GetRenderNode().rnd_flags
-		
-			ent->SetType(EntityType::EnemyPlayer);
-			templayerlist.push_back(ent);
-			//printf(LIT("Entity Flags: %d\n"), ent->GetRenderNode().rnd_flags);
-			//printf(LIT("Entity Class: %s\n"), entityName);
-			continue;
-		}
-		else if (strstr(entityName, "HunterBasic") != NULL)
-		{
-			// print ent->GetRenderNode().rnd_flags
+		if (createEntitiesDump)
+			entitiesDump.push_back("Class: [" + std::string(entityClassName) + "]; Name: [" + std::string(entityName) + "];");
 
-			ent->SetType(EntityType::EnemyPlayer);
+		if (strstr(entityClassName, "ObjectSpawner") != NULL) // We do not want spawners to show as objects
+			continue;
+		if (strstr(entityClassName, "Hunter_Loot") != NULL)
+		{
+			ent->SetType(EntityType::DeadPlayer);
 			templayerlist.push_back(ent);
-			//printf(LIT("Entity Ent Name: %s\n"), entityClassName);
 			continue;
 		}
-		else if (strstr(entityClassName, "target_assassin") != NULL)
+		if (strstr(entityClassName, "HunterBasic") != NULL)
+		{
+			ent->SetType(EntityType::EnemyPlayer);
+			templayerlist.push_back(ent);
+			continue;
+		}
+		if (strstr(entityClassName, "target_assassin") != NULL)
 		{
 			ent->SetType(EntityType::Assassin);
 			tempbosseslist.push_back(ent);
 			continue;
 		}
-		else if (strstr(entityClassName, "target_butcher") != NULL)
+		if (strstr(entityClassName, "target_butcher") != NULL)
 		{
 			ent->SetType(EntityType::Butcher);
 			tempbosseslist.push_back(ent);
 			continue;
 		}
-		else if (strstr(entityClassName, "target_spider") != NULL)
+		if (strstr(entityClassName, "target_spider") != NULL)
 		{
 			ent->SetType(EntityType::Spider);
 			tempbosseslist.push_back(ent);
 			continue;
 		}
-		else if (strstr(entityClassName, "target_scrapbeak") != NULL)
+		if (strstr(entityClassName, "target_scrapbeak") != NULL)
 		{
 			ent->SetType(EntityType::Scrapbeak);
 			tempbosseslist.push_back(ent);
 			continue;
 		}
-		else if (strstr(entityClassName, "target_rotjaw") != NULL)
+		if (strstr(entityClassName, "target_rotjaw") != NULL)
 		{
 			ent->SetType(EntityType::Rotjaw);
 			tempbosseslist.push_back(ent);
 			continue;
 		}
-		else if (strstr(entityClassName, "immolator_elite") != NULL)
+		if (strstr(entityClassName, "immolator_elite") != NULL)
 		{
 			ent->SetType(EntityType::Hellborn);
 			tempbosseslist.push_back(ent);
 			continue;
 		}
-		else if (strstr(entityClassName, "ExtractionPoint") != NULL)
+		if (strstr(entityClassName, "ExtractionPoint") != NULL)
 		{
 			ent->SetType(EntityType::ExtractionPoint);
 			temppoilist.push_back(ent);
 			continue;
 		}
-		else if (strstr(entityClassName, "cash_register_golden") != NULL)
-		{
-			ent->SetType(EntityType::GoldCashRegister);
-			tempboodboundslist.push_back(ent);
-			continue;
-		}
-		else if (strstr(entityClassName, "cash_register") != NULL)
-		{
-			ent->SetType(EntityType::CashRegister);
-			temppoilist.push_back(ent);
-			continue;
-		}
-		else if (strstr(entityClassName, "currency_collection") != NULL)
-		{
-			ent->SetType(EntityType::CurrencyCollection);
-			tempboodboundslist.push_back(ent);
-			continue;
-		}
-		else if ((std::string)(entityClassName) == "AmmoSwapBox")
+		if ((std::string)(entityClassName) == "AmmoSwapBox")
 		{
 			ent->SetType(EntityType::AmmoSwapBox);
 
@@ -321,22 +299,92 @@ void Environment::CacheEntities()
 			tempsupplylist.push_back(ent);
 			continue;
 		}
-		else if ((std::string)(entityClassName) == "Explodable_Object")
+		if ((std::string)(entityClassName) == "Explodable_Object")
 		{
-			ent->SetType(EntityType::Barrel);
+			if (strstr(entityName, "Oil_barrel") != NULL)
+			{
+				ent->SetType(EntityType::OilBarrel);
+			}
+			else if (strstr(entityName, "Gunpowder_barrel") != NULL)
+			{
+				ent->SetType(EntityType::GunpowderBarrel);
+			}
 			temptraplist.push_back(ent);
 			continue;
 		}
-		else if ((std::string)(entityClassName) == "BioBarrel")
+		if ((std::string)(entityClassName) == "BioBarrel")
 		{
 			ent->SetType(EntityType::BioBarrel);
 			temptraplist.push_back(ent);
 			continue;
 		}
-		else if ((std::string)(entityClassName) == "Supply_Box")
+		if ((std::string)(entityClassName) == "SmallLoot")
 		{
-			ent->SetType(EntityType::SupplyBox);
-			if (strstr(entityName, "ammo_crate_normal") != NULL) // only in training mode
+			ent->SetType(EntityType::Unknown);
+
+			if (strstr(entityName, "currency_collection") != NULL)
+			{
+				ent->SetType(EntityType::Pouch);
+			}
+			else if (strstr(entityName, "posters_collection") != NULL)
+			{
+				ent->SetType(EntityType::Poster);
+			}
+			else if (strstr(entityName, "workbench_upgrade_collection") != NULL)
+			{
+				ent->SetType(EntityType::WorkbenchUpgrade);
+			}
+
+			if (ent->GetType() == EntityType::Unknown)
+			{
+				printf(LIT("%s%s"), entityName, "\n");
+				//continue;
+			}
+
+			temppoilist.push_back(ent);
+			continue;
+		}
+		if ((std::string)(entityClassName) == "SmallLootGunOil")
+		{
+			ent->SetType(EntityType::WorkbenchOil);
+			temppoilist.push_back(ent);
+			continue;
+		}
+		if ((std::string)(entityClassName) == "TraitCharm")
+		{
+			ent->SetType(EntityType::Trait);
+			temppoilist.push_back(ent);
+			continue;
+		}
+		if ((std::string)(entityClassName) == "Clue_Slave")
+		{
+			ent->SetType(EntityType::Clue);
+			temppoilist.push_back(ent);
+			continue;
+		}
+		if ((std::string)(entityClassName) == "Supply_Box")
+		{
+			ent->SetType(EntityType::Unknown);
+
+			if (strstr(entityName, "cash_register_golden") != NULL)
+			{
+				ent->SetType(EntityType::GoldCashRegister);
+				tempboodboundslist.push_back(ent);
+				continue;
+			}
+
+			if (strstr(entityName, "cash_register") != NULL)
+			{
+				ent->SetType(EntityType::CashRegister);
+				temppoilist.push_back(ent);
+				continue;
+			}
+
+			if (strstr(entityName, "item_box") != NULL)
+			{
+				ent->SetType(EntityType::SupplyBox);
+			}
+			else if (strstr(entityName, "ammo_crate_normal") != NULL) // only in training mode
 			{
 				ent->SetType(EntityType::AmmoCrate);
 			}
@@ -368,21 +416,24 @@ void Environment::CacheEntities()
 			{
 				ent->SetType(EntityType::LongAmmoPackage);
 			}
-			else if (strstr(entityName, "health") != NULL)
+			else if (strstr(entityName, "health") != NULL || strstr(entityName, "Doctor") != NULL)
 			{
 				ent->SetType(EntityType::Medkit);
 			}
 
+			if (ent->GetType() == EntityType::Unknown) // for example all tower supplies have the same name, I skip them
+				continue;
+
 			tempsupplylist.push_back(ent);
 			continue;
 		}
-		else if ((std::string)(entityClassName) == "beartrap")
+		if ((std::string)(entityClassName) == "beartrap")
 		{
 			ent->SetType(EntityType::BearTrap);
 			temptraplist.push_back(ent);
 			continue;
 		}
-		else if (((std::string)entityClassName).find("TripMine") != std::string::npos && ((std::string)entityClassName).find("2") == std::string::npos)
+		if (((std::string)entityClassName).find("TripMine") != std::string::npos && ((std::string)entityClassName).find("2") == std::string::npos)
 		{
 			ent->SetType(EntityType::TripMine);
 			temptraplist.push_back(ent);
@@ -394,6 +445,23 @@ void Environment::CacheEntities()
 		//printf(LIT("Entity Silhouettes: %d\n"), ent->GetRenderNode().silhouettes_param);
 		//Vector2 screenpos = CameraInstance->WorldToScreen(ent->GetPosition());
 		//printf(LIT("Entity Screen Position: %f %f\n"), screenpos.x, screenpos.y);
+	}
+
+	if (createEntitiesDump)
+	{
+		std::ofstream outFile("classes-dump.txt", std::ios::trunc);
+
+		if (outFile.is_open()) {
+			for (const std::string& str : entitiesDump) {
+				outFile << str << std::endl;
+			}
+
+			outFile.close();
+			printf(LIT("Rewrote classes dump.\n"));
+		}
+		else {
+			printf(LIT("Did not save!\n"));
+		}
 	}
 
 	handle = TargetProcess.CreateScatterHandle();

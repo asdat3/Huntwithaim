@@ -158,7 +158,7 @@ void KeyBind::Draw()
 	OutlineRectangle(ParentPos.x + Pos.x, ParentPos.y + Pos.y, Size.x + 1, Size.y + 1, 1, rectOutlineColour);
 	FilledRectangle(ParentPos.x + KeyBind::Pos.x, ParentPos.y + KeyBind::Pos.y, KeyBind::Size.x, KeyBind::Size.y, rectColour);
 	DrawText(ParentPos.x + KeyBind::Pos.x, ParentPos.y + KeyBind::Pos.y - KeyBind::Size.y, KeyBind::Name, LIT("Verdana"), 12, textColour, None);
-	DrawText(ParentPos.x + KeyBind::Pos.x + (KeyBind::Size.x / 2), ParentPos.y + KeyBind::Pos.y + (KeyBind::Size.y / 2), KeyName, LIT("Verdana"), 10, Active ? textselected : textColour, CentreCentre);
+	DrawText(ParentPos.x + KeyBind::Pos.x + (KeyBind::Size.x / 2), ParentPos.y + KeyBind::Pos.y + (KeyBind::Size.y / 2), KeyName, LIT("Verdana"), 10, Active ? textselected : textColour, CenterCenter);
 	if (KeyBind::ContextActive)
 	{
 		OutlineRectangle(KeyBind::ContextPos.x, KeyBind::ContextPos.y, KeyBind::ContextSize.x, KeyBind::ContextSize.y, 1, textColour);
@@ -171,7 +171,7 @@ void KeyBind::Draw()
 
 			if (IsMouseInRectangle(KeyBind::ContextPos.x, KeyBind::ContextPos.y + (i * 20), KeyBind::ContextSize.x, 20))
 				FilledRectangle(KeyBind::ContextPos.x, KeyBind::ContextPos.y + (i * 20), KeyBind::ContextSize.x, 20, rectHoverColour);
-			DrawText(KeyBind::ContextPos.x + (KeyBind::ContextSize.x / 2), KeyBind::ContextPos.y + (i * 20) + 10, pair.first, LIT("Verdana"), 11, textColour, CentreCentre);
+			DrawText(KeyBind::ContextPos.x + (KeyBind::ContextSize.x / 2), KeyBind::ContextPos.y + (i * 20) + 10, pair.first, LIT("Verdana"), 11, textColour, CenterCenter);
 
 			i++;
 		}

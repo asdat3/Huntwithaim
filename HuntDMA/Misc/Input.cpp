@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Input.h"
 #include "Init.h"
+#include "GUI.h"
+#include "ConfigUtilities.h"
 
 // local scope enum
 enum class KeyState
@@ -19,6 +21,8 @@ Vector2 MousePos;
 WPARAM Char = NULL;
 HCURSOR CurrentCursor;
 std::map<std::string, HCURSOR> Cursors;
+
+bool isFocused = false;
 
 void CreateCursor(std::string name, HCURSOR cursor)
 {
@@ -52,6 +56,33 @@ void UpdateKeyState(int key, bool down)
     KeyHeld[key] = down;
 }
 
+/// <summary>
+/// If mouse is on the edge of the screen, or on the other monitor - close menu.  
+/// If mouse is in focus of this window, show menu
+/// </summary>
+void CheckAdaptiveMenuOpenState(bool focus)
+{
+    bool prevFocus = isFocused;
+
+    if (!focus)
+    {
+        isFocused = false;
+    }
+    else
+    {
+        bool isMouseOnWindowEdge =
+            MousePos.x <= 0 ||
+            MousePos.y <= 0 ||
+            MousePos.x >= ((Configs.Overlay.OverrideResolution ? Configs.Overlay.Width : GetSystemMetrics(SM_CXSCREEN)) - 1) ||
+            MousePos.y >= ((Configs.Overlay.OverrideResolution ? Configs.Overlay.Height : GetSystemMetrics(SM_CYSCREEN)) - 1);
+        
+        isFocused = !isMouseOnWindowEdge;
+    }
+
+    if (prevFocus != isFocused) // if focus changed
+        MenuOpen = isFocused;
+}
+
 LRESULT CALLBACK InputWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -83,6 +114,11 @@ LRESULT CALLBACK InputWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
         case WM_MOUSEMOVE:
             MousePos.x = static_cast<float>(GET_X_LPARAM(lParam));
             MousePos.y = static_cast<float>(GET_Y_LPARAM(lParam));
+            CheckAdaptiveMenuOpenState(true);
+            break;
+        case WM_MOUSELEAVE:
+        case WM_KILLFOCUS:
+            CheckAdaptiveMenuOpenState(false);
             break;
         case WM_XBUTTONUP:
         {

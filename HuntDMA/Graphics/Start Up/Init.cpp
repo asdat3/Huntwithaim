@@ -9,7 +9,7 @@
 #include "Aimbot.h"
 #include "InputManager.h"
 #include "Kmbox.h"
-#include "FPS.h"
+#include "Overlay.h"
 #include <chrono>
 #include "SpectatorAlarm.h"
 
@@ -22,6 +22,7 @@ ID2D1SolidColorBrush* Brush;
 std::shared_ptr<Environment> EnvironmentInstance;
 std::shared_ptr<Camera> CameraInstance;
 
+bool cacheThreadCreated = false;
 
 void CleanD2D()
 {
@@ -103,33 +104,33 @@ std::shared_ptr<CheatFunction> UpdateCam = std::make_shared<CheatFunction>(5, []
 
 void DrawCrosshair()
 {
-	Vector2 centre = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
+	Vector2 Center = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
 	// drawing aimbot fov here because fuck it
 	if (Configs.Aimbot.DrawFOV)
 	{
-		OutlineCircle(centre.x, centre.y, Configs.Aimbot.FOV, 2,Configs.Aimbot.FOVColour);
+		OutlineCircle(Center.x, Center.y, Configs.Aimbot.FOV, 2,Configs.Aimbot.FOVColour);
 	}
 	if (Configs.Overlay.CrosshairType == 0)
 		return;
 	
 	if (Configs.Overlay.CrosshairType == 1)
 	{
-		FilledCircle(centre.x, centre.y, Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairColour);
+		FilledCircle(Center.x, Center.y, Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairColour);
 
 	}
 	if (Configs.Overlay.CrosshairType == 2)
 	{
-		OutlineCircle(centre.x, centre.y, Configs.Overlay.CrosshairSize,2, Configs.Overlay.CrosshairColour);
+		OutlineCircle(Center.x, Center.y, Configs.Overlay.CrosshairSize,2, Configs.Overlay.CrosshairColour);
 
 	}
 	if (Configs.Overlay.CrosshairType == 3)
 	{
-		FilledRectangle(centre.x - (Configs.Overlay.CrosshairSize / 2), centre.y - (Configs.Overlay.CrosshairSize / 2), Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairColour);
+		FilledRectangle(Center.x - (Configs.Overlay.CrosshairSize / 2), Center.y - (Configs.Overlay.CrosshairSize / 2), Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairColour);
 
 	}
 	if (Configs.Overlay.CrosshairType == 4)
 	{
-		OutlineRectangle(centre.x - (Configs.Overlay.CrosshairSize/2), centre.y - (Configs.Overlay.CrosshairSize/2),  Configs.Overlay.CrosshairSize , Configs.Overlay.CrosshairSize, 1, Configs.Overlay.CrosshairColour);
+		OutlineRectangle(Center.x - (Configs.Overlay.CrosshairSize/2), Center.y - (Configs.Overlay.CrosshairSize/2),  Configs.Overlay.CrosshairSize , Configs.Overlay.CrosshairSize, 1, Configs.Overlay.CrosshairColour);
 
 	}
 }
@@ -163,7 +164,11 @@ void InitD2D(HWND hWnd)
 	CreateFonts("VerdanaBold", LIT(L"Verdana"), 10, DWRITE_FONT_WEIGHT_SEMI_BOLD);
 	RenderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 0, 0), &Brush); // create global brush
 	RenderTarget->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE); // set aa mode
-	std::thread(CacheThread).detach();
+	if (!cacheThreadCreated)
+	{
+		cacheThreadCreated = true;
+		std::thread(CacheThread).detach();
+	}
 	Keyboard::InitKeyboard();
 	kmbox::KmboxInitialize("");
 }
@@ -199,7 +204,7 @@ void RenderFrame()
 	DrawBosses();
 	DrawOtherEsp();
 	//DrawCrosshair();
-	DrawFPS();
+	DrawOverlay();
 	Render();
 	RenderTarget->EndDraw();
 }

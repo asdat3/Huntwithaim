@@ -4,12 +4,13 @@
 enum FontAlignment
 {
 	Left = 0,
-	Centre = 1,
+	Center = 1,
 	Right = 2,
-	CentreLeft = 3,
-	CentreRight = 4,
-	CentreCentre = 5,
-	None = 6
+	CenterLeft = 3,
+	CenterRight = 4,
+	CenterCenter = 5,
+	None = 6,
+	VerticalCenter = 7
 };
 
 extern void CreateFonts(std::string customfontname, std::wstring_view fontname, float size, DWRITE_FONT_WEIGHT weight);

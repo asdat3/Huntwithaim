@@ -13,7 +13,13 @@ public:
     bool Name = true;
     bool Distance = true;
     int MaxDistance = 75;
-    D2D1::ColorF TextColour = Colour(255, 0, 0);
+    bool ShowBeartrap = true;
+    bool ShowTripmines = true;
+    bool ShowGunpowderBurrels = false;
+    bool ShowOilBurrels = false;
+    bool ShowBioBurrels = false;
+    D2D1::ColorF TrapColour = Colour(255, 0, 0);
+    D2D1::ColorF BarrelColour = Colour(245, 60, 0);
     int FontSize = 13;
     void ToJsonColour(json* j, const std::string& name, D2D1::ColorF* colour)
     {
@@ -42,7 +48,13 @@ public:
         j[ConfigName][LIT("Distance")] = Distance;
         j[ConfigName][LIT("MaxDistance")] = MaxDistance;
         j[ConfigName][LIT("FontSize")] = FontSize;
-        ToJsonColour(&j, LIT("TextColour"), &TextColour);
+        j[ConfigName][LIT("ShowBeartrap")] = ShowBeartrap;
+        j[ConfigName][LIT("ShowTripmines")] = ShowTripmines;
+        j[ConfigName][LIT("ShowGunpowderBurrels")] = ShowGunpowderBurrels;
+        j[ConfigName][LIT("ShowOilBurrels")] = ShowOilBurrels;
+        j[ConfigName][LIT("ShowBioBurrels")] = ShowBioBurrels;
+        ToJsonColour(&j, LIT("TrapColour"), &TrapColour);
+        ToJsonColour(&j, LIT("BarrelColour"), &BarrelColour);
 
         return j;
     }
@@ -60,7 +72,18 @@ public:
             FontSize = j[ConfigName][LIT("FontSize")];
         if (j[ConfigName].contains(LIT("MaxDistance")))
             MaxDistance = j[ConfigName][LIT("MaxDistance")];
-        FromJsonColour(j, LIT("TextColour"), &TextColour);
+        if (j[ConfigName].contains(LIT("ShowBeartrap")))
+            ShowBeartrap = j[ConfigName][LIT("ShowBeartrap")];
+        if (j[ConfigName].contains(LIT("ShowTripmines")))
+            ShowTripmines = j[ConfigName][LIT("ShowTripmines")];
+        if (j[ConfigName].contains(LIT("ShowGunpowderBurrels")))
+            ShowGunpowderBurrels = j[ConfigName][LIT("ShowGunpowderBurrels")];
+        if (j[ConfigName].contains(LIT("ShowOilBurrels")))
+            ShowOilBurrels = j[ConfigName][LIT("ShowOilBurrels")];
+        if (j[ConfigName].contains(LIT("ShowBioBurrels")))
+            ShowBioBurrels = j[ConfigName][LIT("ShowBioBurrels")];
+        FromJsonColour(j, LIT("TrapColour"), &TrapColour);
+        FromJsonColour(j, LIT("BarrelColour"), &BarrelColour);
     }
 };
 

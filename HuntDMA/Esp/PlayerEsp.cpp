@@ -47,11 +47,12 @@ void DrawBosses()
 					continue;
 				std::wstring wname = Configs.Bosses.Name ? ent->GetName() : L"";
 				std::wstring wdistance = Configs.Bosses.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-				DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Bosses.FontSize, Configs.Bosses.TextColour, Centre);
+				DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Bosses.FontSize, Configs.Bosses.TextColour, Center);
 			}
 		}
 	}
 }
+
 void DrawPlayers()
 {
 	if (EnvironmentInstance == nullptr)
@@ -92,8 +93,8 @@ void DrawPlayers()
 			std::wstring wname = Configs.Player.Name ? ent->GetName() : L"";
 			std::wstring wdistance = Configs.Player.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
 			std::wstring whealth = std::to_wstring(ent->GetHealth().current_hp) + L"/" + std::to_wstring(ent->GetHealth().current_max_hp) + L"[" + std::to_wstring(ent->GetHealth().regenerable_max_hp) + L"]";
-			//DrawText(pos.x, pos.y, L".", "Verdana", Configs.Player.FontSize, Colour(255, 0, 0), Centre); // dot
-			DrawText(pos.x, pos.y, wname + wdistance + L"\n" + whealth, "Verdana", Configs.Player.FontSize, ent->GetType() == EntityType::FriendlyPlayer ? Configs.Player.FriendColour : Configs.Player.TextColour, Centre);
+			//DrawText(pos.x, pos.y, L".", "Verdana", Configs.Player.FontSize, Colour(255, 0, 0), Center); // dot
+			DrawText(pos.x, pos.y, wname + wdistance + L"\n" + whealth, "Verdana", Configs.Player.FontSize, ent->GetType() == EntityType::FriendlyPlayer ? Configs.Player.FriendColour : Configs.Player.TextColour, Center);
 		}
 	}
 }

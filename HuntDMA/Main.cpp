@@ -21,6 +21,9 @@ void main()
 	std::printf("HuntGame: 0x%X\n", TargetProcess.GetBaseAddress("HuntGame.exe"));
 	std::printf("GameHunt: 0x%X\n", TargetProcess.GetBaseAddress("GameHunt.dll"));
 }
+
+bool isMouseTracking = false; // To re-enable tracking for mouse window leaving event
+
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	InputWndProc(hWnd, message, wParam, lParam);
@@ -29,6 +32,21 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
+			break;
+		case WM_MOUSEMOVE:
+		{
+			if (!isMouseTracking) {
+				TRACKMOUSEEVENT tme;
+				tme.cbSize = sizeof(TRACKMOUSEEVENT);
+				tme.dwFlags = TME_LEAVE;
+				tme.hwndTrack = hWnd;
+				TrackMouseEvent(&tme);
+				isMouseTracking = true;
+			}
+			break;
+		}
+		case WM_MOUSELEAVE:
+			isMouseTracking = false;
 			break;
 	}
 
@@ -58,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wc.lpszClassName = L"GUI Framework";
 	RegisterClassEx(&wc);
 	//SetProcessDPIAware();
-	hWnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, L"GUI Framework",
+	hWnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, L"HuntDMA GUI",
 		WS_POPUP,
 		0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), NULL, NULL, hInstance, NULL);
 

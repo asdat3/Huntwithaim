@@ -88,7 +88,7 @@ void Tab::Draw()
 		textColour = MenuColours[LIT("TextSelected")];
 	}
 	FilledRectangle(Tab::ParentPos.x + Tab::Pos.x, Tab::ParentPos.y + Tab::Pos.y, Tab::Size.x, Tab::Size.y, rectColour);
-	DrawText(Tab::ParentPos.x + Tab::Pos.x + (Tab::Size.x / 2), Tab::ParentPos.y + Tab::Pos.y + (Tab::Size.y / 2), Tab::Name, LIT("Verdana"), 12, textColour, CentreCentre);
+	DrawText(Tab::ParentPos.x + Tab::Pos.x + (Tab::Size.x / 2), Tab::ParentPos.y + Tab::Pos.y + (Tab::Size.y / 2), Tab::Name, LIT("Verdana"), 12, textColour, CenterCenter);
 
 	if (selected)
 	{

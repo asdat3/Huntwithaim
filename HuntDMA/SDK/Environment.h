@@ -25,6 +25,8 @@ private:
 	std::vector<std::shared_ptr<WorldEntity>> BloodBondsList;
 	std::vector<std::shared_ptr<WorldEntity>> TrapList;
 	std::vector<std::shared_ptr<WorldEntity>> POIList;
+
+	bool createEntitiesDump = false;
 public:
 	uint64_t GetSystemGlobalEnvironment() { return SystemGlobalEnvironment; }
 	uint64_t GetEntitySystem() { return EntitySystem; }

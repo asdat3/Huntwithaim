@@ -4,6 +4,8 @@
 #include "Drawing.h"
 #include "Font.h"
 
+Vector2 clickTolerance = Vector2(3, 3);
+
 Toggle::Toggle(float x, float y, std::wstring text, bool* data = nullptr)
 {
 	Toggle::Pos = {x, y};
@@ -28,7 +30,7 @@ void Toggle::Update()
 	if (!Toggle::Blocked)
 	{
 		// square click check
-		if (IsMouseInRectangle(Toggle::Pos + Toggle::ParentPos, Toggle::Size) && IsKeyClicked(VK_LBUTTON) && Toggle::LastClick < (clock() * 0.00001f))
+		if (IsMouseInRectangle(Toggle::Pos + Toggle::ParentPos - clickTolerance, Toggle::Size + clickTolerance) && IsKeyClicked(VK_LBUTTON) && Toggle::LastClick < (clock() * 0.00001f))
 		{
 			*Toggle::Data = !(*Toggle::Data);
 			Toggle::LastClick = (clock() * 0.00001f) + 0.002f;

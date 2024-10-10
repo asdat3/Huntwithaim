@@ -14,12 +14,12 @@ int ConditionalSwapPlayer(std::vector<std::shared_ptr<WorldEntity>>& entities, i
 {
 	std::shared_ptr<WorldEntity> pivot = entities[high];
 	int i = low - 1;
-	Vector2 centreofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height *0.6f : GetSystemMetrics(SM_CYSCREEN) *0.6f);
+	Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height *0.6f : GetSystemMetrics(SM_CYSCREEN) *0.6f);
 	for (int j = low; j < high; ++j)
 	{
 		if (Configs.Aimbot.Priority == 2)
 		{
-			if (Vector2::Distance(centreofscreen, CameraInstance->WorldToScreen(entities[j]->GetPosition())) < Vector2::Distance(centreofscreen, CameraInstance->WorldToScreen(pivot->GetPosition())))
+			if (Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(entities[j]->GetPosition())) < Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(pivot->GetPosition())))
 			{
 				++i;
 				std::swap(entities[i], entities[j]);
@@ -41,7 +41,7 @@ int ConditionalSwapPlayer(std::vector<std::shared_ptr<WorldEntity>>& entities, i
 		}
 		if (Configs.Aimbot.Priority == 1)
 		{
-			if (Vector2::Distance(centreofscreen, CameraInstance->WorldToScreen(entities[j]->GetPosition())) < Vector2::Distance(centreofscreen, CameraInstance->WorldToScreen(pivot->GetPosition())))
+			if (Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(entities[j]->GetPosition())) < Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(pivot->GetPosition())))
 			{
 				++i;
 				std::swap(entities[i], entities[j]);
@@ -64,7 +64,7 @@ void QuickSortPlayers(std::vector<std::shared_ptr<WorldEntity>>& entities, int l
 std::shared_ptr<WorldEntity> AimbotTarget;
 bool StickTarget()
 {
-	Vector2 centreofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
+	Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
 	if (CameraInstance == nullptr)
 		return false;
 	if (EnvironmentInstance == nullptr)
@@ -79,7 +79,7 @@ bool StickTarget()
 		return false;
 	if (AimbotTarget->GetType() == EntityType::EnemyPlayer && !Configs.Aimbot.TargetPlayers)
 		return false;
-	if (Vector2::Distance(CameraInstance->WorldToScreen(AimbotTarget->GetPosition()), centreofscreen) > Configs.Aimbot.FOV)
+	if (Vector2::Distance(CameraInstance->WorldToScreen(AimbotTarget->GetPosition()), Centerofscreen) > Configs.Aimbot.FOV)
 		return false;
 	return true;
 }
@@ -94,7 +94,7 @@ void GetAimbotTarget()
 		return;
 	if(StickTarget())
 		return;
-	Vector2 centreofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
+	Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
 
 	std::vector<std::shared_ptr<WorldEntity>> templist;
 	Vector3 localpos = CameraInstance->GetPosition();
@@ -125,7 +125,7 @@ void GetAimbotTarget()
 			continue;
 		if (CameraInstance->WorldToScreen(player->GetPosition()) == Vector2::Zero())
 			continue;
-		if (Vector2::Distance(CameraInstance->WorldToScreen(player->GetPosition()), centreofscreen) >Configs.Aimbot.FOV)
+		if (Vector2::Distance(CameraInstance->WorldToScreen(player->GetPosition()), Centerofscreen) >Configs.Aimbot.FOV)
 			continue;
 		AimbotTarget = player;
 		//	printf("Targeting: %s\n", AimbotTarget->GetName().c_str());
@@ -167,8 +167,8 @@ void Aimbot()
 			return;
 		}
 		Vector2 screenpos = CameraInstance->WorldToScreen(AimbotTarget->GetPosition());
-		Vector2 centreofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
-		if (Vector2::Distance(screenpos, centreofscreen) > Configs.Aimbot.FOV)
+		Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
+		if (Vector2::Distance(screenpos, Centerofscreen) > Configs.Aimbot.FOV)
 			return;
 		if (screenpos == Vector2::Zero())
 		{
@@ -176,7 +176,7 @@ void Aimbot()
 			return;
 		}
 		
-		float x = screenpos.x - centreofscreen.x;
+		float x = screenpos.x - Centerofscreen.x;
 		
 		if (KmboxStart + std::chrono::milliseconds(55) < std::chrono::system_clock::now())
 		{

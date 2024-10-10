@@ -729,7 +729,7 @@ void TextBox::Draw()
 
 			if (IsMouseInRectangle(TextBox::ContextPos.x, TextBox::ContextPos.y + (i * 20), TextBox::ContextSize.x, 20))
 				FilledRectangle(TextBox::ContextPos.x, TextBox::ContextPos.y + (i * 20), TextBox::ContextSize.x, 20, contextOutlineColour);
-			DrawText(TextBox::ContextPos.x + (TextBox::ContextSize.x / 2), TextBox::ContextPos.y + (i * 20) + 10, pair.first, "Verdana", 11, textColour, CentreCentre);
+			DrawText(TextBox::ContextPos.x + (TextBox::ContextSize.x / 2), TextBox::ContextPos.y + (i * 20) + 10, pair.first, "Verdana", 11, textColour, CenterCenter);
 
 			i++;
 		}

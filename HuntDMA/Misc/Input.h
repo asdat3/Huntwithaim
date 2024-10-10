@@ -1,5 +1,6 @@
 #pragma once
 
+extern bool isFocused;
 extern Vector2 MousePos;
 extern std::map<std::string, HCURSOR> Cursors;
 extern WPARAM Char;

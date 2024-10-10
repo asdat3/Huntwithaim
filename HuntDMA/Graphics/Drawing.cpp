@@ -33,29 +33,32 @@ void DrawText(int x, int y, std::wstring text, std::string font, int fontsize, M
 	// set the position
 	switch (alignment)
 	{
-	case FontAlignment::Centre:
-		x -= (txtSize.x / 2);
-		break;
-	case FontAlignment::Right:
-		x += txtSize.x;
-		break;
-	case FontAlignment::Left:
-		x -= txtSize.x;
-		break;
-	case FontAlignment::None:
-		break;
-	case FontAlignment::CentreCentre:
-		x -= (txtSize.x / 2);
-		y -= (txtSize.y / 2);
-		break;
-	case FontAlignment::CentreLeft:
-		x -= txtSize.x;
-		y += (txtSize.y / 2);
-		break;
-	case FontAlignment::CentreRight:
-		x += txtSize.x;
-		y -= (txtSize.y / 2);
-		break;
+		case FontAlignment::None:
+			break;
+		case FontAlignment::Center:
+			x -= (txtSize.x / 2);
+			break;
+		case FontAlignment::Right:
+			x += txtSize.x;
+			break;
+		case FontAlignment::Left:
+			x -= txtSize.x;
+			break;
+		case FontAlignment::CenterCenter:
+			x -= (txtSize.x / 2);
+			y -= (txtSize.y / 2);
+			break;
+		case FontAlignment::CenterLeft:
+			x -= txtSize.x;
+			y += (txtSize.y / 2);
+			break;
+		case FontAlignment::CenterRight:
+			x += txtSize.x;
+			y -= (txtSize.y / 2);
+			break;
+		case FontAlignment::VerticalCenter:
+			y -= (txtSize.y / 2);
+			break;
 	}
 	point.x = x;
 	point.y = y;
