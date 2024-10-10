@@ -4,17 +4,16 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP
 
 
 ## Showcase
-<a href="https://youtu.be/gfd_oSyAx-0">
+<p align="Left">
   <img src="Images/6.png" alt="Play Video" width="1280" height="540">
-</a>
-<a href="https://youtu.be/VAil5CULUfc">
+</p>
+<p align="Left">
   <img src="Images/5.png" alt="Play Video" width="1280" height="540">
-</a>
+</p>
 <p align="Left">
   <img src="Images/2.png"
     style="width: 100%;" />
 </p>
-
 <p align="Left">
   <img src="Images/4.png"
     style="width: 100%;" />
@@ -37,6 +36,7 @@ This will likely be on [UnknownCheats](https://www.unknowncheats.me/forum/other-
   * Chams
   * Friendly Color
   * Cham Color
+  * Player list
 * Boss ESP
   *  Name
   *  Distance
@@ -44,15 +44,17 @@ This will likely be on [UnknownCheats](https://www.unknowncheats.me/forum/other-
   * Name
   * Distance
   * Toggalable types
-* BloodBound ESP (WIP)
+* BloodBound ESP
   * Name
   * Distance
 * Trap ESP
   * Name
   * Distance
+  * Toggalable types
 * Points of Interest ESP
   * Name
   * Distance
+  * Toggalable types
 * Config
   * Load
   * Save
@@ -67,18 +69,26 @@ HP is: **current**/**current max(is not potential max if hunter is burning)**[**
 You can choose only your type of ammo, esp will show only nessesary items.
 
 ### Trap ESP
-Also barrels.
+Also all types of barrels. Toggalable.
 
 ### Points of Interest ESP
-For now only Extraction Point.
+- extraction points
+- normal cash registers
+- pouches
+- clues
+- posters
+- blueprints
+- gun oil
+- **traits**
 
 ### Spectating alarm
 Can't be turned off for now. Shows you red frame and in big green number how many players are spectating you. Your teammates counts!
 
+### Mouse-only controls supported
+Now can be controlled only via mouse: if you stick your cursor to the edge of the window, or move to the other screen, menu will close. Menu will open again when you move mouse back. And "app exit" button in the settings.
+
 # Known Issues
-If you start HuntDMA.exe and see ObjectCount < 2000 in the console, cheat will not work, you need to restart Hunt.exe.  
-BloodBound ESP is not working.  
-Zombie doctor's medkits are not shown as a supply.
+\-
 
 # Todo
 - [ ] View what is in player's hands
