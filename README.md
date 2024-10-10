@@ -77,18 +77,13 @@ Can't be turned off for now. Shows you red frame and in big green number how man
 
 # Known Issues
 If you start HuntDMA.exe and see ObjectCount < 2000 in the console, cheat will not work, you need to restart Hunt.exe.  
-BloodBound ESP is not working.
+BloodBound ESP is not working.  
+Zombie doctor's medkits are not shown as a supply.
 
 # Todo
 - [ ] Draw player list like in Mr Smile's cheat
 - [ ] Draw ObjectCount
-- [ ] Perks ESP/chams
-- [ ] Fix DPI if it is set not to 100%
-- [ ] Add check if player has escaped via extraction point
 - [ ] View what is in player's hands
-- [ ] If possible view player's names
-- [ ] Zombie doctor's medkits are not shown as a supply
-- [ ] Rewrite gui on nuklear or imGUI
 - [x] Add close button for the menu
 - [x] Fix spider not showing
 - [x] Don't show players if their hp is <= 0 or > 150
