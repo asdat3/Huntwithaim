@@ -81,9 +81,10 @@ BloodBound ESP is not working.
 Zombie doctor's medkits are not shown as a supply.
 
 # Todo
-- [ ] Draw player list like in Mr Smile's cheat
-- [ ] Draw ObjectCount
 - [ ] View what is in player's hands
+- [x] Perks ESP/chams
+- [x] Draw player list like in Mr Smile's cheat
+- [x] Draw ObjectCount
 - [x] Add close button for the menu
 - [x] Fix spider not showing
 - [x] Don't show players if their hp is <= 0 or > 150
@@ -94,6 +95,7 @@ Zombie doctor's medkits are not shown as a supply.
 - [x] Add Golden Cash Register ESP
 - [x] Add POI ESP
 - [x] Draw players HP
+- [x] Perks ESP/chams
 - [x] Move configs to the same folder as HuntDMA.exe (previously at User/Documents/Hunt/Default.json.json)
 
 ## Credits
