@@ -6,12 +6,31 @@
 
 Environment::Environment()
 {
-	SystemGlobalEnvironment = TargetProcess.Read<uint64_t>(TargetProcess.GetBaseAddress("GameHunt.dll") + SystemGlobalEnvironment);
-	printf(LIT("SystemGlobalEnvironment: 0x%X\n"), SystemGlobalEnvironment);
-	EntitySystem = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + EntitySystemOffset);
+	FindSystemGlobalEnvironment();
+	auto handle = TargetProcess.CreateScatterHandle();
+	TargetProcess.AddScatterReadRequest(handle, SystemGlobalEnvironment + EntitySystemOffset, &EntitySystem, sizeof(uint64_t));
+	TargetProcess.AddScatterReadRequest(handle, SystemGlobalEnvironment + pSystemOffset, &pSystem, sizeof(uint64_t));
+	TargetProcess.ExecuteReadScatter(handle);
+	TargetProcess.CloseScatterHandle(handle);
 	printf(LIT("EntitySystem: 0x%X\n"), EntitySystem);
-	pSystem = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + pSystemOffset);
 	printf(LIT("pSystem: 0x%X\n"), pSystem);
+}
+
+void Environment::FindSystemGlobalEnvironment()
+{
+	auto base = TargetProcess.GetBaseAddress("GameHunt.dll");
+	auto size = TargetProcess.GetBaseSize("GameHunt.dll");
+	int relative;
+	uint64_t SystemGlobEnvSig = TargetProcess.FindSignature("48 8B 05 ? ? ? ? 48 8B F1 48", base, base + size);
+	printf(LIT("SystemGlobEnvSig: 0x%X\n"), SystemGlobEnvSig);
+
+	auto handle = TargetProcess.CreateScatterHandle();
+	TargetProcess.AddScatterReadRequest(handle, SystemGlobEnvSig + 3, &relative, sizeof(int));
+	TargetProcess.ExecuteReadScatter(handle);
+	TargetProcess.AddScatterReadRequest(handle, SystemGlobEnvSig + 7 + relative, &SystemGlobalEnvironment, sizeof(SystemGlobalEnvironment));
+	TargetProcess.ExecuteReadScatter(handle);
+	TargetProcess.CloseScatterHandle(handle);
+	printf(LIT("SystemGlobalEnvironment: 0x%X\n"), SystemGlobalEnvironment);
 }
 
 void Environment::GetEntities()
