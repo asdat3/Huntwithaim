@@ -14,6 +14,6 @@ private:
 public:
 	void UpdateCamera(VMMDLL_SCATTER_HANDLE handle);
 	Vector3 GetPosition() { return Position;}
-	Vector2 WorldToScreen(Vector3 pos);
+	Vector2 WorldToScreen(Vector3 pos, bool clamp = true);
 
 };

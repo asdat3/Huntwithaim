@@ -15,9 +15,19 @@ Vector2 Vector2::operator*(Vector2 a)
     return Vector2(x * a.x, y * a.y);
 }
 
+Vector2 Vector2::operator*(float value)
+{
+	return Vector2(x * value, y * value);
+}
+
 Vector2 Vector2::operator/(Vector2 a)
 {
     return Vector2(x / a.x, y / a.y);
+}
+
+Vector2 Vector2::operator/(float value)
+{
+	return Vector2(x / value, y / value);
 }
 
 Vector2 Vector2::operator+(Vector2 a)
@@ -59,6 +69,11 @@ float Vector2::Distance(Vector2 a, Vector2 b)
     return sqrt(
         powf(difference.x, 2.0f) +
         powf(difference.y, 2.0f));
+}
+
+float Vector2::Length(Vector2 a)
+{
+	return std::sqrt(a.x * a.x + a.y * a.y);
 }
 
 Vector3::Vector3() : x(0), y(0), z(0) { }

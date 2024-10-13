@@ -9,7 +9,9 @@ public:
 	float x, y;
 
 	Vector2 operator *(Vector2 a);
+	Vector2 operator *(float value);
 	Vector2 operator /(Vector2 a);
+	Vector2 operator /(float value);
 	Vector2 operator +(Vector2 a);
 	Vector2 operator -(Vector2 a);
 	bool operator ==(Vector2 a);
@@ -20,6 +22,7 @@ public:
 	static Vector2 Zero();
 
 	static float Distance(Vector2 a, Vector2 b);
+	static float Length(Vector2 a);
 };
 
 class Vector3

@@ -55,7 +55,7 @@ void Environment::UpdatePlayerList()
 		std::shared_ptr<WorldEntity> ent = templist[index];
 		if (ent == nullptr)
 			continue;
-		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 1.6f) // Self Player
+		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 2.2f) // Self Player. Spikes to 2.2 when vaulting
 		{
 			TargetProcess.AddScatterReadRequest(handle, ent->SpecCountPointer4 + ent->SpecCountOffset5, &ent->SpecCount, sizeof(int));
 			continue;
@@ -81,7 +81,7 @@ void Environment::UpdatePlayerList()
 		std::shared_ptr<WorldEntity> ent = templist[index];
 		if (ent == nullptr)
 			continue;
-		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 1.6f) // Self Player
+		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 2.2f) // Self Player. Spikes to 2.2 when vaulting
 		{
 			EnvironmentInstance->SpectatorCountMutex.lock();
 			SpectatorCount = ent->SpecCount;

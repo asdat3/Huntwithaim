@@ -11,7 +11,7 @@ void Camera::UpdateCamera(VMMDLL_SCATTER_HANDLE handle)
     TargetProcess.AddScatterReadRequest(handle, systemBase + ProjectionMatrixOffset, &ProjectionMatrix, sizeof(ViewMatrix));
 }
 
-Vector2 Camera::WorldToScreen(Vector3 pos)
+Vector2 Camera::WorldToScreen(Vector3 pos, bool clamp)
 {
     if (Position == Vector3::Zero())
         return Vector2::Zero();
@@ -43,7 +43,7 @@ Vector2 Camera::WorldToScreen(Vector3 pos)
     projected.x /= projected.w;
     projected.y /= projected.w;
 
-    if (abs(projected.x) > 1.0f || abs(projected.y) > 1.0f)
+    if (clamp && (abs(projected.x) > 1.0f || abs(projected.y) > 1.0f))
         return Vector2::Zero();
 
     // Get screen coordinates

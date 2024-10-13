@@ -52,19 +52,21 @@ void CreateGUI()
 			playeresptab->Push(name);
 			auto distance = std::make_shared<Toggle>(100, 45, LIT(L"Distance"), &Configs.Player.Distance);
 			playeresptab->Push(distance);
-			auto drawfriendly = std::make_shared<Toggle>(100, 65, LIT(L"Draw Friendly"), &Configs.Player.DrawFriends);
+			auto hp = std::make_shared<Toggle>(100, 65, LIT(L"HP"), &Configs.Player.HP);
+			playeresptab->Push(hp);
+			auto drawfriendly = std::make_shared<Toggle>(100, 85, LIT(L"Draw Friendly"), &Configs.Player.DrawFriends);
 			playeresptab->Push(drawfriendly);
-			auto friendcolour = std::make_shared<ColourPicker>(200, 66, &Configs.Player.FriendColour);
+			auto friendcolour = std::make_shared<ColourPicker>(200, 86, &Configs.Player.FriendColour);
 			playeresptab->Push(friendcolour);
-			auto chams = std::make_shared<Toggle>(100, 85, LIT(L"Chams (Caution, writes to game memory!)"), &Configs.Player.Chams);
+			auto chams = std::make_shared<Toggle>(100, 105, LIT(L"Chams (Caution, writes to game memory!)"), &Configs.Player.Chams);
 			playeresptab->Push(chams);
-			auto chammode = std::make_shared<DropDown>(100, 115, LIT(L"Cham Mode"), &Configs.Player.ChamMode,
+			auto chammode = std::make_shared<DropDown>(100, 135, LIT(L"Cham Mode"), &Configs.Player.ChamMode,
 				std::vector<std::wstring>{LIT(L"Outline Red"), LIT(L"Outline Blue"), LIT(L"Outline Yellow"), LIT(L"Outline Orange"), LIT(L"Outline Cyan"), LIT(L"Outline Magenta"), LIT(L"Outline White"),
 				LIT(L"Filled Red"), LIT(L"Filled Blue"), LIT(L"Filled Yellow"), LIT(L"Filled Orange"), LIT(L"Filled Cyan"), LIT(L"Filled Magenta"), LIT(L"Filled White")});
 			playeresptab->Push(chammode);
-			auto maxdistance = std::make_shared<Slider<int>>(100, 140, 150, LIT(L"Max Distance"), LIT(L"m"), 0, 1500, &Configs.Player.MaxDistance);
+			auto maxdistance = std::make_shared<Slider<int>>(100, 160, 150, LIT(L"Max Distance"), LIT(L"m"), 0, 1500, &Configs.Player.MaxDistance);
 			playeresptab->Push(maxdistance);
-			auto textsize = std::make_shared<Slider<int>>(100, 165,150, LIT(L"Text Size"), LIT(L"px"), 4, 30, &Configs.Player.FontSize);
+			auto textsize = std::make_shared<Slider<int>>(100, 185, 150, LIT(L"Text Size"), LIT(L"px"), 4, 30, &Configs.Player.FontSize);
 			playeresptab->Push(textsize);
 
 			auto showplayerlist = std::make_shared<Toggle>(280, 5, LIT(L"Show Player List"), &Configs.Player.ShowPlayerList);
@@ -73,6 +75,12 @@ void CreateGUI()
 			playeresptab->Push(playerListcolour);
 			auto playerlistfontsize = std::make_shared<Slider<int>>(280, 25, 150, LIT(L"Player List Font Size"), LIT(L"px"), 4, 30, &Configs.Player.PlayerListFontSize);
 			playeresptab->Push(playerlistfontsize);
+			auto drawframes = std::make_shared<Toggle>(280, 50, LIT(L"Draw Frames"), &Configs.Player.DrawFrames);
+			playeresptab->Push(drawframes);
+			auto framescolour = std::make_shared<ColourPicker>(380, 51, &Configs.Player.FramesColour);
+			playeresptab->Push(framescolour);
+			auto drawheadinframes = std::make_shared<Toggle>(280, 70, LIT(L"Draw Head in frames"), &Configs.Player.DrawHeadInFrames);
+			playeresptab->Push(drawheadinframes);
 		}
 		tabcontroller->Push(playeresptab);
 

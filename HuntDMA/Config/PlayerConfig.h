@@ -12,12 +12,16 @@ public:
     bool Enable = true;
     bool Name = true;
 	bool Distance = true;
-	int MaxDistance = 1500;
+	int MaxDistance = 400;
 	D2D1::ColorF TextColour = Colour(255, 255, 255);
 	int FontSize = 12;
     bool Chams = false;
     int ChamMode = 5;
+    bool HP = true;
     bool DrawFriends = false;
+    bool DrawFrames = true;
+    bool DrawHeadInFrames = true;
+    D2D1::ColorF FramesColour = Colour(252, 242, 5);
     D2D1::ColorF FriendColour = Colour(0, 255, 0);
     bool ShowPlayerList = true;
     int PlayerListFontSize = 15;
@@ -51,10 +55,14 @@ public:
         j[ConfigName][LIT("FontSize")] = FontSize;
         j[ConfigName][LIT("Chams")] = Chams;
         j[ConfigName][LIT("ChamMode")] = ChamMode;
+        j[ConfigName][LIT("HP")] = HP;
         j[ConfigName][LIT("DrawFriends")] = DrawFriends;
+        j[ConfigName][LIT("DrawFrames")] = DrawFrames;
+        j[ConfigName][LIT("DrawHeadInFrames")] = DrawHeadInFrames;
         j[ConfigName][LIT("ShowPlayerList")] = ShowPlayerList;
         j[ConfigName][LIT("PlayerListFontSize")] = PlayerListFontSize;
         ToJsonColour(&j, LIT("TextColour"), &TextColour);
+        ToJsonColour(&j, LIT("FramesColour"), &FramesColour);
         ToJsonColour(&j, LIT("FriendColour"), &FriendColour);
         ToJsonColour(&j, LIT("PlayerListColour"), &PlayerListColour);
 
@@ -74,17 +82,24 @@ public:
             FontSize = j[ConfigName][LIT("FontSize")];
         if (j[ConfigName].contains(LIT("MaxDistance")))
             MaxDistance = j[ConfigName][LIT("MaxDistance")];
+        if (j[ConfigName].contains(LIT("DrawFrames")))
+            DrawFrames = j[ConfigName][LIT("DrawFrames")];
         if (j[ConfigName].contains(LIT("Chams")))
             Chams = j[ConfigName][LIT("Chams")];
         if (j[ConfigName].contains(LIT("ChamMode")))
             ChamMode = j[ConfigName][LIT("ChamMode")];
+        if (j[ConfigName].contains(LIT("HP")))
+            HP = j[ConfigName][LIT("HP")];
         if (j[ConfigName].contains(LIT("DrawFriends")))
             DrawFriends = j[ConfigName][LIT("DrawFriends")];
+        if (j[ConfigName].contains(LIT("DrawHeadInFrames")))
+            DrawHeadInFrames = j[ConfigName][LIT("DrawHeadInFrames")];
         if (j[ConfigName].contains(LIT("ShowPlayerList")))
             ShowPlayerList = j[ConfigName][LIT("ShowPlayerList")];
         if (j[ConfigName].contains(LIT("PlayerListFontSize")))
             PlayerListFontSize = j[ConfigName][LIT("PlayerListFontSize")];
         FromJsonColour(j, LIT("FriendColour"), &FriendColour);
+        FromJsonColour(j, LIT("FramesColour"), &FramesColour);
         FromJsonColour(j, LIT("TextColour"), &TextColour);
         FromJsonColour(j, LIT("PlayerListColour"), &PlayerListColour);
     }
