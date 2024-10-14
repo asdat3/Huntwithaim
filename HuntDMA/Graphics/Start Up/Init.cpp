@@ -169,8 +169,9 @@ void InitD2D(HWND hWnd)
 		cacheThreadCreated = true;
 		std::thread(CacheThread).detach();
 	}
-	Keyboard::InitKeyboard();
-	kmbox::KmboxInitialize("");
+	// Uncomment if using aimbot
+	//Keyboard::InitKeyboard();
+	//kmbox::KmboxInitialize("");
 }
 
 void RenderFrame()
