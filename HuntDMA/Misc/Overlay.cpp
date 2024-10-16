@@ -36,7 +36,7 @@ void DrawPlayerList()
             continue;
 
         int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-        if (distance <= 0 || Vector3::Distance(CameraInstance->GetPosition(), ent->GetPosition()) <= 2.0f || !ent->GetValid())
+        if (distance <= 3.0f || !ent->GetValid())
             continue;
 
         if (!IsValidHP(ent->GetHealth().current_hp) || !IsValidHP(ent->GetHealth().current_max_hp) ||

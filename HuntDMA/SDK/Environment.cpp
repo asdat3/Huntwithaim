@@ -369,7 +369,7 @@ void Environment::CacheEntities()
 			if (ent->GetType() == EntityType::Unknown)
 			{
 				printf(LIT("%s%s"), entityName, "\n");
-				//continue;
+				continue;
 			}
 
 			temppoilist.push_back(ent);
