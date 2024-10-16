@@ -32,7 +32,7 @@ void Environment::FindSystemGlobalEnvironment()
 	auto base = TargetProcess.GetBaseAddress("GameHunt.dll");
 	auto size = TargetProcess.GetBaseSize("GameHunt.dll");
 	int relative;
-	uint64_t SystemGlobEnvSig = TargetProcess.FindSignature("48 8B 05 ? ? ? ? 48 8B 88 B0", base, base + size);
+	uint64_t SystemGlobEnvSig = TargetProcess.FindSignature(SystemGlobalEnvironmentSignature, base, base + size);
 	printf(LIT("SystemGlobEnvSig: 0x%X\n"), SystemGlobEnvSig);
 
 	auto handle = TargetProcess.CreateScatterHandle();
@@ -42,7 +42,6 @@ void Environment::FindSystemGlobalEnvironment()
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.CloseScatterHandle(handle);
 	printf(LIT("SystemGlobalEnvironment: 0x%X\n"), SystemGlobalEnvironment);
-	printf(LIT("SystemGlobalEnvironmentOffset: 0x%X\n"), SystemGlobalEnvironment - base);
 }
 
 void Environment::GetEntities()

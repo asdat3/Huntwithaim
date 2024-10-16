@@ -4,7 +4,8 @@ class Environment
 {
 private:
 	uint64_t SystemGlobalEnvironment = 0x0;
-	uint64_t SystemGlobalEnvironmentOffset = 0x0; // You can manually overwrite offset, if auto signature find it not working https://www.unknowncheats.me/forum/other-fps-games/350352-hunt-showdown-27.html someone would post it here.
+	uint64_t SystemGlobalEnvironmentOffset = 0x0; // You can manually overwrite offset, if signature find is not working https://www.unknowncheats.me/forum/other-fps-games/350352-hunt-showdown-27.html someone would post it here.
+	const char* SystemGlobalEnvironmentSignature = "48 8B 05 ? ? ? ? 48 8B 88 B0";
 	void FindSystemGlobalEnvironment();
 
 	uint64_t EntitySystem = 0x0;
