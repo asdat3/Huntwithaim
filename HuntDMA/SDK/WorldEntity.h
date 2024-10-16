@@ -74,6 +74,8 @@ enum class EntityType : int
 	LongAmmoPackage,
 	ShotgunAmmoPackage,
 	Medkit,
+
+	Pumpkin,
 };
 
 class WorldEntity
@@ -102,7 +104,7 @@ private:
 
 	uint64_t HpOffset1 = 0x198;
 	uint64_t HpOffset2 = 0x20;
-	uint64_t HpOffset3 = 0xB0;
+	uint64_t HpOffset3 = 0xD0;
 	uint64_t HpOffset4 = 0x78;
 	uint64_t HpOffset5 = 0x58;
 	uint64_t HpPointer1 = 0x0;
@@ -169,6 +171,8 @@ private:
 		{EntityType::LongAmmoPackage, L"Long Ammo Package"},
 		{EntityType::ShotgunAmmoPackage, L"Shotgun Ammo Package"},
 		{EntityType::Medkit, L"Medkit"},
+
+		{EntityType::Pumpkin, L"Pumpkin"},
 	};
 public:
 	WorldEntity( uint64_t classptr);

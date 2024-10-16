@@ -60,7 +60,7 @@ void Environment::UpdatePlayerList()
 		std::shared_ptr<WorldEntity> ent = templist[index];
 		if (ent == nullptr)
 			continue;
-		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 2.2f) // Self Player. Spikes to 2.2 when vaulting
+		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 3.0f) // Self Player
 		{
 			TargetProcess.AddScatterReadRequest(handle, ent->SpecCountPointer4 + ent->SpecCountOffset5, &ent->SpecCount, sizeof(int));
 			continue;
@@ -86,7 +86,7 @@ void Environment::UpdatePlayerList()
 		std::shared_ptr<WorldEntity> ent = templist[index];
 		if (ent == nullptr)
 			continue;
-		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 2.2f) // Self Player. Spikes to 2.2 when vaulting
+		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 3.0f) // Self Player
 		{
 			EnvironmentInstance->SpectatorCountMutex.lock();
 			SpectatorCount = ent->SpecCount;
@@ -209,6 +209,8 @@ void Environment::CacheEntities()
 
 		if (strstr(entityClassName, "ObjectSpawner") != NULL) // We do not want spawners to show as objects
 			continue;
+		if (entityClassName == nullptr || entityClassName[0] == '\0')
+			continue;
 		if (strstr(entityClassName, "Hunter_Loot") != NULL)
 		{
 			ent->SetType(EntityType::DeadPlayer);
@@ -323,20 +325,19 @@ void Environment::CacheEntities()
 			tempsupplylist.push_back(ent);
 			continue;
 		}
-		if ((std::string)(entityClassName) == "Explodable_Object")
+		if (strstr(entityName, "Oil_barrel") != NULL)
 		{
-			if (strstr(entityName, "Oil_barrel") != NULL)
-			{
-				ent->SetType(EntityType::OilBarrel);
-			}
-			else if (strstr(entityName, "Gunpowder_barrel") != NULL)
-			{
-				ent->SetType(EntityType::GunpowderBarrel);
-			}
+			ent->SetType(EntityType::OilBarrel);
 			temptraplist.push_back(ent);
 			continue;
 		}
-		if ((std::string)(entityClassName) == "BioBarrel")
+		if (strstr(entityName, "Gunpowder_barrel") != NULL)
+		{
+			ent->SetType(EntityType::GunpowderBarrel);
+			temptraplist.push_back(ent);
+			continue;
+		}
+		if (strstr(entityName, "Poison_barrel") != NULL)
 		{
 			ent->SetType(EntityType::BioBarrel);
 			temptraplist.push_back(ent);
@@ -463,12 +464,12 @@ void Environment::CacheEntities()
 			temptraplist.push_back(ent);
 			continue;
 		}
-		//printf(LIT("Entity Position: %f %f %f\n"), ent->GetPosition().x, ent->GetPosition().y, ent->GetPosition().z);
-		//printf(LIT("Entity ClassName: %s\n"), entityClassName);
-		//printf(LIT("Entity Class: %s\n"), entityName);
-		//printf(LIT("Entity Silhouettes: %d\n"), ent->GetRenderNode().silhouettes_param);
-		//Vector2 screenpos = CameraInstance->WorldToScreen(ent->GetPosition());
-		//printf(LIT("Entity Screen Position: %f %f\n"), screenpos.x, screenpos.y);
+		if ((std::string)(entityClassName) == "DestroyableReward")
+		{
+			ent->SetType(EntityType::Pumpkin);
+			temppoilist.push_back(ent);
+			continue;
+		}
 	}
 
 	if (createEntitiesDump)

@@ -183,6 +183,8 @@ void DrawPOI()
 			continue;
 		if (!Configs.POI.ShowTraits && (type == EntityType::Trait))
 			continue;
+		if (!Configs.POI.ShowPumpkins && (type == EntityType::Pumpkin))
+			continue;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
 		if (distance <= 0)

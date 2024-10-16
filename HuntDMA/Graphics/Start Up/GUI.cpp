@@ -210,6 +210,8 @@ void CreateGUI()
 			poiesptab->Push(showGunOil);
 			auto showTraits = std::make_shared<Toggle>(270, 180, LIT(L"Show Traits"), &Configs.POI.ShowTraits);
 			poiesptab->Push(showTraits);
+			auto showPumpkins = std::make_shared<Toggle>(100, 200, LIT(L"Show Pumpkins"), &Configs.POI.ShowPumpkins);
+			poiesptab->Push(showPumpkins);
 		}
 		tabcontroller->Push(poiesptab);
 

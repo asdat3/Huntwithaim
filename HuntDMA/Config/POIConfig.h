@@ -21,6 +21,7 @@ public:
     bool ShowGunOil = false;
     bool ShowClues = false;
     bool ShowTraits = true;
+    bool ShowPumpkins = true;
     D2D1::ColorF TextColour = Colour(0, 255, 221);
     int FontSize = 13;
     void ToJsonColour(json* j, const std::string& name, D2D1::ColorF* colour)
@@ -58,6 +59,7 @@ public:
         j[ConfigName][LIT("ShowGunOil")] = ShowGunOil;
         j[ConfigName][LIT("ShowClues")] = ShowClues;
         j[ConfigName][LIT("ShowTraits")] = ShowTraits;
+        j[ConfigName][LIT("ShowPumpkins")] = ShowPumpkins;
         ToJsonColour(&j, LIT("TextColour"), &TextColour);
 
         return j;
@@ -92,6 +94,8 @@ public:
             ShowClues = j[ConfigName][LIT("ShowClues")];
         if (j[ConfigName].contains(LIT("ShowTraits")))
             ShowTraits = j[ConfigName][LIT("ShowTraits")];
+        if (j[ConfigName].contains(LIT("ShowPumpkins")))
+            ShowPumpkins = j[ConfigName][LIT("ShowPumpkins")];
         FromJsonColour(j, LIT("TextColour"), &TextColour);
     }
 };
