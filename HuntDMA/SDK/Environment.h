@@ -4,6 +4,7 @@ class Environment
 {
 private:
 	uint64_t SystemGlobalEnvironment = 0x0;
+	uint64_t SystemGlobalEnvironmentOffset = 0x25D22E8; // This is the only thing that should need updating https://www.unknowncheats.me/forum/other-fps-games/350352-hunt-showdown-27.html someone would post it here.
 	void FindSystemGlobalEnvironment();
 
 	uint64_t EntitySystem = 0x0;
