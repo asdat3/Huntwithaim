@@ -88,6 +88,7 @@ Now can be controlled only via mouse: if you stick your cursor to the edge of th
 \-
 
 # Todo
+- [ ] Teams
 - [ ] View what is in player's hands
 - [x] Perks ESP/chams
 - [x] Draw player list like in Mr Smile's cheat
