@@ -59,7 +59,7 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP
 * Auto SystemGlobalEnvironment offset detection (thanks [@spookykokojunge](https://github.com/spookykokojunge))
 
 ### Player ESP
-It's recommended to turn on after teammates are no longer tagged as enemy players or after raid starts. Then turn it off.  
+Chams are recommended to turn on after teammates are no longer tagged as enemy players or after raid starts. Then turn it off to prevent crashes and end-game freeze.  
 HP is: **current**/**current max(is not potential max if hunter is burning)**[**potential max hp after after all burns are healed**]
 
 ### Supply ESP
@@ -77,6 +77,7 @@ Also all types of barrels. Toggalable.
 - blueprints
 - gun oil
 - **traits**
+- Halloween's pumpkins
 
 ### Spectating alarm
 Can't be turned off for now. Shows you red frame and in big green number how many players are spectating you. Your teammates counts!
@@ -85,9 +86,10 @@ Can't be turned off for now. Shows you red frame and in big green number how man
 Now can be controlled only via mouse: if you stick your cursor to the edge of the window, or move to the other screen, menu will close. Menu will open again when you move mouse back. And "app exit" button in the settings.
 
 # Known Issues
-\-
+Ourself's box frame is visible when running (lagging behind)
 
 # Todo
+- [ ] Auto medkit esp turn on when low hp
 - [ ] Teams
 - [ ] View what is in player's hands
 - [x] Perks ESP/chams
