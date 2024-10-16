@@ -199,9 +199,9 @@ public:
 	std::wstring GetName() { return Names[Type]; };
 
 	uint64_t SpecCountOffset1 = 0x198;
-	uint64_t SpecCountOffset2 = 0x28;
-	uint64_t SpecCountOffset3 = 0xc8;
-	uint64_t SpecCountOffset4 = 0x108;
+	uint64_t SpecCountOffset2 = 0x20;
+	uint64_t SpecCountOffset3 = 0xd0;
+	uint64_t SpecCountOffset4 = 0x100;
 	uint64_t SpecCountOffset5 = 0x10;
 	uint64_t SpecCountPointer1 = 0x0;
 	uint64_t SpecCountPointer2 = 0x0;
