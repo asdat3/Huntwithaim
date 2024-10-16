@@ -24,10 +24,6 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP
 > * [Installation Guide](./Instructions.md)
 > * Open menu key - **Insert**
 
-
-To Update: Change the SystemGlobalEnvironment Offset in SDK/Environment.h https://github.com/IntelSDM/HuntDMA/blob/67f7d5836460807b2686d123deeada08e5c76618/HuntDMA/SDK/Environment.h#L6  
-This will likely be on [UnknownCheats](https://www.unknowncheats.me/forum/other-fps-games/350352-hunt-showdown.html) a day after any updates. Just go to the last page and someone will have posted it after an update.
-
 ## Fixed and Supported Features
 * Player ESP
   * Name
@@ -60,6 +56,7 @@ This will likely be on [UnknownCheats](https://www.unknowncheats.me/forum/other-
   * Save
 * Spectating alarm
 * FPS
+* Auto SystemGlobalEnvironment offset detection (thanks [@spookykokojunge](https://github.com/spookykokojunge))
 
 ### Player ESP
 It's recommended to turn on after teammates are no longer tagged as enemy players or after raid starts. Then turn it off.  
