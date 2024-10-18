@@ -9,7 +9,7 @@
 
 void DrawFPS()
 {
-	DrawText(25, 25, L"DMA FPS: " + std::to_wstring(FrameRate()), "Verdana", Configs.Overlay.FpsFontSize, Configs.Overlay.FpsColour, None);
+	DrawText(25, 25, L"Overlay FPS: " + std::to_wstring(FrameRate()), "Verdana", Configs.Overlay.FpsFontSize, Configs.Overlay.FpsColour, None);
 }
 
 void DrawObjectCount()
