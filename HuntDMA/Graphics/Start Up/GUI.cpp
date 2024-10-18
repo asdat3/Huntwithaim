@@ -81,6 +81,8 @@ void CreateGUI()
 			playeresptab->Push(framescolour);
 			auto drawheadinframes = std::make_shared<Toggle>(280, 70, LIT(L"Draw Head in frames"), &Configs.Player.DrawHeadInFrames);
 			playeresptab->Push(drawheadinframes);
+			auto drawhealthbars = std::make_shared<Toggle>(280, 90, LIT(L"Draw Health bars"), &Configs.Player.DrawHealthBars);
+			playeresptab->Push(drawhealthbars);
 		}
 		tabcontroller->Push(playeresptab);
 

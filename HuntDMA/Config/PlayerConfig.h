@@ -21,6 +21,7 @@ public:
     bool DrawFriends = false;
     bool DrawFrames = true;
     bool DrawHeadInFrames = true;
+    bool DrawHealthBars = true;
     D2D1::ColorF FramesColour = Colour(252, 242, 5);
     D2D1::ColorF FriendColour = Colour(0, 255, 0);
     bool ShowPlayerList = true;
@@ -59,6 +60,7 @@ public:
         j[ConfigName][LIT("DrawFriends")] = DrawFriends;
         j[ConfigName][LIT("DrawFrames")] = DrawFrames;
         j[ConfigName][LIT("DrawHeadInFrames")] = DrawHeadInFrames;
+        j[ConfigName][LIT("DrawHealthBars")] = DrawHealthBars;
         j[ConfigName][LIT("ShowPlayerList")] = ShowPlayerList;
         j[ConfigName][LIT("PlayerListFontSize")] = PlayerListFontSize;
         ToJsonColour(&j, LIT("TextColour"), &TextColour);
@@ -94,6 +96,8 @@ public:
             DrawFriends = j[ConfigName][LIT("DrawFriends")];
         if (j[ConfigName].contains(LIT("DrawHeadInFrames")))
             DrawHeadInFrames = j[ConfigName][LIT("DrawHeadInFrames")];
+        if (j[ConfigName].contains(LIT("DrawHealthBars")))
+            DrawHealthBars = j[ConfigName][LIT("DrawHealthBars")];
         if (j[ConfigName].contains(LIT("ShowPlayerList")))
             ShowPlayerList = j[ConfigName][LIT("ShowPlayerList")];
         if (j[ConfigName].contains(LIT("PlayerListFontSize")))
