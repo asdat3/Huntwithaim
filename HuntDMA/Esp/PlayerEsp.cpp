@@ -7,7 +7,7 @@
 #include <WorldEntity.h>
 #include "ConfigUtilities.h"
 
-std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(10, [] {
+std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(5, [] {
 	
 	EnvironmentInstance->UpdatePlayerList();
 });

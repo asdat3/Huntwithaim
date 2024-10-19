@@ -28,8 +28,6 @@ private:
 	std::vector<std::shared_ptr<WorldEntity>> BloodBondsList;
 	std::vector<std::shared_ptr<WorldEntity>> TrapList;
 	std::vector<std::shared_ptr<WorldEntity>> POIList;
-
-	bool createEntitiesDump = false;
 public:
 	uint64_t GetSystemGlobalEnvironment() { return SystemGlobalEnvironment; }
 	uint64_t GetEntitySystem() { return EntitySystem; }
@@ -56,4 +54,5 @@ public:
 	std::vector<std::shared_ptr<WorldEntity>> GetTrapList() { return TrapList; }
 	std::vector<std::shared_ptr<WorldEntity>> GetPOIList() { return POIList; }
 	int GetSpectatorCount() { return SpectatorCount; }
+	bool createEntitiesDump = false;
 };

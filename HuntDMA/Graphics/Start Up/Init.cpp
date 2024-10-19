@@ -80,7 +80,6 @@ void InitialiseClasses()
 {
 	EnvironmentInstance = std::make_shared<Environment>();
 	CameraInstance = std::make_shared<Camera>();
-
 }
 
 std::shared_ptr<CheatFunction> Cache = std::make_shared<CheatFunction>(8000, [] {
@@ -139,9 +138,7 @@ void CacheThread()
 {
 	while (true)
 	{
-		if (EnvironmentInstance == nullptr)
-			continue;
-		if (EnvironmentInstance->GetObjectCount() == 0)
+		if (EnvironmentInstance == nullptr || EnvironmentInstance->GetObjectCount() == 0)
 			continue;
 		Cache->Execute();
 	}
@@ -169,9 +166,11 @@ void InitD2D(HWND hWnd)
 		cacheThreadCreated = true;
 		std::thread(CacheThread).detach();
 	}
-	// Uncomment if using aimbot
-	//Keyboard::InitKeyboard();
-	//kmbox::KmboxInitialize("");
+	if (enableAimBot)
+	{
+		Keyboard::InitKeyboard();
+		kmbox::KmboxInitialize("");
+	}
 }
 
 void RenderFrame()
@@ -196,7 +195,8 @@ void RenderFrame()
 	UpdateCam->Execute();
 	UpdatePlayers->Execute();
 	UpdateBosses->Execute();
-	//Aimbot();
+	if (enableAimBot)
+		Aimbot();
 	RenderTarget->BeginDraw();
 	RenderTarget->Clear(Colour(0, 0, 0, 255)); // clear over the last buffer
 	RenderTarget->SetTransform(D2D1::Matrix3x2F::Identity()); // set new transform

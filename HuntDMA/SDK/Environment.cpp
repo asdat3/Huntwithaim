@@ -97,6 +97,7 @@ void Environment::UpdatePlayerList()
 			EnvironmentInstance->SpectatorCountMutex.lock();
 			SpectatorCount = ent->SpecCount;
 			EnvironmentInstance->SpectatorCountMutex.unlock();
+			break;
 		}
 	}
 
@@ -125,7 +126,6 @@ void Environment::UpdateBossesList()
 		}
 		ent->UpdateNode(handle);
 		ent->UpdatePosition(handle);
-		ent->UpdateHealth(handle);
 		ent->UpdateClass(handle);
 	}
 	TargetProcess.ExecuteReadScatter(handle);
