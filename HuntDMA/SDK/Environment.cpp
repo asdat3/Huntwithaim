@@ -24,9 +24,6 @@ Environment::Environment()
 	printf(LIT("pSystem: 0x%X\n"), pSystem);
 }
 
-/// <summary>
-/// Currently obsolete
-/// </summary>
 void Environment::FindSystemGlobalEnvironment()
 {
 	auto base = TargetProcess.GetBaseAddress("GameHunt.dll");
