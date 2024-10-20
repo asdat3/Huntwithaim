@@ -83,6 +83,7 @@ void Environment::UpdatePlayerList()
 		ent->UpdateHealth(handle);
 		ent->UpdateClass(handle);
 	}
+	Configs.Player.Chams = false;
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.ExecuteWriteScatter(writehandle);
 	TargetProcess.CloseScatterHandle(handle);

@@ -94,45 +94,49 @@ void DrawPlayers()
 				!IsValidHP(ent->GetHealth().regenerable_max_hp))
 				continue;
 
+			auto tempPos = playerPos;
 			Vector2 lowerFramePos = CameraInstance->WorldToScreen(playerPos, false);
 			if (lowerFramePos.IsZero())
 				continue;
+			
+			tempPos.z = playerPos.z + 1.7f;
+			Vector2 headPos;
+			if (Configs.Player.DrawHeadInFrames)
+			{
+				headPos = CameraInstance->WorldToScreen(tempPos, false);
+				if (headPos.IsZero())
+					continue;
+			}
+
+			tempPos.z = playerPos.z + 2.0f;
+			Vector2 uppderFramePos;
+			if (Configs.Player.DrawFrames || Configs.Player.DrawHealthBars)
+			{
+				uppderFramePos = CameraInstance->WorldToScreen(tempPos, false);
+				if (uppderFramePos.IsZero())
+					continue;
+			}
+
+			tempPos.z = playerPos.z + 2.1f;
+			Vector2 healthBarPos;
+			if (Configs.Player.DrawHealthBars)
+			{
+				healthBarPos = CameraInstance->WorldToScreen(tempPos, false);
+				if (healthBarPos.IsZero())
+					continue;
+			}
+
+			Vector2 offset, normal;
+			if (Configs.Player.DrawFrames || Configs.Player.DrawHealthBars)
+			{
+				Vector2 v = uppderFramePos - lowerFramePos;
+				float segmentLength = Vector2::Length(v);
+				normal = Vector2(-v.y, v.x);
+				offset = normal / (2.0f * 2);
+			}
 
 			if (Configs.Player.DrawFrames)
 			{
-				auto tempPos = playerPos;
-				tempPos.z += 1.7f;
-				Vector2 headPos;
-				if (Configs.Player.DrawHeadInFrames)
-				{
-					headPos = CameraInstance->WorldToScreen(tempPos, false);
-					if (headPos.IsZero())
-						continue;
-				}
-
-				tempPos.z += 0.3f;
-				Vector2 uppderFramePos = CameraInstance->WorldToScreen(tempPos, false);
-				if (uppderFramePos.IsZero())
-					continue;
-
-				tempPos.z += 0.1f;
-				Vector2 healthBarPos;
-				if (Configs.Player.DrawHealthBars)
-				{
-					healthBarPos = CameraInstance->WorldToScreen(tempPos, false);
-					if (healthBarPos.IsZero())
-						continue;
-				}
-
-				Vector2 v = uppderFramePos - lowerFramePos;
-
-				float segmentLength = Vector2::Length(v);
-
-				Vector2 normal = Vector2(-v.y, v.x);
-
-				Vector2 offset = normal / (2.0f * 2);
-				Vector2 headoffset = normal / (6.0f * 2);
-
 				Vector2 A1 = lowerFramePos + offset;
 				Vector2 A2 = lowerFramePos - offset;
 				Vector2 B1 = uppderFramePos + offset;
@@ -147,6 +151,7 @@ void DrawPlayers()
 
 				if (Configs.Player.DrawHeadInFrames)
 				{
+					Vector2 headoffset = normal / (6.0f * 2);
 					Vector2 Head1 = headPos + offset;
 					Vector2 Head2 = headPos + headoffset;
 					Vector2 Head3 = headPos - headoffset;
@@ -155,25 +160,25 @@ void DrawPlayers()
 					FilledLineAliased(Head1.x, Head1.y, Head2.x, Head2.y, 1, colour);
 					FilledLineAliased(Head3.x, Head3.y, Head4.x, Head4.y, 1, colour);
 				}
+			}
 
-				if (Configs.Player.DrawHealthBars)
-				{
-					auto health = ent->GetHealth();
-					Vector2 Health1 = healthBarPos - offset;
-					Vector2 Health2 = healthBarPos + offset;
-					auto lineHeight = std::max(2.0f, Vector2::Distance(Health1, Health2) / 10.0f);
-					float currentHp = health.current_hp / 150.0f;
-					float currentMaxHp = health.current_max_hp / 150.0f;
-					float potentialMaxHp = health.regenerable_max_hp / 150.0f;
-					Vector2 currentHpPos = Vector2(currentHp * Health2.x + (1 - currentHp) * Health1.x, currentHp * Health2.y + (1 - currentHp) * Health1.y);
-					Vector2 currentMaxHpPos = Vector2(currentMaxHp * Health2.x + (1 - currentMaxHp) * Health1.x, currentMaxHp * Health2.y + (1 - currentMaxHp) * Health1.y);
-					Vector2 potentialMaxHpPos = Vector2(potentialMaxHp * Health2.x + (1 - potentialMaxHp) * Health1.x, potentialMaxHp * Health2.y + (1 - potentialMaxHp) * Health1.y);
+			if (Configs.Player.DrawHealthBars)
+			{
+				auto health = ent->GetHealth();
+				Vector2 Health1 = healthBarPos - offset;
+				Vector2 Health2 = healthBarPos + offset;
+				auto lineHeight = std::max(2.0f, Vector2::Distance(Health1, Health2) / 10.0f);
+				float currentHp = health.current_hp / 150.0f;
+				float currentMaxHp = health.current_max_hp / 150.0f;
+				float potentialMaxHp = health.regenerable_max_hp / 150.0f;
+				Vector2 currentHpPos = Vector2(currentHp * Health2.x + (1 - currentHp) * Health1.x, currentHp * Health2.y + (1 - currentHp) * Health1.y);
+				Vector2 currentMaxHpPos = Vector2(currentMaxHp * Health2.x + (1 - currentMaxHp) * Health1.x, currentMaxHp * Health2.y + (1 - currentMaxHp) * Health1.y);
+				Vector2 potentialMaxHpPos = Vector2(potentialMaxHp * Health2.x + (1 - potentialMaxHp) * Health1.x, potentialMaxHp * Health2.y + (1 - potentialMaxHp) * Health1.y);
 
-					FilledLineAliased(Health1.x, Health1.y, currentHpPos.x, currentHpPos.y, lineHeight, Colour(200, 10, 10)); // current health
-					FilledLineAliased(currentHpPos.x, currentHpPos.y, currentMaxHpPos.x, currentMaxHpPos.y, lineHeight, Colour(10, 10, 10)); // regenerable black health
-					FilledLineAliased(currentMaxHpPos.x, currentMaxHpPos.y, potentialMaxHpPos.x, potentialMaxHpPos.y, lineHeight, Colour(200, 100, 10)); // burning health
-					FilledLineAliased(potentialMaxHpPos.x, potentialMaxHpPos.y, Health2.x, Health2.y, lineHeight, Colour(200, 200, 200)); // lost health
-				}
+				FilledLineAliased(Health1.x, Health1.y, currentHpPos.x, currentHpPos.y, lineHeight, Colour(200, 10, 10)); // current health
+				FilledLineAliased(currentHpPos.x, currentHpPos.y, currentMaxHpPos.x, currentMaxHpPos.y, lineHeight, Colour(10, 10, 10)); // regenerable black health
+				FilledLineAliased(currentMaxHpPos.x, currentMaxHpPos.y, potentialMaxHpPos.x, potentialMaxHpPos.y, lineHeight, Colour(200, 100, 10)); // burning health
+				FilledLineAliased(potentialMaxHpPos.x, potentialMaxHpPos.y, Health2.x, Health2.y, lineHeight, Colour(200, 200, 200)); // lost health
 			}
 
 			if (!Configs.Player.Enable)

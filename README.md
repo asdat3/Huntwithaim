@@ -59,7 +59,7 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP
 * Auto SystemGlobalEnvironment offset detection (thanks [@spookykokojunge](https://github.com/spookykokojunge))
 
 ### Player ESP
-Chams are recommended to turn on after teammates are no longer tagged as enemy players or after raid starts. Then turn it off to prevent crashes and end-game freeze.  
+Chams are recommended to write after teammates are no longer tagged as enemy players or after raid starts.  
 HP is: **current**/**current max(is not potential max if hunter is burning)**[**potential max hp after after all burns are healed**]
 
 ### Supply ESP

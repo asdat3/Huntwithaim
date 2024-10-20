@@ -10,7 +10,7 @@ void DrawSpectators()
 	EnvironmentInstance->SpectatorCountMutex.lock();
 	int spectatorCount = EnvironmentInstance->GetSpectatorCount();
 	EnvironmentInstance->SpectatorCountMutex.unlock();
-	if (spectatorCount == 0) return;
+	if (spectatorCount <= 0 || spectatorCount > 11) return;
 
 	int pViewport[4] = { 0, 0, Configs.Overlay.OverrideResolution ? Configs.Overlay.Width : GetSystemMetrics(SM_CXSCREEN), Configs.Overlay.OverrideResolution ? Configs.Overlay.Height : GetSystemMetrics(SM_CYSCREEN) };
 	int lineWidth = 50;

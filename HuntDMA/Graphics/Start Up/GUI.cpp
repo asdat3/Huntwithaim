@@ -60,14 +60,12 @@ void CreateGUI()
 			playeresptab->Push(drawfriendly);
 			auto friendcolour = std::make_shared<ColourPicker>(200, 86, &Configs.Player.FriendColour);
 			playeresptab->Push(friendcolour);
-			auto chams = std::make_shared<Toggle>(100, 105, LIT(L"Chams (Caution, writes to game memory!)"), &Configs.Player.Chams);
-			playeresptab->Push(chams);
-			auto chammode = std::make_shared<DropDown>(100, 135, LIT(L"Cham Mode"), &Configs.Player.ChamMode,
+			auto chammode = std::make_shared<DropDown>(100, 118, LIT(L"Cham Mode"), &Configs.Player.ChamMode,
 				std::vector<std::wstring>{LIT(L"Outline Red"), LIT(L"Outline Blue"), LIT(L"Outline Yellow"), LIT(L"Outline Orange"), LIT(L"Outline Cyan"), LIT(L"Outline Magenta"), LIT(L"Outline White"),
 				LIT(L"Filled Red"), LIT(L"Filled Blue"), LIT(L"Filled Yellow"), LIT(L"Filled Orange"), LIT(L"Filled Cyan"), LIT(L"Filled Magenta"), LIT(L"Filled White")});
 			playeresptab->Push(chammode);
-			auto maxdistance = std::make_shared<Slider<int>>(100, 160, 150, LIT(L"Max Distance"), LIT(L"m"), 0, 1500, &Configs.Player.MaxDistance);
-			playeresptab->Push(maxdistance);
+			auto chams = std::make_shared<Button>(100, 147, LIT(L"Write Chams (enable/update)"), []() {Configs.Player.Chams = true; });
+			playeresptab->Push(chams);
 			auto textsize = std::make_shared<Slider<int>>(100, 185, 150, LIT(L"Text Size"), LIT(L"px"), 4, 30, &Configs.Player.FontSize);
 			playeresptab->Push(textsize);
 
@@ -85,6 +83,8 @@ void CreateGUI()
 			playeresptab->Push(drawheadinframes);
 			auto drawhealthbars = std::make_shared<Toggle>(280, 90, LIT(L"Draw Health bars"), &Configs.Player.DrawHealthBars);
 			playeresptab->Push(drawhealthbars);
+			auto maxdistance = std::make_shared<Slider<int>>(280, 185, 150, LIT(L"Max Distance"), LIT(L"m"), 0, 1500, &Configs.Player.MaxDistance);
+			playeresptab->Push(maxdistance);
 		}
 		tabcontroller->Push(playeresptab);
 
