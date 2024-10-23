@@ -89,6 +89,8 @@ Now can be controlled only via mouse: if you stick your cursor to the edge of th
 Ourself's box frame is visible when running (lagging behind)
 
 # Todo
+- [ ] Optimize players read
+- [ ] Beetle ESP
 - [ ] Auto medkit esp turn on when low hp
 - [ ] Teams
 - [ ] View what is in player's hands
