@@ -114,6 +114,7 @@ void Environment::UpdatePlayerList()
 	TargetProcess.ExecuteWriteScatter(writehandle);
 	TargetProcess.CloseScatterHandle(handle);
 
+	bool spectatorCountChanged = false;
 	for (size_t index = 0; index < templist.size(); ++index)
 	{
 		std::shared_ptr<WorldEntity> ent = templist[index];
@@ -121,12 +122,15 @@ void Environment::UpdatePlayerList()
 			continue;
 		if (ent->GetType() == EntityType::LocalPlayer)
 		{
+			spectatorCountChanged = true;
 			EnvironmentInstance->SpectatorCountMutex.lock();
 			SpectatorCount = ent->SpecCount;
 			EnvironmentInstance->SpectatorCountMutex.unlock();
 			break;
 		}
 	}
+	if (!spectatorCountChanged)
+		SpectatorCount = 0;
 
 	EnvironmentInstance->PlayerListMutex.lock();
 	PlayerList = templist;
