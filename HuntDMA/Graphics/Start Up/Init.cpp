@@ -101,6 +101,14 @@ std::shared_ptr<CheatFunction> UpdateCam = std::make_shared<CheatFunction>(5, []
 	TargetProcess.CloseScatterHandle(handle);
 });
 
+std::shared_ptr<CheatFunction> UpdateLocalPlayer = std::make_shared<CheatFunction>(8000, [] {
+	if (EnvironmentInstance == nullptr)
+		return;
+	if (EnvironmentInstance->GetObjectCount() == 0)
+		return;
+	EnvironmentInstance->UpdateLocalPlayer();
+	});
+
 void DrawCrosshair()
 {
 	Vector2 Center = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
@@ -140,6 +148,7 @@ void CacheThread()
 	{
 		if (EnvironmentInstance == nullptr || EnvironmentInstance->GetObjectCount() == 0)
 			continue;
+		UpdateLocalPlayer->Execute();
 		Cache->Execute();
 	}
 }

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "WorldEntity.h"
+#include "Globals.h"
 
 WorldEntity::WorldEntity( uint64_t entity)
 {
@@ -123,4 +124,9 @@ void WorldEntity::UpdateHealth(VMMDLL_SCATTER_HANDLE handle)
 void WorldEntity::UpdateClass(VMMDLL_SCATTER_HANDLE handle)
 {
 	TargetProcess.AddScatterReadRequest(handle, this->Class, &ClassAddress, sizeof(uint64_t));
+}
+
+bool WorldEntity::IsLocalPlayer()
+{
+	return EnvironmentInstance->GetLocalPlayerPointer() == GetClass();
 }

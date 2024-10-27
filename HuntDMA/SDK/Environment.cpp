@@ -48,6 +48,35 @@ void Environment::GetEntities()
 	EntityList = EntitySystem + EntityListOffset;
 }
 
+void Environment::UpdateLocalPlayer()
+{
+	auto base = TargetProcess.GetBaseAddress("GameHunt.dll");
+	auto size = TargetProcess.GetBaseSize("GameHunt.dll");
+
+	uint64_t LocalPlayerSig = TargetProcess.FindSignature(LocalPlayerSignature, base, base + size);
+
+	auto handle = TargetProcess.CreateScatterHandle();
+
+	int relativeOffset;
+	TargetProcess.AddScatterReadRequest(handle, LocalPlayerSig + 3, &relativeOffset, sizeof(int));
+	TargetProcess.ExecuteReadScatter(handle);
+
+	uint64_t LocalPlayerBasePtr = LocalPlayerSig + 7 + relativeOffset;
+
+	TargetProcess.AddScatterReadRequest(handle, LocalPlayerBasePtr, &LocalPlayer, sizeof(LocalPlayer));
+	TargetProcess.ExecuteReadScatter(handle);
+
+	std::vector<uint64_t> offsets = { 0x8ull, 0x18ull };
+	for (uint64_t offset : offsets)
+	{
+		TargetProcess.AddScatterReadRequest(handle, LocalPlayer + offset, &LocalPlayer, sizeof(LocalPlayer));
+		TargetProcess.ExecuteReadScatter(handle);
+	}
+
+	TargetProcess.CloseScatterHandle(handle);
+}
+
+
 void Environment::UpdatePlayerList()
 {
 	EnvironmentInstance->PlayerListMutex.lock();
@@ -63,7 +92,7 @@ void Environment::UpdatePlayerList()
 		std::shared_ptr<WorldEntity> ent = templist[index];
 		if (ent == nullptr)
 			continue;
-		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 3.0f) // Self Player
+		if (ent->GetType() == EntityType::LocalPlayer)
 		{
 			TargetProcess.AddScatterReadRequest(handle, ent->SpecCountPointer4 + ent->SpecCountOffset5, &ent->SpecCount, sizeof(int));
 			continue;
@@ -90,7 +119,7 @@ void Environment::UpdatePlayerList()
 		std::shared_ptr<WorldEntity> ent = templist[index];
 		if (ent == nullptr)
 			continue;
-		if (Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition()) <= 3.0f) // Self Player
+		if (ent->GetType() == EntityType::LocalPlayer)
 		{
 			EnvironmentInstance->SpectatorCountMutex.lock();
 			SpectatorCount = ent->SpecCount;
@@ -152,7 +181,7 @@ void Environment::CacheEntities()
 	{
 		uint64_t entity = entitylist[i];
 		
-		if (entity == NULL) 
+		if (entity == NULL)
 		{
 			continue;
 		}
@@ -223,7 +252,10 @@ void Environment::CacheEntities()
 		}
 		if (strstr(entityClassName, "HunterBasic") != NULL)
 		{
-			ent->SetType(EntityType::EnemyPlayer);
+			if (ent->IsLocalPlayer())
+				ent->SetType(EntityType::LocalPlayer);
+			else
+				ent->SetType(EntityType::EnemyPlayer);
 			templayerlist.push_back(ent);
 			continue;
 		}

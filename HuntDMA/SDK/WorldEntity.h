@@ -21,6 +21,7 @@ enum class EntityType : int
 {
 	Unknown,
 
+	LocalPlayer,
 	EnemyPlayer,
 	FriendlyPlayer,
 	DeadPlayer,
@@ -118,6 +119,7 @@ private:
 	std::unordered_map<EntityType, std::wstring> Names = {
 		{EntityType::Unknown, L"???"},
 
+		{EntityType::LocalPlayer, L"Me, Myself and I"},
 		{EntityType::EnemyPlayer, L"Hunter"},
 		{EntityType::FriendlyPlayer, L"Teammate"},
 		{EntityType::DeadPlayer, L"Dead"},
@@ -197,6 +199,7 @@ public:
 	bool GetValid() { return Valid; }
 	void SetValid(bool valid) { Valid = valid; }
 	std::wstring GetName() { return Names[Type]; };
+	bool IsLocalPlayer();
 
 	uint64_t SpecCountOffset1 = 0x198;
 	uint64_t SpecCountOffset2 = 0x20;

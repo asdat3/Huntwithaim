@@ -20,6 +20,9 @@ private:
 	uint64_t EntityList = 0x0;
 	uint64_t EntityListOffset = 0x40098;
 
+	const char* LocalPlayerSignature = "48 8B 15 ? ? ? ? 48 2B F2 48 C1 FE 05 48 85 F6";
+	uint64_t LocalPlayer = 0x0;
+
 	int SpectatorCount = 0;
 
 	std::vector<std::shared_ptr<WorldEntity>> PlayerList;
@@ -34,6 +37,8 @@ public:
 	uint64_t GetpSystem() { return pSystem; }
 	uint16_t GetObjectCount() { return ObjectCount; }
 	uint64_t GetEntityList() { return EntityList; }
+	uint64_t GetLocalPlayerPointer() { return LocalPlayer; }
+	void UpdateLocalPlayer();
 	void GetEntities();
 	void UpdatePlayerList();
 	void UpdateBossesList();

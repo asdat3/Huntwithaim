@@ -117,9 +117,9 @@ void GetAimbotTarget()
 			continue;
 		if (!player->GetValid())
 			continue;
-		if (player->GetType()  == EntityType::FriendlyPlayer)
+		if (player->GetType() == EntityType::FriendlyPlayer)
 			continue;
-		if (Vector3::Distance(CameraInstance->GetPosition(), player->GetPosition()) <= 2.0f) // local player
+		if (player->GetType() == EntityType::LocalPlayer)
 			continue;
 		if (Vector3::Distance(CameraInstance->GetPosition(), player->GetPosition()) > Configs.Aimbot.MaxDistance)
 			continue;

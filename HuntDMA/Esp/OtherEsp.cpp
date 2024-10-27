@@ -59,10 +59,9 @@ void DrawSupply()
 			continue;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-		if (distance <= 0)
+		if (distance <= 0 || distance > Configs.Supply.MaxDistance)
 			continue;
-		if (distance > Configs.Supply.MaxDistance)
-			continue;
+
 		if (!ent->GetValid())
 			continue;
 		Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
@@ -90,10 +89,9 @@ void DrawBloodBonds()
 			continue;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-		if (distance <= 0)
+		if (distance <= 0 || distance > Configs.BloodBonds.MaxDistance)
 			continue;
-		if (distance > Configs.BloodBonds.MaxDistance)
-			continue;
+
 		if (!ent->GetValid())
 			continue;
 		Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
@@ -133,10 +131,9 @@ void DrawTraps()
 			continue;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-		if (distance <= 0)
+		if (distance <= 0 || distance > Configs.Trap.MaxDistance)
 			continue;
-		if (distance > Configs.Trap.MaxDistance)
-			continue;
+
 		if (!ent->GetValid())
 			continue;
 		Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
@@ -187,10 +184,9 @@ void DrawPOI()
 			continue;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-		if (distance <= 0)
+		if (distance <= 0 || distance > Configs.POI.MaxDistance)
 			continue;
-		if (distance > Configs.POI.MaxDistance)
-			continue;
+
 		if (!ent->GetValid())
 			continue;
 

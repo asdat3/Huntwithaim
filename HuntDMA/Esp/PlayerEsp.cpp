@@ -32,14 +32,12 @@ void DrawBosses()
 		{
 			for (std::shared_ptr<WorldEntity> ent : templist)
 			{
-
 				if (ent == nullptr)
 					continue;
 				int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-				if (distance <= 0)
+				if (distance <= 0 || distance > Configs.Bosses.MaxDistance)
 					continue;
-				if (distance > Configs.Bosses.MaxDistance)
-					continue;
+
 				if (!ent->GetValid())
 					continue;
 				Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
@@ -70,7 +68,7 @@ void DrawPlayers()
 			return;
 		for (std::shared_ptr<WorldEntity> ent : templist)
 		{
-			if (ent == nullptr)
+			if (ent == nullptr || ent->GetType() == EntityType::LocalPlayer)
 				continue;
 
 			auto playerPos = ent->GetPosition();
@@ -79,11 +77,7 @@ void DrawPlayers()
 				continue;
 
 			int distance = (int)Vector3::Distance(playerPos, CameraInstance->GetPosition());
-			if (distance <= 0)
-				continue;
-			if (Vector3::Distance(CameraInstance->GetPosition(), playerPos) <= 2.0f)
-				continue;
-			if (distance > Configs.Player.MaxDistance)
+			if (distance <= 0 || distance > Configs.Player.MaxDistance)
 				continue;
 
 			if (!ent->GetValid())
