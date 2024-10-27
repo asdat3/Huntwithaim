@@ -80,15 +80,16 @@ Also all types of barrels. Toggalable.
 - Halloween's pumpkins
 
 ### Spectating alarm
-Can't be turned off for now. Shows you red frame and in big green number how many players are spectating you. Your teammates counts!
+Can't be turned off. Shows you red frame and in big green number how many players are spectating you. Your teammates counts!
 
 ### Mouse-only controls supported
 Now can be controlled only via mouse: if you stick your cursor to the edge of the window, or move to the other screen, menu will close. Menu will open again when you move mouse back. And "app exit" button in the settings.
 
 # Known Issues
-Ourself's box frame is visible when running (lagging behind)
+--
 
 # Todo
+- [ ] C4 ESP
 - [ ] Optimize players read
 - [ ] Beetle ESP
 - [ ] Auto medkit esp turn on when low hp
