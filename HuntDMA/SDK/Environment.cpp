@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include "ConfigUtilities.h"
 
+bool createEntitiesDump = false;
+
 Environment::Environment()
 {
 	auto handle = TargetProcess.CreateScatterHandle();
@@ -501,6 +503,12 @@ void Environment::CacheEntities()
 		if (((std::string)entityClassName).find("TripMine") != std::string::npos && ((std::string)entityClassName).find("2") == std::string::npos)
 		{
 			ent->SetType(EntityType::TripMine);
+			temptraplist.push_back(ent);
+			continue;
+		}
+		if ((std::string)(entityClassName) == "DarkSightDynamite")
+		{
+			ent->SetType(EntityType::DarksightDynamite);
 			temptraplist.push_back(ent);
 			continue;
 		}

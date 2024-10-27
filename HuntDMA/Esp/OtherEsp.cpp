@@ -123,6 +123,8 @@ void DrawTraps()
 			continue;
 		if (!Configs.Trap.ShowTripmines && (type == EntityType::TripMine))
 			continue;
+		if (!Configs.Trap.ShowDarksightDynamite && (type == EntityType::DarksightDynamite))
+			continue;
 		if (!Configs.Trap.ShowGunpowderBurrels && (type == EntityType::GunpowderBarrel))
 			continue;
 		if (!Configs.Trap.ShowOilBurrels && (type == EntityType::OilBarrel))
@@ -142,7 +144,7 @@ void DrawTraps()
 
 		std::wstring wname = Configs.Trap.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.Trap.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		if (type == EntityType::BearTrap || type == EntityType::TripMine)
+		if (type == EntityType::BearTrap || type == EntityType::TripMine || type == EntityType::DarksightDynamite)
 			DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Trap.FontSize, Configs.Trap.TrapColour, Center);
 		else
 			DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Trap.FontSize, Configs.Trap.BarrelColour, Center);

@@ -1,11 +1,11 @@
 #include "Pch.h"
-#include "aimbot.h"
+#include "Aimbot.h"
 #include "PlayerEsp.h"
 #include "globals.h"
 #include "CheatFunction.h"
 #include "Drawing.h"
 #include "ConfigInstance.h"
-#include <WorldEntity.h>
+#include "WorldEntity.h"
 #include "ConfigUtilities.h"
 #include "Kmbox.h"
 #include "InputManager.h"

@@ -175,11 +175,13 @@ void CreateGUI()
 			trapesptab->Push(showBeartrap);
 			auto showTripmines = std::make_shared<Toggle>(100, 140, LIT(L"Show Tripmines"), &Configs.Trap.ShowTripmines);
 			trapesptab->Push(showTripmines);
-			auto showGunpowderBurrels = std::make_shared<Toggle>(100, 160, LIT(L"Show Gunpowder Burrels"), &Configs.Trap.ShowGunpowderBurrels);
+			auto showDarksightDynamite = std::make_shared<Toggle>(100, 160, LIT(L"Show Darksight Dynamite"), &Configs.Trap.ShowDarksightDynamite);
+			trapesptab->Push(showDarksightDynamite);
+			auto showGunpowderBurrels = std::make_shared<Toggle>(280, 120, LIT(L"Show Gunpowder Burrels"), &Configs.Trap.ShowGunpowderBurrels);
 			trapesptab->Push(showGunpowderBurrels);
-			auto showOilBurrels = std::make_shared<Toggle>(100, 180, LIT(L"Show Oil Burrels"), &Configs.Trap.ShowOilBurrels);
+			auto showOilBurrels = std::make_shared<Toggle>(280, 140, LIT(L"Show Oil Burrels"), &Configs.Trap.ShowOilBurrels);
 			trapesptab->Push(showOilBurrels);
-			auto showBioBurrels = std::make_shared<Toggle>(100, 200, LIT(L"Show Bio Burrels"), &Configs.Trap.ShowBioBurrels);
+			auto showBioBurrels = std::make_shared<Toggle>(280, 160, LIT(L"Show Bio Burrels"), &Configs.Trap.ShowBioBurrels);
 			trapesptab->Push(showBioBurrels);
 		}
 		tabcontroller->Push(trapesptab);
@@ -327,8 +329,8 @@ void CreateGUI()
 				});
 			configtab->Push(exitapp);
 
-			//auto createDump = std::make_shared<Toggle>(100, 35, LIT(L"Create entities dump"), &EnvironmentInstance->createEntitiesDump);
-			//configtab->Push(createDump);
+			auto createDump = std::make_shared<Toggle>(100, 40, LIT(L"Write entities dump"), &createEntitiesDump);
+			configtab->Push(createDump);
 		}
 		tabcontroller->Push(configtab);
 

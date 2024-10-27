@@ -59,5 +59,5 @@ public:
 	std::vector<std::shared_ptr<WorldEntity>> GetTrapList() { return TrapList; }
 	std::vector<std::shared_ptr<WorldEntity>> GetPOIList() { return POIList; }
 	int GetSpectatorCount() { return SpectatorCount; }
-	bool createEntitiesDump = false;
 };
+extern bool createEntitiesDump;

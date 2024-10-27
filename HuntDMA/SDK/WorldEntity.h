@@ -47,6 +47,7 @@ enum class EntityType : int
 
 	BearTrap,
 	TripMine,
+	DarksightDynamite,
 
 	OilBarrel,
 	GunpowderBarrel,
@@ -145,6 +146,7 @@ private:
 
 		{EntityType::BearTrap, L"Bear Trap"},
 		{EntityType::TripMine, L"Trip Mine"},
+		{EntityType::DarksightDynamite, L"C4"},
 
 		{EntityType::OilBarrel, L"Oil Barrel"},
 		{EntityType::GunpowderBarrel, L"Barrel"},

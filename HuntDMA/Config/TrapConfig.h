@@ -15,6 +15,7 @@ public:
     int MaxDistance = 75;
     bool ShowBeartrap = true;
     bool ShowTripmines = true;
+    bool ShowDarksightDynamite = true;
     bool ShowGunpowderBurrels = false;
     bool ShowOilBurrels = false;
     bool ShowBioBurrels = false;
@@ -50,6 +51,7 @@ public:
         j[ConfigName][LIT("FontSize")] = FontSize;
         j[ConfigName][LIT("ShowBeartrap")] = ShowBeartrap;
         j[ConfigName][LIT("ShowTripmines")] = ShowTripmines;
+        j[ConfigName][LIT("ShowDarksightDynamite")] = ShowDarksightDynamite;
         j[ConfigName][LIT("ShowGunpowderBurrels")] = ShowGunpowderBurrels;
         j[ConfigName][LIT("ShowOilBurrels")] = ShowOilBurrels;
         j[ConfigName][LIT("ShowBioBurrels")] = ShowBioBurrels;
@@ -76,6 +78,8 @@ public:
             ShowBeartrap = j[ConfigName][LIT("ShowBeartrap")];
         if (j[ConfigName].contains(LIT("ShowTripmines")))
             ShowTripmines = j[ConfigName][LIT("ShowTripmines")];
+        if (j[ConfigName].contains(LIT("ShowDarksightDynamite")))
+            ShowDarksightDynamite = j[ConfigName][LIT("ShowDarksightDynamite")];
         if (j[ConfigName].contains(LIT("ShowGunpowderBurrels")))
             ShowGunpowderBurrels = j[ConfigName][LIT("ShowGunpowderBurrels")];
         if (j[ConfigName].contains(LIT("ShowOilBurrels")))
