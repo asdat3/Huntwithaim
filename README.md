@@ -66,7 +66,7 @@ HP is: **current**/**current max(is not potential max if hunter is burning)**[**
 You can choose only your type of ammo, esp will show only nessesary items.
 
 ### Trap ESP
-Also all types of barrels. Toggalable.
+Also all types of barrels and darksight dynamite. Toggalable.
 
 ### Points of Interest ESP
 - extraction points
@@ -86,15 +86,15 @@ Can't be turned off. Shows you red frame and in big green number how many player
 Now can be controlled only via mouse: if you stick your cursor to the edge of the window, or move to the other screen, menu will close. Menu will open again when you move mouse back. And "app exit" button in the settings.
 
 # Known Issues
---
+\-
 
 # Todo
-- [ ] C4 ESP
 - [ ] Optimize players read
 - [ ] Beetle ESP
 - [ ] Auto medkit esp turn on when low hp
 - [ ] Teams
 - [ ] View what is in player's hands
+- [x] Dark Sight Dynamite ESP
 - [x] Perks ESP/chams
 - [x] Draw player list like in Mr Smile's cheat
 - [x] Draw ObjectCount
