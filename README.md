@@ -21,8 +21,9 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP
   
   
 > [!IMPORTANT]
+> * You need to build this project first. I suggest using Visual Studio and building in **Release** configuration.  
 > * [Installation Guide](./Instructions.md)
-> * Open menu key - **Insert**
+> * Open/close menu key - **Insert**
 
 ## Fixed and Supported Features
 * Player ESP
