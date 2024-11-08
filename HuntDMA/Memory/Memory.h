@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "InputManager.h"
+
 class Memory
 {
 private:
@@ -263,7 +264,7 @@ public:
 		bool ret = !VMMDLL_Scatter_PrepareWrite(handle, addr, reinterpret_cast<PBYTE>(&value), sizeof(value));
 		if (!ret)
 		{
-			LOG("failed to prepare scatter write at 0x%p\n", addr);
+			LOG_ERROR("failed to prepare scatter write at 0x%p", addr);
 		}
 		return ret;
 	}

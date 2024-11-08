@@ -3,7 +3,6 @@
 #include "PlayerEsp.h"
 #include "globals.h"
 #include "CheatFunction.h"
-#include "Drawing.h"
 #include "ConfigInstance.h"
 #include "WorldEntity.h"
 #include "ConfigUtilities.h"
@@ -128,7 +127,7 @@ void GetAimbotTarget()
 		if (Vector2::Distance(CameraInstance->WorldToScreen(player->GetPosition()), Centerofscreen) >Configs.Aimbot.FOV)
 			continue;
 		AimbotTarget = player;
-		//	printf("Targeting: %s\n", AimbotTarget->GetName().c_str());
+		//printf("Targeting: %s\n", AimbotTarget->GetName().c_str());
 		return;
 	}
 	AimbotTarget = nullptr;

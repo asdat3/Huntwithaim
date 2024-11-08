@@ -16,14 +16,14 @@ Environment::Environment()
 	else
 	{
 		SystemGlobalEnvironment = TargetProcess.Read<uint64_t>(TargetProcess.GetBaseAddress("GameHunt.dll") + SystemGlobalEnvironmentOffset);
-		printf(LIT("SystemGlobalEnvironment: 0x%X\n"), SystemGlobalEnvironment);
+		LOG_DEBUG(LIT("SystemGlobalEnvironment: 0x%X"), SystemGlobalEnvironment);
 	}
 	TargetProcess.AddScatterReadRequest(handle, SystemGlobalEnvironment + EntitySystemOffset, &EntitySystem, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle, SystemGlobalEnvironment + pSystemOffset, &pSystem, sizeof(uint64_t));
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.CloseScatterHandle(handle);
-	printf(LIT("EntitySystem: 0x%X\n"), EntitySystem);
-	printf(LIT("pSystem: 0x%X\n"), pSystem);
+	LOG_DEBUG(LIT("EntitySystem: 0x%X"), EntitySystem);
+	LOG_DEBUG(LIT("pSystem: 0x%X"), pSystem);
 }
 
 void Environment::FindSystemGlobalEnvironment()
@@ -32,7 +32,7 @@ void Environment::FindSystemGlobalEnvironment()
 	auto size = TargetProcess.GetBaseSize("GameHunt.dll");
 	int relative;
 	uint64_t SystemGlobEnvSig = TargetProcess.FindSignature(SystemGlobalEnvironmentSignature, base, base + size);
-	printf(LIT("SystemGlobEnvSig: 0x%X\n"), SystemGlobEnvSig);
+	LOG_DEBUG(LIT("SystemGlobEnvSig: 0x%X"), SystemGlobEnvSig);
 
 	auto handle = TargetProcess.CreateScatterHandle();
 	TargetProcess.AddScatterReadRequest(handle, SystemGlobEnvSig + 3, &relative, sizeof(int));
@@ -40,13 +40,13 @@ void Environment::FindSystemGlobalEnvironment()
 	TargetProcess.AddScatterReadRequest(handle, SystemGlobEnvSig + 7 + relative, &SystemGlobalEnvironment, sizeof(SystemGlobalEnvironment));
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.CloseScatterHandle(handle);
-	printf(LIT("SystemGlobalEnvironment: 0x%X\n"), SystemGlobalEnvironment);
+	LOG_DEBUG(LIT("SystemGlobalEnvironment: 0x%X"), SystemGlobalEnvironment);
 }
 
 void Environment::GetEntities()
 {
-	ObjectCount = TargetProcess.Read<uint16_t>(EntitySystem + ObjectCountOffset);
-	printf(LIT("ObjectCount: %d\n"), ObjectCount);
+	ObjectCount = TargetProcess.Read<uint16_t>(EntitySystem + ObjectCountOffset) + 1;
+	LOG_INFO(LIT("ObjectCount: %d"), ObjectCount);
 	EntityList = EntitySystem + EntityListOffset;
 }
 
@@ -110,6 +110,7 @@ void Environment::UpdatePlayerList()
 		ent->UpdatePosition(handle);
 		ent->UpdateHealth(handle);
 		ent->UpdateClass(handle);
+		ent->UpdateExtraction(handle);
 	}
 	Configs.Player.Chams = false;
 	TargetProcess.ExecuteReadScatter(handle);
@@ -130,6 +131,9 @@ void Environment::UpdatePlayerList()
 			EnvironmentInstance->SpectatorCountMutex.unlock();
 			break;
 		}
+
+		ent->SetHidden((ent->GetInternalFlags() & WorldEntity::HIDDEN_FLAG) == WorldEntity::HIDDEN_FLAG); // If player has extracted
+		//ent->UpdateBones();
 	}
 	if (!spectatorCountChanged)
 		SpectatorCount = 0;
@@ -154,7 +158,7 @@ void Environment::UpdateBossesList()
 			continue;
 		if (!(ent->GetClass() > 0x2000000 && ent->GetClass() < 0x7FFFFFFFFFFF))
 		{
-			ent->SetValid(false);
+			ent->SetValid(false); // TODO might be wrong, bosses happen to disappear from ESP
 			continue;
 		}
 		ent->UpdateNode(handle);
@@ -404,7 +408,7 @@ void Environment::CacheEntities()
 
 			if (ent->GetType() == EntityType::Unknown)
 			{
-				printf(LIT("%s%s"), entityName, "\n");
+				LOG_ERROR(LIT("Unknown type: [%s]"), entityName);
 				continue;
 			}
 
@@ -530,10 +534,10 @@ void Environment::CacheEntities()
 			}
 
 			outFile.close();
-			printf(LIT("Rewrote classes dump.\n"));
+			LOG_INFO(LIT("Rewrote classes dump."));
 		}
 		else {
-			printf(LIT("Did not save!\n"));
+			LOG_ERROR(LIT("Could not write entities dump!"));
 		}
 	}
 

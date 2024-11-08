@@ -4,37 +4,55 @@
 #include "Environment.h"
 #include "Globals.h"
 #include "Camera.h"
-#include "Init.h"
-#include "GUI.h"
 #include "ConfigUtilities.h"
+#include "Init.h"
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+#include "ImGuiMenu.h"
+#include "ESPRenderer.h"
+#include "SpectatorAlarm.h"
+#include "PlayerEsp.h"
+#include "OtherEsp.h"
+#include "Overlay.h"
+#include "Aimbot.h"
+#include "SystemInfo.h"
 
-
-void main()
+void InitializeGame()
 {
 	while (!TargetProcess.Init("HuntGame.exe", true, true))
 	{
-		std::printf("Cant Attach To Game\n");
+        LOG_WARNING("Failed to attach to game process. Retrying in 2 seconds...");
 		Sleep(2000);
-		continue;
 	}
 	TargetProcess.FixCr3();
-	std::printf("HuntGame: 0x%X\n", TargetProcess.GetBaseAddress("HuntGame.exe"));
-	std::printf("GameHunt: 0x%X\n", TargetProcess.GetBaseAddress("GameHunt.dll"));
+    LOG_INFO("HuntGame base address: 0x%X", TargetProcess.GetBaseAddress("HuntGame.exe"));
+    LOG_INFO("GameHunt base address: 0x%X", TargetProcess.GetBaseAddress("GameHunt.dll"));
 }
+
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 bool isMouseTracking = false; // To re-enable tracking for mouse window leaving event
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	// First pass events to ImGui
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return true;
+
+	// Then handle standard messages
 	InputWndProc(hWnd, message, wParam, lParam);
+
+	// Additionally handle window messages
 	switch (message)
 	{
 		case WM_DESTROY:
+            LOG_WARNING("Window destroying, application shutting down");
+            DeleteObject((HBRUSH)GetClassLongPtr(hWnd, GCLP_HBRBACKGROUND));
 			PostQuitMessage(0);
 			return 0;
-			break;
 		case WM_MOUSEMOVE:
-		{
 			if (!isMouseTracking) {
 				TRACKMOUSEEVENT tme;
 				tme.cbSize = sizeof(TRACKMOUSEEVENT);
@@ -44,7 +62,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				isMouseTracking = true;
 			}
 			break;
-		}
 		case WM_MOUSELEAVE:
 			isMouseTracking = false;
 			break;
@@ -53,58 +70,167 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	HWND hWnd;
-	WNDCLASSEX wc;
-	AllocConsole();
-	FILE* fDummy;
-	freopen_s(&fDummy, LIT("CONIN$"), LIT("r"), stdin);
-	freopen_s(&fDummy, LIT("CONOUT$"), LIT("w"), stderr);
-	freopen_s(&fDummy, LIT("CONOUT$"), LIT("w"), stdout);
-	printf(LIT("Debugging Window:\n"));
+    try {
+        SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 
-	main();
-	ZeroMemory(&wc, sizeof(WNDCLASSEX));
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WindowProc;
-	wc.hInstance = hInstance;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	wc.lpszClassName = L"GUI Framework";
-	RegisterClassEx(&wc);
-	//SetProcessDPIAware();
-	hWnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, L"HuntDMA GUI",
-		WS_POPUP,
-		0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), NULL, NULL, hInstance, NULL);
+        // Initialize logger first
+        Logger::GetInstance().Init();
+        SystemInfo::LogSystemInfo();
+        LOG_INFO("Hunt DMA starting...");
 
-	if (!hWnd)
-		return -1;
+        // Create debug console
+        if (AllocConsole()) {
+            LOG_DEBUG("Debug console created");
+            FILE* fDummy;
+            freopen_s(&fDummy, "CONIN$", "r", stdin);
+            freopen_s(&fDummy, "CONOUT$", "w", stderr);
+            freopen_s(&fDummy, "CONOUT$", "w", stdout);
+        }
+        else {
+            LOG_ERROR("Failed to create debug console");
+        }
 
+        LOG_INFO("Initializing game connection...");
+        InitializeGame();
 
-	SetLayeredWindowAttributes(hWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
+        // Create window
+        WNDCLASSEX wc = { sizeof(WNDCLASSEX) };
+        wc.cbSize = sizeof(WNDCLASSEX);
+        wc.style = CS_HREDRAW | CS_VREDRAW;
+        wc.lpfnWndProc = WindowProc;
+        wc.hInstance = hInstance;
+        wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+        wc.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
+        wc.lpszClassName = L"Hunt DMA";
 
-	ShowWindow(hWnd, nCmdShow);
-	SetUpConfig();
-	LoadConfig(ConfigPath);
-	InitD2D(hWnd);
-	CreateGUI();
-	MSG msg;
-	SetInput();
-	while (TRUE)
-	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+        if (!RegisterClassEx(&wc)) {
+            LOG_CRITICAL("Failed to register window class!");
+            return -1;
+        }
 
-			if (msg.message == WM_QUIT)
-				break;
-		}
-		RenderFrame();
-	}
-	CleanD2D();
-	return msg.wParam;
+        HWND hWnd = CreateWindowEx(
+            WS_EX_APPWINDOW,
+            wc.lpszClassName,
+            L"Hunt DMA",
+            WS_POPUP,
+            0, 0,
+            GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+            NULL, NULL,
+            hInstance,
+            NULL
+        );
+
+        if (!hWnd) {
+            LOG_CRITICAL("Failed to create window!");
+            return -1;
+        }
+
+        LOG_INFO("Window created successfully");
+
+        if (!SetLayeredWindowAttributes(hWnd, RGB(0, 0, 0), 255, LWA_ALPHA)) {
+            LOG_WARNING("Failed to set window transparency");
+        }
+
+        ShowWindow(hWnd, nCmdShow);
+
+        LOG_INFO("Initializing configurations...");
+        SetUpConfig();
+        LoadConfig(ConfigPath);
+
+        LOG_INFO("Detaching caching thread...");
+        InitializeESP();
+
+        LOG_INFO("Initializing ImGui...");
+        if (!g_ImGuiMenu.Init(hWnd)) {
+            LOG_CRITICAL("Failed to initialize ImGui!");
+            MessageBox(NULL, L"Failed to initialize ImGui!", L"Error", MB_OK);
+            return -1;
+        }
+
+        LOG_INFO("Initializing ESP Renderer...");
+        if (!ESPRenderer::Initialize()) {
+            LOG_CRITICAL("Failed to initialize ESP Renderer!");
+            MessageBox(NULL, L"Failed to initialize ESP Renderer!", L"Error", MB_OK);
+            return -1;
+        }
+
+        LOG_INFO("Setting up input system...");
+        SetInput();
+
+        // Main loop
+        LOG_INFO("Entering main loop...");
+        MSG msg;
+        ZeroMemory(&msg, sizeof(msg));
+        while (msg.message != WM_QUIT) {
+            try {
+                // Process Windows messages
+                if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE)) {
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
+                    continue;
+                }
+
+                if (EnvironmentInstance == nullptr) {
+                    LOG_INFO("Initializing game environment...");
+                    InitialiseClasses();
+                    Sleep(1000);
+                }
+
+                if (EnvironmentInstance->GetObjectCount() == 0) {
+                    LOG_DEBUG("No objects found, reinitializing environment...");
+                    InitialiseClasses();
+                    EnvironmentInstance->GetEntityList();
+                    auto handle = TargetProcess.CreateScatterHandle();
+                    CameraInstance->UpdateCamera(handle);
+                    TargetProcess.ExecuteReadScatter(handle);
+                    TargetProcess.CloseScatterHandle(handle);
+                    EnvironmentInstance->CacheEntities();
+                    Sleep(1000);
+                }
+
+                UpdateCam->Execute();
+                UpdatePlayers->Execute();
+                UpdateBosses->Execute();
+
+                if (enableAimBot) Aimbot();
+
+                // Handle Insert key for menu toggle
+                g_ImGuiMenu.HandleInput();
+
+                // Begin render frame
+                g_ImGuiMenu.BeginFrame();
+                ESPRenderer::BeginFrame();
+
+                // Draw ESP elements
+                DrawSpectators();
+                DrawPlayersEsp();
+                DrawBossesEsp();
+                DrawOtherEsp();
+                DrawOverlay();
+
+                // Render ImGui menu
+                if (MenuOpen) g_ImGuiMenu.RenderMenu();
+
+                // End ImGui frame
+                g_ImGuiMenu.EndFrame();
+            }
+            catch (const std::exception& e) {
+                LOG_CRITICAL("Exception in main game loop: %s", e.what());
+                Logger::WriteMiniDump("crash_" + std::to_string(std::time(nullptr)) + ".dmp", nullptr);
+                Sleep(1000); // Prevent tight error loop
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        LOG_CRITICAL("Fatal exception in application: %s", e.what());
+        Logger::WriteMiniDump("crash_" + std::to_string(std::time(nullptr)) + ".dmp", nullptr);
+        return -1;
+    }
+    
+    LOG_INFO("Application shutting down, cleaning up...");
+    g_ImGuiMenu.Shutdown();
+
+    return 0;
 }

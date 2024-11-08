@@ -5,8 +5,12 @@
 
 const bool enableAimBot = false;
 
-void CleanD2D();
-void InitD2D(HWND hWnd);
-void RenderFrame();
+extern std::shared_ptr<CheatFunction> Cache;
+extern std::shared_ptr<CheatFunction> UpdateCam;
+extern std::shared_ptr<CheatFunction> UpdateLocalPlayer;
+
+void InitialiseClasses();
+void CacheThread();
+void InitializeESP();
 
 extern int FrameRate();

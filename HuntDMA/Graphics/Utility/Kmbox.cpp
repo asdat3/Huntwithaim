@@ -59,25 +59,25 @@ namespace kmbox
 			CloseHandle(serial_handle);
 			serial_handle = NULL;
 		}
-		//	wprintf(L"Connecting to KMBOX on port %ls\n",port.c_str());
+		//wprintf(L"Connecting to KMBOX on port %ls\n",port.c_str());
 		//std::string str = std::string(port.begin(), port.end());
 		port = "\\\\.\\" + find_port("USB-SERIAL CH340");
-		printf("Connecting to KMBOX on port %s\n", port.c_str());
+		LOG_INFO("Connecting to KMBOX on port %s", port.c_str());
 
 		serial_handle = CreateFileA(port.c_str(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 		if (serial_handle == INVALID_HANDLE_VALUE)
 		{
 			// print the serialhandle
-			printf("Serial handle: %d\n", serial_handle);
-			printf("Failed to open serial port!\n");
+			LOG_ERROR("Serial handle: %d", serial_handle);
+			LOG_ERROR("Failed to open serial port!");
 			return;
 
 		}
 
 		if (!SetupComm(serial_handle, 8192, 8192))
 		{
-			printf("Failed to setup serial port!\n");
+			LOG_ERROR("Failed to setup serial port!");
 			CloseHandle(serial_handle);
 			return;
 		}
@@ -108,7 +108,7 @@ namespace kmbox
 
 		if (!GetCommState(serial_handle, &dcbSerialParams))
 		{
-			printf("Failed to get serial state!\n");
+			LOG_ERROR("Failed to get serial state!");
 			CloseHandle(serial_handle);
 			return;
 		}
@@ -121,12 +121,12 @@ namespace kmbox
 
 		if (!SetCommState(serial_handle, &dcbSerialParams))
 		{
-			printf("Failed to set serial parameters!\n");
+			LOG_ERROR("Failed to set serial parameters!");
 			CloseHandle(serial_handle);
 			return;
 		}
 
-		//printf("Connected to KMBOX on port %s\n", std::string(port).c_str());
+		LOG_INFO("Connected to KMBOX on port %s", std::string(port).c_str());
 		connected = true;
 	}
 
@@ -135,7 +135,7 @@ namespace kmbox
 		DWORD bytesWritten;
 		if (!WriteFile(serial_handle, command.c_str(), command.length(), &bytesWritten, NULL))
 		{
-			//	printf("Failed to write to serial port!\n");
+			//LOG_ERROR("Failed to write to serial port!");
 		}
 	}
 
@@ -143,7 +143,7 @@ namespace kmbox
 	{
 		if (!connected)
 		{
-			//	printf("not connected?\n");
+			//LOG_ERROR("not connected?");
 			return;
 		}
 		x = clamp(x);
@@ -156,7 +156,7 @@ namespace kmbox
 	{
 		if (!connected)
 		{
-			//	printf("not connected?\n");
+			//LOG_ERROR("not connected?");
 			return;
 		}
 		std::string command = "km.left(1)\r\n";
@@ -167,7 +167,7 @@ namespace kmbox
 	{
 		if (!connected)
 		{
-			//	printf("not connected?\n");
+			//LOG_ERROR("not connected?");
 			return;
 		}
 		std::string command = "km.left(0)\r\n";

@@ -2,7 +2,7 @@
 #include "PlayerEsp.h"
 #include "globals.h"
 #include "CheatFunction.h"
-#include "Drawing.h"
+#include "ESPRenderer.h"
 #include "ConfigInstance.h"
 #include <WorldEntity.h>
 #include "ConfigUtilities.h"
@@ -70,7 +70,14 @@ void DrawSupply()
 
 		std::wstring wname = Configs.Supply.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.Supply.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Supply.FontSize, Configs.Supply.TextColour, Center);
+
+		ESPRenderer::DrawText(
+			ImVec2(pos.x, pos.y),
+			wname + wdistance,
+			Configs.Supply.TextColor,
+			Configs.Supply.FontSize,
+			Center
+		);
 	}
 }
 
@@ -100,7 +107,14 @@ void DrawBloodBonds()
 
 		std::wstring wname = Configs.BloodBonds.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.BloodBonds.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.BloodBonds.FontSize, Configs.BloodBonds.TextColour, Center);
+
+		ESPRenderer::DrawText(
+			ImVec2(pos.x, pos.y),
+			wname + wdistance,
+			Configs.BloodBonds.TextColor,
+			Configs.BloodBonds.FontSize,
+			Center
+		);
 	}
 }
 
@@ -144,10 +158,14 @@ void DrawTraps()
 
 		std::wstring wname = Configs.Trap.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.Trap.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		if (type == EntityType::BearTrap || type == EntityType::TripMine || type == EntityType::DarksightDynamite)
-			DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Trap.FontSize, Configs.Trap.TrapColour, Center);
-		else
-			DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Trap.FontSize, Configs.Trap.BarrelColour, Center);
+
+		ESPRenderer::DrawText(
+			ImVec2(pos.x, pos.y),
+			wname + wdistance,
+			(type == EntityType::BearTrap || type == EntityType::TripMine || type == EntityType::DarksightDynamite) ? Configs.Trap.TrapColor : Configs.Trap.BarrelColor,
+			Configs.Trap.FontSize,
+			Center
+		);
 	}
 }
 
@@ -198,7 +216,14 @@ void DrawPOI()
 
 		std::wstring wname = Configs.POI.Name ? ent->GetName() : L"";
 		std::wstring wdistance = Configs.POI.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-		DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.POI.FontSize, Configs.POI.TextColour, Center);
+
+		ESPRenderer::DrawText(
+			ImVec2(pos.x, pos.y),
+			wname + wdistance,
+			Configs.POI.TextColor,
+			Configs.POI.FontSize,
+			Center
+		);
 	}
 }
 

@@ -16,23 +16,24 @@ public:
     int FOV = 200;
     int Aimkey = 5;
     bool DrawFOV = false;
-    D2D1::ColorF FOVColour = D2D1::ColorF::White;
-    void ToJsonColour(json* j, const std::string& name, D2D1::ColorF* colour)
+    ImVec4 FOVColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    
+    void ToJsonColor(json* j, const std::string& name, ImVec4* color)
     {
-        (*j)[ConfigName][name][LIT("r")] = colour->r;
-        (*j)[ConfigName][name][LIT("g")] = colour->g;
-        (*j)[ConfigName][name][LIT("b")] = colour->b;
-        (*j)[ConfigName][name][LIT("a")] = colour->a;
-
+        (*j)[ConfigName][name][LIT("r")] = color->x;
+        (*j)[ConfigName][name][LIT("g")] = color->y;
+        (*j)[ConfigName][name][LIT("b")] = color->z;
+        (*j)[ConfigName][name][LIT("a")] = color->w;
     }
-    void FromJsonColour(json j, const std::string& name, D2D1::ColorF* colour)
+
+    void FromJsonColor(json j, const std::string& name, ImVec4* color)
     {
         if (j[ConfigName].contains(name))
         {
-            colour->r = j[ConfigName][name][LIT("r")];
-            colour->g = j[ConfigName][name][LIT("g")];
-            colour->b = j[ConfigName][name][LIT("b")];
-            colour->a = j[ConfigName][name][LIT("a")];
+            color->x = j[ConfigName][name][LIT("r")];
+            color->y = j[ConfigName][name][LIT("g")];
+            color->z = j[ConfigName][name][LIT("b")];
+            color->w = j[ConfigName][name][LIT("a")];
         }
     }
     
@@ -46,7 +47,7 @@ public:
         j[ConfigName][LIT("FOV")] = FOV;
         j[ConfigName][LIT("Aimkey")] = Aimkey;
         j[ConfigName][LIT("DrawFOV")] = DrawFOV;
-        ToJsonColour(&j, LIT("FOVColour"), &FOVColour);
+        ToJsonColor(&j, LIT("FOVColor"), &FOVColor);
 
 
 
@@ -70,7 +71,7 @@ public:
             Aimkey = j[ConfigName][LIT("Aimkey")];
         if (j[ConfigName].contains(LIT("DrawFOV")))
             DrawFOV = j[ConfigName][LIT("DrawFOV")];
-        FromJsonColour(j, LIT("FOVColour"), &FOVColour);
+        FromJsonColor(j, LIT("FOVColor"), &FOVColor);
     }
 };
 

@@ -2,20 +2,20 @@
 #include "PlayerEsp.h"
 #include "globals.h"
 #include "CheatFunction.h"
-#include "Drawing.h"
+#include "ESPRenderer.h"
 #include "ConfigInstance.h"
 #include <WorldEntity.h>
 #include "ConfigUtilities.h"
 
-std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(5, [] {
+std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(1, [] {
 	
 	EnvironmentInstance->UpdatePlayerList();
 });
-std::shared_ptr<CheatFunction> UpdateBosses = std::make_shared<CheatFunction>(20, [] {
+std::shared_ptr<CheatFunction> UpdateBosses = std::make_shared<CheatFunction>(5, [] {
 	EnvironmentInstance->UpdateBossesList();
 });
 
-void DrawBosses()
+void DrawBossesEsp()
 {
 	if (EnvironmentInstance == nullptr)
 		return;
@@ -41,17 +41,23 @@ void DrawBosses()
 				if (!ent->GetValid())
 					continue;
 				Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
-				if (pos.x == 0 || pos.y == 0)
+				if (pos.x <= 0 || pos.y <= 0)
 					continue;
 				std::wstring wname = Configs.Bosses.Name ? ent->GetName() : L"";
 				std::wstring wdistance = Configs.Bosses.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-				DrawText(pos.x, pos.y, wname + wdistance, "Verdana", Configs.Bosses.FontSize, Configs.Bosses.TextColour, Center);
+				ESPRenderer::DrawText(
+					ImVec2(pos.x, pos.y),
+					wname + wdistance,
+					Configs.Bosses.TextColor,
+					Configs.Bosses.FontSize,
+					Center
+				);
 			}
 		}
 	}
 }
 
-void DrawPlayers()
+void DrawPlayersEsp()
 {
 	if (EnvironmentInstance == nullptr)
 		return;
@@ -80,7 +86,7 @@ void DrawPlayers()
 			if (distance <= 0 || distance > Configs.Player.MaxDistance)
 				continue;
 
-			if (!ent->GetValid())
+			if (!ent->GetValid() || ent->IsHidden()) // Has extracted
 				continue;
 
 			if (!IsValidHP(ent->GetHealth().current_hp) ||
@@ -89,15 +95,15 @@ void DrawPlayers()
 				continue;
 
 			auto tempPos = playerPos;
-			Vector2 lowerFramePos = CameraInstance->WorldToScreen(playerPos, false);
-			if (lowerFramePos.IsZero())
+			Vector2 feetPos = CameraInstance->WorldToScreen(playerPos, false);
+			if (feetPos.IsZero())
 				continue;
 			
-			tempPos.z = playerPos.z + 1.7f;
+			//tempPos.z = playerPos.z + 1.7f;
 			Vector2 headPos;
 			if (Configs.Player.DrawHeadInFrames)
 			{
-				headPos = CameraInstance->WorldToScreen(tempPos, false);
+				headPos = CameraInstance->WorldToScreen(ent->GetHeadPosition(), false);
 				if (headPos.IsZero())
 					continue;
 			}
@@ -123,7 +129,7 @@ void DrawPlayers()
 			Vector2 offset, normal;
 			if (Configs.Player.DrawFrames || Configs.Player.DrawHealthBars)
 			{
-				Vector2 v = uppderFramePos - lowerFramePos;
+				Vector2 v = uppderFramePos - feetPos;
 				float segmentLength = Vector2::Length(v);
 				normal = Vector2(-v.y, v.x);
 				offset = normal / (2.0f * 2);
@@ -131,17 +137,37 @@ void DrawPlayers()
 
 			if (Configs.Player.DrawFrames)
 			{
-				Vector2 A1 = lowerFramePos + offset;
-				Vector2 A2 = lowerFramePos - offset;
+				Vector2 A1 = feetPos + offset;
+				Vector2 A2 = feetPos - offset;
 				Vector2 B1 = uppderFramePos + offset;
 				Vector2 B2 = uppderFramePos - offset;
 
-				auto colour = ent->GetType() == EntityType::FriendlyPlayer ? Configs.Player.FriendColour : Configs.Player.FramesColour;
+				auto colour = ent->GetType() == EntityType::FriendlyPlayer ? Configs.Player.FriendColor : Configs.Player.FramesColor;
 
-				FilledLineAliased(A1.x, A1.y, A2.x, A2.y, 1, colour);
-				FilledLineAliased(A2.x, A2.y, B2.x, B2.y, 1, colour);
-				FilledLineAliased(B2.x, B2.y, B1.x, B1.y, 1, colour);
-				FilledLineAliased(B1.x, B1.y, A1.x, A1.y, 1, colour);
+				ESPRenderer::DrawLine(
+					ImVec2(A1.x, A1.y),
+					ImVec2(A2.x, A2.y),
+					colour,
+					1
+				);
+				ESPRenderer::DrawLine(
+					ImVec2(A2.x, A2.y),
+					ImVec2(B2.x, B2.y),
+					colour,
+					1
+				);
+				ESPRenderer::DrawLine(
+					ImVec2(B2.x, B2.y),
+					ImVec2(B1.x, B1.y),
+					colour,
+					1
+				);
+				ESPRenderer::DrawLine(
+					ImVec2(B1.x, B1.y),
+					ImVec2(A1.x, A1.y),
+					colour,
+					1
+				);
 
 				if (Configs.Player.DrawHeadInFrames)
 				{
@@ -151,8 +177,18 @@ void DrawPlayers()
 					Vector2 Head3 = headPos - headoffset;
 					Vector2 Head4 = headPos - offset;
 
-					FilledLineAliased(Head1.x, Head1.y, Head2.x, Head2.y, 1, colour);
-					FilledLineAliased(Head3.x, Head3.y, Head4.x, Head4.y, 1, colour);
+					ESPRenderer::DrawLine(
+						ImVec2(Head1.x, Head1.y),
+						ImVec2(Head2.x, Head2.y),
+						colour,
+						1
+					);
+					ESPRenderer::DrawLine(
+						ImVec2(Head3.x, Head3.y),
+						ImVec2(Head4.x, Head4.y),
+						colour,
+						1
+					);
 				}
 			}
 
@@ -169,10 +205,30 @@ void DrawPlayers()
 				Vector2 currentMaxHpPos = Vector2(currentMaxHp * Health2.x + (1 - currentMaxHp) * Health1.x, currentMaxHp * Health2.y + (1 - currentMaxHp) * Health1.y);
 				Vector2 potentialMaxHpPos = Vector2(potentialMaxHp * Health2.x + (1 - potentialMaxHp) * Health1.x, potentialMaxHp * Health2.y + (1 - potentialMaxHp) * Health1.y);
 
-				FilledLineAliased(Health1.x, Health1.y, currentHpPos.x, currentHpPos.y, lineHeight, Colour(200, 10, 10)); // current health
-				FilledLineAliased(currentHpPos.x, currentHpPos.y, currentMaxHpPos.x, currentMaxHpPos.y, lineHeight, Colour(10, 10, 10)); // regenerable black health
-				FilledLineAliased(currentMaxHpPos.x, currentMaxHpPos.y, potentialMaxHpPos.x, potentialMaxHpPos.y, lineHeight, Colour(200, 100, 10)); // burning health
-				FilledLineAliased(potentialMaxHpPos.x, potentialMaxHpPos.y, Health2.x, Health2.y, lineHeight, Colour(200, 200, 200)); // lost health
+				ESPRenderer::DrawLine(                             // current health
+					ImVec2(Health1.x, Health1.y),
+					ImVec2(currentHpPos.x, currentHpPos.y),
+					ImVec4(0.784313f, 0.039215f, 0.039215f, 1.0f),
+					lineHeight
+				);
+				ESPRenderer::DrawLine(                             // regenerable black health
+					ImVec2(currentHpPos.x, currentHpPos.y),
+					ImVec2(currentMaxHpPos.x, currentMaxHpPos.y),
+					ImVec4(0.039215f, 0.039215f, 0.039215f, 1.0f),
+					lineHeight
+				);
+				ESPRenderer::DrawLine(                             // burning health
+					ImVec2(currentMaxHpPos.x, currentMaxHpPos.y),
+					ImVec2(potentialMaxHpPos.x, potentialMaxHpPos.y),
+					ImVec4(0.784313f, 0.392156f, 0.039215f, 1.0f),
+					lineHeight
+				);
+				ESPRenderer::DrawLine(                             // lost health
+					ImVec2(potentialMaxHpPos.x, potentialMaxHpPos.y),
+					ImVec2(Health2.x, Health2.y),
+					ImVec4(0.784313f, 0.784313f, 0.784313f, 1.0f),
+					lineHeight
+				);
 			}
 
 			if (!Configs.Player.Enable)
@@ -181,7 +237,13 @@ void DrawPlayers()
 			std::wstring wname = Configs.Player.Name ? ent->GetName() : L"";
 			std::wstring wdistance = Configs.Player.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
 			std::wstring whealth = Configs.Player.HP ? std::to_wstring(ent->GetHealth().current_hp) + L"/" + std::to_wstring(ent->GetHealth().current_max_hp) + L"[" + std::to_wstring(ent->GetHealth().regenerable_max_hp) + L"]" : L"";
-			DrawText(lowerFramePos.x, lowerFramePos.y + 3, wname + wdistance + L"\n" + whealth, "Verdana", Configs.Player.FontSize, ent->GetType() == EntityType::FriendlyPlayer ? Configs.Player.FriendColour : Configs.Player.TextColour, Center);
+			ESPRenderer::DrawText(
+				ImVec2(feetPos.x, feetPos.y),
+				wname + wdistance + L"\n" + whealth,
+				ent->GetType() == EntityType::FriendlyPlayer ? Configs.Player.FriendColor : Configs.Player.TextColor,
+				Configs.Player.FontSize,
+				TopCenter
+			);
 		}
 	}
 }

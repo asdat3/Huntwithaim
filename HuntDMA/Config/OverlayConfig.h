@@ -13,30 +13,31 @@ public:
     int Width = 1920;
     int Height = 1080;
     bool ShowFPS = true;
-    int FpsFontSize = 15;
-    D2D1::ColorF FpsColour = Colour(144, 144, 144);
+    int FpsFontSize = 17;
+    ImVec4 FpsColor = ImVec4(0.564705f, 0.564705f, 0.564705f, 1.0f);
     bool ShowObjectCount = true;
-    int ObjectCountFontSize = 13;
-    D2D1::ColorF ObjectCountColour = Colour(144, 144, 144);
+    int ObjectCountFontSize = 15;
+    ImVec4 ObjectCountColor = ImVec4(0.564705f, 0.564705f, 0.564705f, 1.0f);
     int CrosshairType = 0;
     int CrosshairSize = 3;
-    D2D1::ColorF CrosshairColour = Colour(0, 150, 255);
-    void ToJsonColour(json* j, const std::string& name, D2D1::ColorF* colour)
-    {
-        (*j)[ConfigName][name][LIT("r")] = colour->r;
-        (*j)[ConfigName][name][LIT("g")] = colour->g;
-        (*j)[ConfigName][name][LIT("b")] = colour->b;
-        (*j)[ConfigName][name][LIT("a")] = colour->a;
+    ImVec4 CrosshairColor = ImVec4(0.0f, 0.588235f, 1.0f, 1.0f);
 
+    void ToJsonColor(json* j, const std::string& name, ImVec4* color)
+    {
+        (*j)[ConfigName][name][LIT("r")] = color->x;
+        (*j)[ConfigName][name][LIT("g")] = color->y;
+        (*j)[ConfigName][name][LIT("b")] = color->z;
+        (*j)[ConfigName][name][LIT("a")] = color->w;
     }
-    void FromJsonColour(json j, const std::string& name, D2D1::ColorF* colour)
+
+    void FromJsonColor(json j, const std::string& name, ImVec4* color)
     {
         if (j[ConfigName].contains(name))
         {
-            colour->r = j[ConfigName][name][LIT("r")];
-            colour->g = j[ConfigName][name][LIT("g")];
-            colour->b = j[ConfigName][name][LIT("b")];
-            colour->a = j[ConfigName][name][LIT("a")];
+            color->x = j[ConfigName][name][LIT("r")];
+            color->y = j[ConfigName][name][LIT("g")];
+            color->z = j[ConfigName][name][LIT("b")];
+            color->w = j[ConfigName][name][LIT("a")];
         }
     }
 
@@ -52,12 +53,13 @@ public:
         j[ConfigName][LIT("ObjectCountFontSize")] = ObjectCountFontSize;
         j[ConfigName][LIT("CrosshairType")] = CrosshairType;
         j[ConfigName][LIT("CrosshairSize")] = CrosshairSize;
-        ToJsonColour(&j, LIT("CrosshairColour"), &CrosshairColour);
-        ToJsonColour(&j, LIT("FpsColour"), &FpsColour);
-        ToJsonColour(&j, LIT("ObjectCountColour"), &ObjectCountColour);
+        ToJsonColor(&j, LIT("CrosshairColor"), &CrosshairColor);
+        ToJsonColor(&j, LIT("FpsColor"), &FpsColor);
+        ToJsonColor(&j, LIT("ObjectCountColor"), &ObjectCountColor);
 
         return j;
     }
+
     void FromJson(const json& j)
     {
         if (!j.contains(ConfigName))
@@ -80,9 +82,9 @@ public:
             CrosshairType = j[ConfigName][LIT("CrosshairType")];
         if (j[ConfigName].contains(LIT("CrosshairSize")))
             CrosshairSize = j[ConfigName][LIT("CrosshairSize")];
-        FromJsonColour(j, LIT("CrosshairColour"), &CrosshairColour);
-        FromJsonColour(j, LIT("FpsColour"), &FpsColour);
-        FromJsonColour(j, LIT("ObjectCountColour"), &ObjectCountColour);
+        FromJsonColor(j, LIT("CrosshairColor"), &CrosshairColor);
+        FromJsonColor(j, LIT("FpsColor"), &FpsColor);
+        FromJsonColor(j, LIT("ObjectCountColor"), &ObjectCountColor);
     }
 };
 

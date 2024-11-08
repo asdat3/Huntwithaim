@@ -58,8 +58,6 @@ void WorldEntity::SetUp4(VMMDLL_SCATTER_HANDLE handle)
 void WorldEntity::WriteNode(VMMDLL_SCATTER_HANDLE handle, int colour, bool show)
 {
 	uint32_t convertedcolour = 0;
-	/*	std::vector<std::wstring>{LIT(L"Outline Red"), LIT(L"Outline Blue"), LIT(L"Outline Yellow"), LIT(L"Outline Orange"), LIT(L"Outline Cyan"), LIT(L"Outline White"),
-	LIT(L"Filled Red"), LIT(L"Filled Blue"), LIT(L"Filled Yellow"), LIT(L"Filled Orange"), LIT(L"Filled Cyan"), LIT(L"Filled White")});*/
 	if(colour == 0)
 		convertedcolour = 0xFF0000FF; // Outline Red
 	else if (colour == 1)
@@ -121,9 +119,81 @@ void WorldEntity::UpdateHealth(VMMDLL_SCATTER_HANDLE handle)
 	TargetProcess.AddScatterReadRequest(handle, HpPointer5, &Health, sizeof(HealthBar));
 }
 
+void WorldEntity::UpdateBones() // Currently doesn't work
+{
+	// Get character instance pointer and bones
+	uint64_t charInstancePointer = TargetProcess.Read<uint64_t>(Slot + CharacterInstanceOffset);
+	if (!charInstancePointer) return;
+
+	uint64_t bonePtr0 = TargetProcess.Read<uint64_t>(charInstancePointer + BoneArrayOffset + 0x20);
+	uint64_t bonePtr1 = TargetProcess.Read<uint64_t>(charInstancePointer + BoneArrayOffset + 0x38);
+	if (!bonePtr0 || !bonePtr1) return;
+
+	uint64_t boneArray = bonePtr0 + ((bonePtr1 + 3) & 0xFFFFFFFFFFFFFFFC);
+	uint64_t skeletonPose = TargetProcess.Read<uint64_t>(charInstancePointer + SkeletonPoseOffset); // problem here is a bit that it seems not all hunter skins have default skeleton pose anymore
+	if (!skeletonPose) return;
+
+	// Read bone mapping
+	std::map<std::string, int> boneMap;
+	uint64_t modelJoints = TargetProcess.Read<uint64_t>(skeletonPose + ModelJointsOffset);
+	uint32_t boneArraySize = TargetProcess.Read<uint32_t>(skeletonPose + BoneArraySizeOffset);
+	BoneCount = boneArraySize;
+
+	// Cache all bone names and indices
+	for (uint32_t i = 0; i < boneArraySize; i++)
+	{
+		auto boneName = TargetProcess.Read<EntityNameStruct>(modelJoints + (i * 0x38));
+		boneMap[std::string(boneName.name)] = i;
+	}
+
+	if (!boneMap.empty())
+	{
+		// Map bone indices
+		const char* boneNames[] = {
+			"head", "neck", "pelvis", "R_upperarm", "R_forearm", "R_hand", "R_thigh", "R_calf", "R_foot", "L_upperarm", "L_forearm", "L_hand", "L_thigh", "L_calf", "L_foot"
+		};
+
+		for (int i = 0; i < MAX_BONES; i++) {
+			auto it = boneMap.find(boneNames[i]);
+			if (it != boneMap.end()) {
+				BoneIndex[i] = it->second;
+			}
+		}
+
+		// Read head bone position if available
+		if (BoneIndex[0] != 0) {
+			// Read bone transform
+			Vector4 boneRotation;
+			Vector3 bonePosition;
+
+			// Read bone quaternion and position
+			boneRotation = TargetProcess.Read<Vector4>(boneArray + (BoneIndex[0] * BoneStructSize));
+
+			// Read world matrix
+			Matrix4x4 worldMatrix;
+			worldMatrix = TargetProcess.Read<Matrix4x4>(Class + WorldMatrixOffset);
+
+			// Calculate head position after scatter read completes
+			// Note: The actual calculation will be done after ExecuteReadScatter
+			Vector3 localHeadPos = Vector4::Mult(boneRotation, Vector3(0, 0, 0));
+			HeadPosition = worldMatrix.TransformPoint(localHeadPos);
+			LOG_INFO("Headpos:[%f,%f,%f]", HeadPosition.x, HeadPosition.y, HeadPosition.z);
+			HeadPosition = Position;
+			HeadPosition.z = HeadPosition.z + 1.7f;
+			LOG_INFO("FIXED Headpos:[%f,%f,%f]", HeadPosition.x, HeadPosition.y, HeadPosition.z);
+			LOG_INFO("================");
+		}
+	}
+}
+
+void WorldEntity::UpdateExtraction(VMMDLL_SCATTER_HANDLE handle)
+{
+	TargetProcess.AddScatterReadRequest(handle, Class + InternalFlagsOffset, &InternalFlags, sizeof(uint32_t));
+}
+
 void WorldEntity::UpdateClass(VMMDLL_SCATTER_HANDLE handle)
 {
-	TargetProcess.AddScatterReadRequest(handle, this->Class, &ClassAddress, sizeof(uint64_t));
+	TargetProcess.AddScatterReadRequest(handle, Class, &ClassAddress, sizeof(uint64_t));
 }
 
 bool WorldEntity::IsLocalPlayer()

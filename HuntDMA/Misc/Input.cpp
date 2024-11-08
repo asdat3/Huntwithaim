@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Input.h"
 #include "Init.h"
-#include "GUI.h"
 #include "ConfigUtilities.h"
+#include "ImGuiMenu.h"
 
 // local scope enum
 enum class KeyState
@@ -89,7 +89,7 @@ LRESULT CALLBACK InputWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
     {
         case WM_MOVE:
             SetWindowPos(hWnd, NULL, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_NOZORDER | SWP_NOACTIVATE);
-            InitD2D(hWnd);
+            InitializeESP();
             break;
         case WM_CHAR:
             Char = wParam;

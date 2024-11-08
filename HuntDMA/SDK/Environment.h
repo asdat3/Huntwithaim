@@ -4,21 +4,21 @@ class Environment
 {
 private:
 	uint64_t SystemGlobalEnvironment = 0x0;
-	uint64_t SystemGlobalEnvironmentOffset = 0x0; // You can manually overwrite offset, if signature find is not working https://www.unknowncheats.me/forum/other-fps-games/350352-hunt-showdown-27.html someone would post it here.
+	const uint64_t SystemGlobalEnvironmentOffset = 0x0; // You can manually overwrite offset, if signature find is not working https://www.unknowncheats.me/forum/other-fps-games/350352-hunt-showdown-27.html someone would post it here.
 	const char* SystemGlobalEnvironmentSignature = "48 8B 05 ? ? ? ? 48 8B 88 B0";
 	void FindSystemGlobalEnvironment();
 
 	uint64_t EntitySystem = 0x0;
-	uint64_t EntitySystemOffset = 0xC0;
+	const uint64_t EntitySystemOffset = 0xC0;
 
 	uint64_t pSystem = 0x0;
-	uint64_t pSystemOffset = 0x90;
+	const uint64_t pSystemOffset = 0x90;
 
 	uint16_t ObjectCount = 0x0;
-	uint64_t ObjectCountOffset = 0x40092;
+	const uint64_t ObjectCountOffset = 0x40092;
 	
 	uint64_t EntityList = 0x0;
-	uint64_t EntityListOffset = 0x40098;
+	const uint64_t EntityListOffset = 0x40098;
 
 	const char* LocalPlayerSignature = "48 8B 15 ? ? ? ? 48 2B F2 48 C1 FE 05 48 85 F6";
 	uint64_t LocalPlayer = 0x0;

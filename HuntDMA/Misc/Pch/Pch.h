@@ -25,6 +25,10 @@
 #include <cstdint>
 #include <d2d1_1.h>
 #include <dwrite.h>
+#include <d3d11.h>
+#include <dxgi.h>
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
 
 #ifdef DrawText
 #undef DrawText
@@ -56,8 +60,12 @@
 #include <vmmdll.h>
 #define DEBUG_INFO
 #ifdef DEBUG_INFO
-#define LOG(fmt, ...) std::printf(fmt, ##__VA_ARGS__)
-#define LOGW(fmt, ...) std::wprintf(fmt, ##__VA_ARGS__)
+#include "Logger.h"
+#define LOG_DEBUG(...) Logger::GetInstance().LogDebug(__VA_ARGS__)
+#define LOG_INFO(...) Logger::GetInstance().LogInfo(__VA_ARGS__)
+#define LOG_WARNING(...) Logger::GetInstance().LogWarning(__VA_ARGS__)
+#define LOG_ERROR(...) Logger::GetInstance().LogError(__VA_ARGS__)
+#define LOG_CRITICAL(...) Logger::GetInstance().LogCritical(__VA_ARGS__)
 #else
 #define LOG
 #define LOGW
@@ -73,9 +81,9 @@ using json = nlohmann::json;
 #pragma comment(lib, "windowscodecs.lib")
 #include "Vector.h"
 #include "Input.h"
-#include "Colour.h"
-#include "Graphics.h"
-#include "font.h"
 #include "XorStr.h"
 #include "Memory.h"
 #include "CheatFunction.h"
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"

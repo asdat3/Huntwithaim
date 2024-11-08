@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Globals.h"
 #include "ConfigUtilities.h"
+#include "ESPRenderer.h"
 
 void Camera::UpdateCamera(VMMDLL_SCATTER_HANDLE handle)
 {
@@ -43,12 +44,13 @@ Vector2 Camera::WorldToScreen(Vector3 pos, bool clamp)
     projected.x /= projected.w;
     projected.y /= projected.w;
 
-    if (clamp && (abs(projected.x) > 1.0f || abs(projected.y) > 1.0f))
+    if (abs(projected.x) > (clamp ? 1.0f : 1.5f) ||
+        abs(projected.y) > (clamp ? 1.0f : 1.5f))
         return Vector2::Zero();
 
     // Get screen coordinates
-    int width = Configs.Overlay.OverrideResolution ? Configs.Overlay.Width : GetSystemMetrics(SM_CXSCREEN);
-    int height = Configs.Overlay.OverrideResolution ? Configs.Overlay.Height : GetSystemMetrics(SM_CYSCREEN);
+    int width = ESPRenderer::GetScreenWidth();
+    int height = ESPRenderer::GetScreenHeight();
 
     return Vector2{
         (1.0f + projected.x) * width * 0.5f,

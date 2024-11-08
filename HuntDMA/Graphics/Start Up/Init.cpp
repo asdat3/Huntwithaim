@@ -1,7 +1,4 @@
 #include "pch.h"
-#include "Init.h"
-#include "drawing.h"
-#include "GUI.h"
 #include "Globals.h"
 #include "PlayerEsp.h"
 #include "OtherEsp.h"
@@ -12,6 +9,7 @@
 #include "Overlay.h"
 #include <chrono>
 #include "SpectatorAlarm.h"
+#include "Init.h"
 
 ID2D1Factory* Factory;
 IDWriteFactory* FontFactory;
@@ -24,35 +22,61 @@ std::shared_ptr<Camera> CameraInstance;
 
 bool cacheThreadCreated = false;
 
-void CleanD2D()
+void InitialiseClasses()
 {
-	// ensure pointer is valid
-	// then release memory
-	if (Factory)
-		Factory->Release();
-	if (RenderTarget)
-		RenderTarget->Release();
-	if (Brush)
-		Brush->Release();
-	for (std::pair dict : Fonts)
-	{
-		const FontInformation& fontInfo = dict.second;
-		if (fontInfo.font)
-			fontInfo.font->Release();
-	}
-	//Clean all cached text layours
-	for (std::pair dict : TextLayouts)
-	{
-		IDWriteTextLayout* layout = dict.second;
-		if (layout)
-			layout->Release();
-	}
+	EnvironmentInstance = std::make_shared<Environment>();
+	CameraInstance = std::make_shared<Camera>();
+}
 
-	for (std::pair dict : TextCache)
+std::shared_ptr<CheatFunction> Cache = std::make_shared<CheatFunction>(8000, [] {
+	if (EnvironmentInstance == nullptr)
+		return;
+	if (EnvironmentInstance->GetObjectCount() == 0)
+		return;
+	EnvironmentInstance->CacheEntities();
+});
+
+std::shared_ptr<CheatFunction> UpdateCam = std::make_shared<CheatFunction>(1, [] {
+	if (EnvironmentInstance == nullptr)
+		return;
+	if (EnvironmentInstance->GetObjectCount() == 0)
+		return;
+	auto handle = TargetProcess.CreateScatterHandle();
+	CameraInstance->UpdateCamera(handle);
+	TargetProcess.ExecuteReadScatter(handle);
+	TargetProcess.CloseScatterHandle(handle);
+});
+
+std::shared_ptr<CheatFunction> UpdateLocalPlayer = std::make_shared<CheatFunction>(8000, [] {
+	if (EnvironmentInstance == nullptr)
+		return;
+	if (EnvironmentInstance->GetObjectCount() == 0)
+		return;
+	EnvironmentInstance->UpdateLocalPlayer();
+});
+
+void CacheThread()
+{
+	while (true)
 	{
-		IDWriteTextLayout* layout = dict.second;
-		if (layout)
-			layout->Release();
+		if (EnvironmentInstance == nullptr || EnvironmentInstance->GetObjectCount() == 0)
+			continue;
+		UpdateLocalPlayer->Execute();
+		Cache->Execute();
+	}
+}
+
+void InitializeESP()
+{
+	if (!cacheThreadCreated)
+	{
+		cacheThreadCreated = true;
+		std::thread(CacheThread).detach();
+	}
+	if (enableAimBot)
+	{
+		Keyboard::InitKeyboard();
+		kmbox::KmboxInitialize("");
 	}
 }
 
@@ -74,147 +98,4 @@ int FrameRate()
 	}
 
 	return lastfps;
-}
-
-void InitialiseClasses()
-{
-	EnvironmentInstance = std::make_shared<Environment>();
-	CameraInstance = std::make_shared<Camera>();
-}
-
-std::shared_ptr<CheatFunction> Cache = std::make_shared<CheatFunction>(8000, [] {
-	if (EnvironmentInstance == nullptr)
-		return;
-	if (EnvironmentInstance->GetObjectCount() == 0)
-		return;
-	EnvironmentInstance->CacheEntities();
-});
-
-std::shared_ptr<CheatFunction> UpdateCam = std::make_shared<CheatFunction>(5, [] {
-	if (EnvironmentInstance == nullptr)
-		return;
-	if (EnvironmentInstance->GetObjectCount() == 0)
-		return;
-	auto handle = TargetProcess.CreateScatterHandle();
-	CameraInstance->UpdateCamera(handle);
-	TargetProcess.ExecuteReadScatter(handle);
-	TargetProcess.CloseScatterHandle(handle);
-});
-
-std::shared_ptr<CheatFunction> UpdateLocalPlayer = std::make_shared<CheatFunction>(8000, [] {
-	if (EnvironmentInstance == nullptr)
-		return;
-	if (EnvironmentInstance->GetObjectCount() == 0)
-		return;
-	EnvironmentInstance->UpdateLocalPlayer();
-	});
-
-void DrawCrosshair()
-{
-	Vector2 Center = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
-	// drawing aimbot fov here because fuck it
-	if (Configs.Aimbot.DrawFOV)
-	{
-		OutlineCircle(Center.x, Center.y, Configs.Aimbot.FOV, 2,Configs.Aimbot.FOVColour);
-	}
-	if (Configs.Overlay.CrosshairType == 0)
-		return;
-	
-	if (Configs.Overlay.CrosshairType == 1)
-	{
-		FilledCircle(Center.x, Center.y, Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairColour);
-
-	}
-	if (Configs.Overlay.CrosshairType == 2)
-	{
-		OutlineCircle(Center.x, Center.y, Configs.Overlay.CrosshairSize,2, Configs.Overlay.CrosshairColour);
-
-	}
-	if (Configs.Overlay.CrosshairType == 3)
-	{
-		FilledRectangle(Center.x - (Configs.Overlay.CrosshairSize / 2), Center.y - (Configs.Overlay.CrosshairSize / 2), Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairSize, Configs.Overlay.CrosshairColour);
-
-	}
-	if (Configs.Overlay.CrosshairType == 4)
-	{
-		OutlineRectangle(Center.x - (Configs.Overlay.CrosshairSize/2), Center.y - (Configs.Overlay.CrosshairSize/2),  Configs.Overlay.CrosshairSize , Configs.Overlay.CrosshairSize, 1, Configs.Overlay.CrosshairColour);
-
-	}
-}
-
-void CacheThread()
-{
-	while (true)
-	{
-		if (EnvironmentInstance == nullptr || EnvironmentInstance->GetObjectCount() == 0)
-			continue;
-		UpdateLocalPlayer->Execute();
-		Cache->Execute();
-	}
-}
-
-void InitD2D(HWND hWnd)
-{
-	HRESULT result = D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, &Factory);
-	RECT rect;
-	GetClientRect(hWnd, &rect);
-	result = Factory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED)), D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rect.right, rect.bottom), D2D1_PRESENT_OPTIONS_IMMEDIATELY), &RenderTarget);
-	if (!SUCCEEDED(result))
-		return;
-
-	result = DWriteCreateFactory(DWRITE_FACTORY_TYPE_ISOLATED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&FontFactory));
-	if (!SUCCEEDED(result))
-		return;
-
-	CreateFonts(LIT("Verdana"), LIT(L"Verdana"), 10, DWRITE_FONT_WEIGHT_NORMAL);
-	CreateFonts("VerdanaBold", LIT(L"Verdana"), 10, DWRITE_FONT_WEIGHT_SEMI_BOLD);
-	RenderTarget->CreateSolidColorBrush(D2D1::ColorF(0, 0, 0, 0), &Brush); // create global brush
-	RenderTarget->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE); // set aa mode
-	if (!cacheThreadCreated)
-	{
-		cacheThreadCreated = true;
-		std::thread(CacheThread).detach();
-	}
-	if (enableAimBot)
-	{
-		Keyboard::InitKeyboard();
-		kmbox::KmboxInitialize("");
-	}
-}
-
-void RenderFrame()
-{
-	if (EnvironmentInstance == nullptr)
-	{
-		InitialiseClasses();
-		Sleep(1000);
-	}
-	if (EnvironmentInstance->GetObjectCount() == 0)
-	{
-		InitialiseClasses();
-		EnvironmentInstance->GetEntityList();
-		auto handle = TargetProcess.CreateScatterHandle();
-		CameraInstance->UpdateCamera(handle);
-		TargetProcess.ExecuteReadScatter(handle);
-		TargetProcess.CloseScatterHandle(handle);
-		EnvironmentInstance->CacheEntities();
-		Sleep(1000);
-	}
-
-	UpdateCam->Execute();
-	UpdatePlayers->Execute();
-	UpdateBosses->Execute();
-	if (enableAimBot)
-		Aimbot();
-	RenderTarget->BeginDraw();
-	RenderTarget->Clear(Colour(0, 0, 0, 255)); // clear over the last buffer
-	RenderTarget->SetTransform(D2D1::Matrix3x2F::Identity()); // set new transform
-	DrawSpectators();
-	DrawPlayers();
-	DrawBosses();
-	DrawOtherEsp();
-	//DrawCrosshair();
-	DrawOverlay();
-	Render();
-	RenderTarget->EndDraw();
 }

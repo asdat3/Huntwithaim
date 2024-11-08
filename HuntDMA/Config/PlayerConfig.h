@@ -13,8 +13,8 @@ public:
     bool Name = true;
 	bool Distance = true;
 	int MaxDistance = 400;
-	D2D1::ColorF TextColour = Colour(255, 255, 255);
-	int FontSize = 12;
+    ImVec4 TextColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	int FontSize = 13;
     bool Chams = false;
     int ChamMode = 5;
     bool HP = true;
@@ -22,27 +22,28 @@ public:
     bool DrawFrames = true;
     bool DrawHeadInFrames = true;
     bool DrawHealthBars = true;
-    D2D1::ColorF FramesColour = Colour(252, 242, 5);
-    D2D1::ColorF FriendColour = Colour(0, 255, 0);
+    ImVec4 FramesColor = ImVec4(0.988235f, 0.949019f, 0.019607f, 1.0f);
+    ImVec4 FriendColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
     bool ShowPlayerList = true;
     int PlayerListFontSize = 15;
-    D2D1::ColorF PlayerListColour = Colour(206, 206, 206);
-    void ToJsonColour(json* j, const std::string& name, D2D1::ColorF* colour)
+    ImVec4 PlayerListColor = ImVec4(0.807843f, 0.807843f, 0.807843f, 1.0f);
+    
+    void ToJsonColor(json* j, const std::string& name, ImVec4* color)
     {
-        (*j)[ConfigName][name][LIT("r")] = colour->r;
-        (*j)[ConfigName][name][LIT("g")] = colour->g;
-        (*j)[ConfigName][name][LIT("b")] = colour->b;
-        (*j)[ConfigName][name][LIT("a")] = colour->a;
-
+        (*j)[ConfigName][name][LIT("r")] = color->x;
+        (*j)[ConfigName][name][LIT("g")] = color->y;
+        (*j)[ConfigName][name][LIT("b")] = color->z;
+        (*j)[ConfigName][name][LIT("a")] = color->w;
     }
-    void FromJsonColour(json j, const std::string& name, D2D1::ColorF* colour)
+
+    void FromJsonColor(json j, const std::string& name, ImVec4* color)
     {
         if (j[ConfigName].contains(name))
         {
-            colour->r = j[ConfigName][name][LIT("r")];
-            colour->g = j[ConfigName][name][LIT("g")];
-            colour->b = j[ConfigName][name][LIT("b")];
-            colour->a = j[ConfigName][name][LIT("a")];
+            color->x = j[ConfigName][name][LIT("r")];
+            color->y = j[ConfigName][name][LIT("g")];
+            color->z = j[ConfigName][name][LIT("b")];
+            color->w = j[ConfigName][name][LIT("a")];
         }
     }
 
@@ -63,10 +64,10 @@ public:
         j[ConfigName][LIT("DrawHealthBars")] = DrawHealthBars;
         j[ConfigName][LIT("ShowPlayerList")] = ShowPlayerList;
         j[ConfigName][LIT("PlayerListFontSize")] = PlayerListFontSize;
-        ToJsonColour(&j, LIT("TextColour"), &TextColour);
-        ToJsonColour(&j, LIT("FramesColour"), &FramesColour);
-        ToJsonColour(&j, LIT("FriendColour"), &FriendColour);
-        ToJsonColour(&j, LIT("PlayerListColour"), &PlayerListColour);
+        ToJsonColor(&j, LIT("TextColor"), &TextColor);
+        ToJsonColor(&j, LIT("FramesColor"), &FramesColor);
+        ToJsonColor(&j, LIT("FriendColor"), &FriendColor);
+        ToJsonColor(&j, LIT("PlayerListColor"), &PlayerListColor);
 
         return j;
     }
@@ -102,10 +103,10 @@ public:
             ShowPlayerList = j[ConfigName][LIT("ShowPlayerList")];
         if (j[ConfigName].contains(LIT("PlayerListFontSize")))
             PlayerListFontSize = j[ConfigName][LIT("PlayerListFontSize")];
-        FromJsonColour(j, LIT("FriendColour"), &FriendColour);
-        FromJsonColour(j, LIT("FramesColour"), &FramesColour);
-        FromJsonColour(j, LIT("TextColour"), &TextColour);
-        FromJsonColour(j, LIT("PlayerListColour"), &PlayerListColour);
+        FromJsonColor(j, LIT("FriendColor"), &FriendColor);
+        FromJsonColor(j, LIT("FramesColor"), &FramesColor);
+        FromJsonColor(j, LIT("TextColor"), &TextColor);
+        FromJsonColor(j, LIT("PlayerListColor"), &PlayerListColor);
     }
 };
 
