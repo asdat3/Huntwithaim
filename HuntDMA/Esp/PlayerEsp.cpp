@@ -99,11 +99,11 @@ void DrawPlayersEsp()
 			if (feetPos.IsZero())
 				continue;
 			
-			//tempPos.z = playerPos.z + 1.7f;
+			tempPos.z = playerPos.z + 1.7f;
 			Vector2 headPos;
 			if (Configs.Player.DrawHeadInFrames)
 			{
-				headPos = CameraInstance->WorldToScreen(ent->GetHeadPosition(), false);
+				headPos = CameraInstance->WorldToScreen(tempPos, false);
 				if (headPos.IsZero())
 					continue;
 			}
