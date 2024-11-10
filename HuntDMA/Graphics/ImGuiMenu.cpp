@@ -115,15 +115,16 @@ bool ImGuiMenu::CreateDeviceD3D(HWND hWnd) {
     sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
     // Enable tearing support when vsync is off
-    sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH |
-               DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+    sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+    if (!Configs.General.OverlayMode)
+        sd.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     sd.OutputWindow = hWnd;
     sd.SampleDesc.Count = 1;   // No MSAA
     sd.SampleDesc.Quality = 0;
     sd.Windowed = TRUE;
-    sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // Modern swap effect for better performance
+    sd.SwapEffect = Configs.General.OverlayMode ? DXGI_SWAP_EFFECT_DISCARD : DXGI_SWAP_EFFECT_FLIP_DISCARD; // DXGI_SWAP_EFFECT_FLIP_DISCARD prevents transparency
 
     // Setup feature levels (DX11 and DX10 fallback)
     const D3D_FEATURE_LEVEL featureLevels[] = {
@@ -226,14 +227,16 @@ void ImGuiMenu::EndFrame() {
 
     ImGui::Render();
 
-    const float clear_color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    const float clear_color[4] = { 0.0f, 0.0f, 0.0f, Configs.General.OverlayMode ? 0.0f : 1.0f };
     d3dDeviceContext->OMSetRenderTargets(1, &mainRenderTargetView, nullptr);
     d3dDeviceContext->ClearRenderTargetView(mainRenderTargetView, clear_color);
 
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
     UINT syncInterval = 0; // Disables V-Sync for immediate presentation
-    UINT presentFlags = DXGI_PRESENT_ALLOW_TEARING | DXGI_PRESENT_DO_NOT_WAIT;
+    UINT presentFlags = DXGI_PRESENT_DO_NOT_WAIT;
+    if (!Configs.General.OverlayMode)
+        presentFlags |= DXGI_PRESENT_ALLOW_TEARING;
 
     HRESULT hr = swapChain->Present(syncInterval, presentFlags);
 
@@ -250,22 +253,35 @@ void ImGuiMenu::EndFrame() {
 
 void ImGuiMenu::HandleInput() {
     float currentTime = ImGuiUtils::GetTime();
-    if (ImGuiUtils::IsKeyPressed(VK_INSERT) && (currentTime - lastKeyPressTime) > KEY_PRESS_DELAY) {
+
+    if ((ImGuiUtils::IsKeyPressed(VK_INSERT) || ImGuiUtils::IsKeyPressed(VK_HOME)) && (currentTime - lastKeyPressTime) > KEY_PRESS_DELAY) {
         MenuOpen = !MenuOpen;
         lastKeyPressTime = currentTime;
+    }
+
+    if (ImGuiUtils::IsKeyPressed(VK_ESCAPE)) {
+        MenuOpen = false;
+    }
+
+    if (ImGuiUtils::IsKeyPressed(VK_HOME) && ImGuiUtils::IsKeyPressed(VK_END)) {
+        exit(0);
     }
 }
 
 void ImGuiMenu::ColorPickerWithText(const char* label, ImVec4* color) {
-    // Initialize flags for color picker - disable alpha editing
-    ImGuiColorEditFlags flags = ImGuiColorEditFlags_NoInputs |
-        ImGuiColorEditFlags_NoAlpha;
+
+    ImGuiColorEditFlags flags = ImGuiColorEditFlags_NoInputs;
+    flags |= Configs.General.OverlayMode ? ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview : ImGuiColorEditFlags_NoAlpha;
 
     // Add label and color picker on the same line
     ImGui::SameLine();
-    if (ImGui::ColorEdit3(label, (float*)color, flags)) {
-        // Force alpha to 1.0
-        color->w = 1.0f;
+    if (Configs.General.OverlayMode) // Transparency is supported only in OverlayMode
+        ImGui::ColorEdit4(label, (float*)color, flags);
+    else {
+        if (ImGui::ColorEdit3(label, (float*)color, flags)) {
+            // Force alpha to 1.0
+            color->w = 1.0f;
+        }
     }
 }
 
@@ -403,8 +419,8 @@ void ImGuiMenu::RenderMenu() {
         return;
 
     // Set default window position and size on first use
-    ImGui::SetNextWindowPos(ImVec2(166, 144), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(580, 324), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(190, 102), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(580, 362), ImGuiCond_FirstUseEver);
 
     ImGui::Begin("Hunt DMA", &MenuOpen, ImGuiWindowFlags_NoCollapse);
 
@@ -446,6 +462,16 @@ void ImGuiMenu::RenderMenu() {
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
+    }
+
+    // Check if mouse clicked outside window
+    if (Configs.General.OverlayMode)
+    {
+        if (ImGui::IsMouseClicked(0) &&
+            !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) &&
+            !ImGui::IsAnyItemHovered() &&
+            !ImGui::IsPopupOpen("", ImGuiPopupFlags_AnyPopup))
+            MenuOpen = false;
     }
 
     ImGui::End();
@@ -654,12 +680,12 @@ void ImGuiMenu::RenderOverlayTab() {
 
     ImGui::BeginGroup();
     ImGui::Text("Resolution Settings:");
-    ImGui::Checkbox("Override W2S Resolution", &Configs.Overlay.OverrideResolution);
+    ImGui::Checkbox("Override W2S Resolution", &Configs.General.OverrideResolution);
 
-    if (Configs.Overlay.OverrideResolution)
+    if (Configs.General.OverrideResolution)
     {
-        ImGui::InputInt("Screen Width", &Configs.Overlay.Width);
-        ImGui::InputInt("Screen Height", &Configs.Overlay.Height);
+        ImGui::InputInt("Screen Width", &Configs.General.Width);
+        ImGui::InputInt("Screen Height", &Configs.General.Height);
     }
     
     ImGui::EndGroup();
@@ -694,7 +720,7 @@ void ImGuiMenu::RenderOverlayTab() {
     RenderFontSizeSlider("Count Font Size", Configs.Overlay.ObjectCountFontSize);
     ImGui::EndGroup();
 
-    /*ImGui::Separator();
+    ImGui::Separator();
 
     ImGui::BeginGroup();
     ImGui::Text("Crosshair Settings:");
@@ -708,7 +734,7 @@ void ImGuiMenu::RenderOverlayTab() {
         ImGui::SliderInt("Crosshair Size", &Configs.Overlay.CrosshairSize, 1, 20);
         ColorPickerWithText("Crosshair Color", &Configs.Overlay.CrosshairColor);
     }
-    ImGui::EndGroup();*/
+    ImGui::EndGroup();
 
     ImGui::EndChild();
 }
@@ -784,18 +810,19 @@ void ImGuiMenu::RenderAimbotTab() {
     ImGui::EndChild();
 }
 
+static bool showDevSettings = false;
 void ImGuiMenu::RenderSettingsTab() {
     ImGui::BeginChild("SettingsTab", ImVec2(0, 0), false);
 
     if (ImGui::Button("Save Config")) {
         SaveConfig(ConfigPath);
-        //ImGui::OpenPopup("ConfigSaved");
+        ImGui::OpenPopup("ConfigSaved");
     }
-    if (ImGui::BeginPopupModal("ConfigSaved", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopup("ConfigSaved",
+        ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse)) {
         ImGui::Text("Configuration saved successfully!");
-        if (ImGui::Button("OK")) {
-            ImGui::CloseCurrentPopup();
-        }
         ImGui::EndPopup();
     }
 
@@ -803,24 +830,72 @@ void ImGuiMenu::RenderSettingsTab() {
 
     if (ImGui::Button("Load Config")) {
         LoadConfig(ConfigPath);
-        //ImGui::OpenPopup("ConfigLoaded");
+        ImGui::OpenPopup("ConfigLoaded");
     }
-    if (ImGui::BeginPopupModal("ConfigLoaded", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopup("ConfigLoaded",
+        ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse)) {
         ImGui::Text("Configuration loaded successfully!");
-        if (ImGui::Button("OK")) {
-            ImGui::CloseCurrentPopup();
-        }
         ImGui::EndPopup();
     }
 
     ImGui::Separator();
 
-    ImGui::Checkbox("Write entities dump", &createEntitiesDump);
+    if (ImGui::Checkbox("Overlay Mode", &Configs.General.OverlayMode))
+    {
+        LOG_INFO("Changing OverlayMode mode to %s. Restart needed.", Configs.General.OverlayMode ? L"True" : L"False");
+        SaveConfig(ConfigPath);
+        exit(0);
+    }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        ImGui::Text("Dumps all entity class names to classes-dump.txt");
+        ImGui::Text("NEED APP RESTART!\n"
+            "If changed, will save config and close this app.\n\n"
+            "For single pc setup.\n"
+            "Draws application on top of everything.\n"
+            "Transparency is available (and possible) only in Overlay mode.\n"
+            "Works even in Hunt's fullscreen mode.");
         ImGui::EndTooltip();
     }
+
+    ImGui::SameLine();
+
+    if (ImGui::Checkbox("Prevent recording", &Configs.General.PreventRecording)) {
+        BOOL status = SetWindowDisplayAffinity((HWND)ImGui::GetMainViewport()->PlatformHandle, Configs.General.PreventRecording ? WDA_EXCLUDEFROMCAPTURE : WDA_NONE);
+        if (!status) {
+            LOG_WARNING("Failed to SetWindowDisplayAffinity");
+        }
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        // https://stackoverflow.com/questions/74572938/setwindowdisplayaffinity-causes-nvidia-instant-replay-to-turn-off
+        ImGui::Text("Hide app from recording.\nNvidia ShadowPlay's stupid policy stops recording\nif sees a window with prevent recording flag (can't record kills).");
+        ImGui::EndTooltip();
+    }
+
+    ImGui::Separator();
+
+    ImGui::Checkbox("Crosshair lower position", &Configs.General.CrosshairLowerPosition);
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Check if you're using crosshair alt position so overlay can render crosshair in the correct position. Also used for Aimbot.");
+        ImGui::EndTooltip();
+    }
+
+    ImGui::Separator();
+
+    ImGui::Checkbox("Show dev settings", &showDevSettings);
+
+    if (showDevSettings)
+    {
+        ImGui::Checkbox("Write entities dump", &createEntitiesDump);
+        if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            ImGui::Text("Dumps all entity class names to classes-dump.txt\nCheckbox resets after app restart.");
+            ImGui::EndTooltip();
+        }
+    }    
 
     ImGui::Separator();
 
@@ -829,7 +904,7 @@ void ImGuiMenu::RenderSettingsTab() {
     }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        ImGui::Text("Closes the application immediately");
+        ImGui::Text("[Home+End] Closes the application immediately");
         ImGui::EndTooltip();
     }
 

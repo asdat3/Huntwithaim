@@ -92,6 +92,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             LOG_ERROR("Failed to create debug console");
         }
 
+        LOG_INFO("Initializing configurations...");
+        SetUpConfig();
+        LoadConfig(ConfigPath);
+
         LOG_INFO("Initializing game connection...");
         InitializeGame();
 
@@ -102,7 +106,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         wc.lpfnWndProc = WindowProc;
         wc.hInstance = hInstance;
         wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-        wc.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
         wc.lpszClassName = L"Hunt DMA";
 
         if (!RegisterClassEx(&wc)) {
@@ -110,8 +113,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             return -1;
         }
 
+        DWORD exStyle;
+        if (Configs.General.OverlayMode)
+            exStyle = WS_EX_TOPMOST |
+                      WS_EX_LAYERED |
+                      WS_EX_TRANSPARENT |
+                      WS_EX_NOACTIVATE |
+                      WS_EX_TOOLWINDOW;
+        else
+            exStyle = WS_EX_APPWINDOW;
+
         HWND hWnd = CreateWindowEx(
-            WS_EX_APPWINDOW,
+            exStyle,
             wc.lpszClassName,
             L"Hunt DMA",
             WS_POPUP,
@@ -129,15 +142,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         LOG_INFO("Window created successfully");
 
-        if (!SetLayeredWindowAttributes(hWnd, RGB(0, 0, 0), 255, LWA_ALPHA)) {
+        if (Configs.General.PreventRecording) {
+            BOOL status = SetWindowDisplayAffinity(hWnd, WDA_EXCLUDEFROMCAPTURE);
+            if (!status) {
+                LOG_WARNING("Failed to SetWindowDisplayAffinity to WDA_EXCLUDEFROMCAPTURE");
+            }
+        }
+
+        if (!SetLayeredWindowAttributes(hWnd, 0, 255, LWA_ALPHA)) {
             LOG_WARNING("Failed to set window transparency");
         }
 
-        ShowWindow(hWnd, nCmdShow);
+        BOOL enable = TRUE;
+        DwmSetWindowAttribute(hWnd, DWMWA_NCRENDERING_POLICY,
+            &enable, sizeof(enable));
 
-        LOG_INFO("Initializing configurations...");
-        SetUpConfig();
-        LoadConfig(ConfigPath);
+        if (Configs.General.OverlayMode)
+            SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
+        SetParent(hWnd, GetDesktopWindow());
+
+        ShowWindow(hWnd, nCmdShow);
+        UpdateWindow(hWnd);
 
         LOG_INFO("Detaching caching thread...");
         InitializeESP();
@@ -165,6 +191,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ZeroMemory(&msg, sizeof(msg));
         while (msg.message != WM_QUIT) {
             try {
+                if (Configs.General.OverlayMode)
+                {
+                    SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+                    MARGINS margins = { -1, -1, -1, -1 };
+                    DwmExtendFrameIntoClientArea(hWnd, &margins);
+                }
+
                 // Process Windows messages
                 if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE)) {
                     TranslateMessage(&msg);
@@ -209,6 +243,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 DrawBossesEsp();
                 DrawOtherEsp();
                 DrawOverlay();
+
+                // Enable/Disable cousor
+                if (Configs.General.OverlayMode)
+                {
+                    if (MenuOpen) {
+                        if (exStyle & WS_EX_TRANSPARENT) {
+                            exStyle &= ~WS_EX_TRANSPARENT;
+                            SetWindowLongPtr(hWnd, GWL_EXSTYLE, exStyle);
+                            SetWindowPos(hWnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                        }
+                    }
+                    else {
+                        if (!(exStyle & WS_EX_TRANSPARENT)) {
+                            exStyle |= WS_EX_TRANSPARENT;
+                            SetWindowLongPtr(hWnd, GWL_EXSTYLE, exStyle);
+                            SetWindowPos(hWnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                        }
+                    }
+                }
 
                 // Render ImGui menu
                 if (MenuOpen) g_ImGuiMenu.RenderMenu();

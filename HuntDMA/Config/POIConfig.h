@@ -21,7 +21,7 @@ public:
     bool ShowGunOil = false;
     bool ShowClues = false;
     bool ShowTraits = true;
-    bool ShowPumpkins = true;
+    bool ShowPumpkins = false;
     ImVec4 TextColor = ImVec4(0.0f, 1.0f, 0.866666f, 1.0f);
     int FontSize = 12;
     

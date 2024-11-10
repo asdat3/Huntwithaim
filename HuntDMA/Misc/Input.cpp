@@ -62,6 +62,8 @@ void UpdateKeyState(int key, bool down)
 /// </summary>
 void CheckAdaptiveMenuOpenState(bool focus)
 {
+    if (Configs.General.OverlayMode) return; // No need in overlay mode
+
     bool prevFocus = isFocused;
 
     if (!focus)
@@ -73,8 +75,8 @@ void CheckAdaptiveMenuOpenState(bool focus)
         bool isMouseOnWindowEdge =
             MousePos.x <= 0 ||
             MousePos.y <= 0 ||
-            MousePos.x >= ((Configs.Overlay.OverrideResolution ? Configs.Overlay.Width : GetSystemMetrics(SM_CXSCREEN)) - 1) ||
-            MousePos.y >= ((Configs.Overlay.OverrideResolution ? Configs.Overlay.Height : GetSystemMetrics(SM_CYSCREEN)) - 1);
+            MousePos.x >= ((Configs.General.OverrideResolution ? Configs.General.Width : GetSystemMetrics(SM_CXSCREEN)) - 1) ||
+            MousePos.y >= ((Configs.General.OverrideResolution ? Configs.General.Height : GetSystemMetrics(SM_CYSCREEN)) - 1);
         
         isFocused = !isMouseOnWindowEdge;
     }

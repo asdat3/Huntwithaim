@@ -129,7 +129,7 @@ void Environment::UpdatePlayerList()
 			EnvironmentInstance->SpectatorCountMutex.lock();
 			SpectatorCount = ent->SpecCount;
 			EnvironmentInstance->SpectatorCountMutex.unlock();
-			break;
+			continue;
 		}
 
 		ent->SetHidden((ent->GetInternalFlags() & WorldEntity::HIDDEN_FLAG) == WorldEntity::HIDDEN_FLAG); // If player has extracted
@@ -305,7 +305,7 @@ void Environment::CacheEntities()
 			tempbosseslist.push_back(ent);
 			continue;
 		}
-		if (strstr(entityClassName, "ExtractionPoint") != NULL)
+		if (strstr(entityClassName, "ExtractionPoint") || strstr(entityClassName, "ExtractionZone") != NULL)
 		{
 			ent->SetType(EntityType::ExtractionPoint);
 			temppoilist.push_back(ent);

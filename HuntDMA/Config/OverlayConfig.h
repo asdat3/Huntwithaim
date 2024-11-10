@@ -9,18 +9,15 @@ public:
     {
         ConfigName = name;
     }
-    bool OverrideResolution = false;
-    int Width = 1920;
-    int Height = 1080;
     bool ShowFPS = true;
     int FpsFontSize = 17;
     ImVec4 FpsColor = ImVec4(0.564705f, 0.564705f, 0.564705f, 1.0f);
     bool ShowObjectCount = true;
     int ObjectCountFontSize = 15;
     ImVec4 ObjectCountColor = ImVec4(0.564705f, 0.564705f, 0.564705f, 1.0f);
-    int CrosshairType = 0;
-    int CrosshairSize = 3;
-    ImVec4 CrosshairColor = ImVec4(0.0f, 0.588235f, 1.0f, 1.0f);
+    int CrosshairType = 1;
+    int CrosshairSize = 2;
+    ImVec4 CrosshairColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     void ToJsonColor(json* j, const std::string& name, ImVec4* color)
     {
@@ -44,9 +41,6 @@ public:
     json ToJson()
     {
         json j;
-        j[ConfigName][LIT("OverrideResolution")] = OverrideResolution;
-        j[ConfigName][LIT("Width")] = Width;
-        j[ConfigName][LIT("Height")] = Height;
         j[ConfigName][LIT("ShowFPS")] = ShowFPS;
         j[ConfigName][LIT("FpsFontSize")] = FpsFontSize;
         j[ConfigName][LIT("ShowObjectCount")] = ShowObjectCount;
@@ -64,12 +58,6 @@ public:
     {
         if (!j.contains(ConfigName))
             return;
-        if (j[ConfigName].contains(LIT("OverrideResolution")))
-            OverrideResolution = j[ConfigName][LIT("OverrideResolution")];
-        if (j[ConfigName].contains(LIT("Width")))
-            Width = j[ConfigName][LIT("Width")];
-        if (j[ConfigName].contains(LIT("Height")))
-            Height = j[ConfigName][LIT("Height")];
         if (j[ConfigName].contains(LIT("ShowFPS")))
             ShowFPS = j[ConfigName][LIT("ShowFPS")];
         if (j[ConfigName].contains(LIT("FpsFontSize")))

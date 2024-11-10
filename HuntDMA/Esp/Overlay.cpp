@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "ESPRenderer.h"
 
-void DrawFPS()
+static void DrawFPS()
 {
     ESPRenderer::DrawText(
         ImVec2(25, 25),
@@ -17,7 +17,7 @@ void DrawFPS()
     );
 }
 
-void DrawObjectCount()
+static void DrawObjectCount()
 {
     ESPRenderer::DrawText(
         ImVec2(25, 25 + Configs.Overlay.FpsFontSize),
@@ -27,7 +27,7 @@ void DrawObjectCount()
     );
 }
 
-void DrawPlayerList()
+static void DrawPlayerList()
 {
 	int y = ESPRenderer::GetScreenHeight() / 2;
 
@@ -46,7 +46,7 @@ void DrawPlayerList()
             continue;
 
         int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-        if (ent->GetType() == EntityType::LocalPlayer || !ent->GetValid())
+        if (ent->GetType() == EntityType::LocalPlayer || !ent->GetValid() || ent->IsHidden())
             continue;
 
         if (!IsValidHP(ent->GetHealth().current_hp) || !IsValidHP(ent->GetHealth().current_max_hp) ||
@@ -83,6 +83,73 @@ void DrawPlayerList()
     );
 }
 
+static ImVec2 GetCrosshairPosition()
+{
+    if (Configs.General.CrosshairLowerPosition)
+        return ImVec2(ESPRenderer::GetScreenWidth() * 0.5f, ESPRenderer::GetScreenHeight() * 0.6f);
+    else
+        return ImVec2(ESPRenderer::GetScreenWidth() * 0.5f, ESPRenderer::GetScreenHeight() * 0.5f);
+}
+
+static void DrawCrosshair()
+{
+    ImVec2 center = GetCrosshairPosition();
+
+    if (Configs.Overlay.CrosshairType == 1)
+    {
+        ESPRenderer::DrawCircle(
+            center,
+            Configs.Overlay.CrosshairSize,
+            Configs.Overlay.CrosshairColor,
+            1,
+            true
+        );
+    }
+    if (Configs.Overlay.CrosshairType == 2)
+    {
+        ESPRenderer::DrawCircle(
+            center,
+            Configs.Overlay.CrosshairSize,
+            Configs.Overlay.CrosshairColor,
+            1,
+            false
+        );
+    }
+    if (Configs.Overlay.CrosshairType == 3)
+    {
+        ESPRenderer::DrawRect(
+            ImVec2(center.x - (Configs.Overlay.CrosshairSize * 0.5f), center.y - (Configs.Overlay.CrosshairSize * 0.5f)),
+            ImVec2(center.x + (Configs.Overlay.CrosshairSize * 0.5f), center.y + (Configs.Overlay.CrosshairSize * 0.5f)),
+            Configs.Overlay.CrosshairColor,
+            1,
+            true
+        );
+    }
+    if (Configs.Overlay.CrosshairType == 4)
+    {
+        ESPRenderer::DrawRect(
+            ImVec2(center.x - (Configs.Overlay.CrosshairSize / 2), center.y - (Configs.Overlay.CrosshairSize / 2)),
+            ImVec2(center.x + (Configs.Overlay.CrosshairSize / 2), center.y + (Configs.Overlay.CrosshairSize / 2)),
+            Configs.Overlay.CrosshairColor,
+            1,
+            false
+        );
+    }
+}
+
+static void DrawAimbotFOV()
+{
+    ImVec2 center = GetCrosshairPosition();
+
+    ESPRenderer::DrawCircle(
+        center,
+        Configs.Aimbot.FOV,
+        Configs.Aimbot.FOVColor,
+        2,
+        false
+    );
+}
+
 void DrawOverlay()
 {
 	if (Configs.Overlay.ShowObjectCount)
@@ -93,4 +160,10 @@ void DrawOverlay()
 
 	if (Configs.Player.ShowPlayerList)
 		DrawPlayerList();
+
+    if (enableAimBot && Configs.Aimbot.DrawFOV)
+        DrawAimbotFOV();
+
+    if (Configs.Overlay.CrosshairType != 0) // Lastly draw crosshair to draw it on top of everything
+        DrawCrosshair();
 }

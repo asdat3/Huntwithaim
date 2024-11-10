@@ -8,12 +8,21 @@
 #include "ConfigUtilities.h"
 #include "Kmbox.h"
 #include "InputManager.h"
+#include "ESPRenderer.h"
+
+static Vector2 GetCenterOfScreen()
+{
+	if (Configs.General.CrosshairLowerPosition)
+		return Vector2(ESPRenderer::GetScreenWidth() * 0.5f, ESPRenderer::GetScreenHeight() * 0.6f);
+	else
+		return Vector2(ESPRenderer::GetScreenWidth() * 0.5f, ESPRenderer::GetScreenHeight() * 0.5f);
+}
 
 int ConditionalSwapPlayer(std::vector<std::shared_ptr<WorldEntity>>& entities, int low, int high)
 {
 	std::shared_ptr<WorldEntity> pivot = entities[high];
 	int i = low - 1;
-	Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height *0.6f : GetSystemMetrics(SM_CYSCREEN) *0.6f);
+	Vector2 Centerofscreen = GetCenterOfScreen();
 	for (int j = low; j < high; ++j)
 	{
 		if (Configs.Aimbot.Priority == 2)
@@ -60,10 +69,12 @@ void QuickSortPlayers(std::vector<std::shared_ptr<WorldEntity>>& entities, int l
 		QuickSortPlayers(entities, pi + 1, high);
 	}
 }
+
 std::shared_ptr<WorldEntity> AimbotTarget;
+
 bool StickTarget()
 {
-	Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
+	Vector2 Centerofscreen = GetCenterOfScreen();
 	if (CameraInstance == nullptr)
 		return false;
 	if (EnvironmentInstance == nullptr)
@@ -93,7 +104,7 @@ void GetAimbotTarget()
 		return;
 	if(StickTarget())
 		return;
-	Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
+	Vector2 Centerofscreen = GetCenterOfScreen();
 
 	std::vector<std::shared_ptr<WorldEntity>> templist;
 	Vector3 localpos = CameraInstance->GetPosition();
@@ -132,7 +143,9 @@ void GetAimbotTarget()
 	}
 	AimbotTarget = nullptr;
 }
+
 bool AimKeyDown = false;
+
 std::shared_ptr<CheatFunction> UpdateAimKey = std::make_shared<CheatFunction>(50, [] {
 	if (EnvironmentInstance == nullptr)
 		return;
@@ -146,8 +159,10 @@ std::shared_ptr<CheatFunction> UpdateAimKey = std::make_shared<CheatFunction>(50
 	{
 		AimKeyDown = false;
 	}
-	});
+});
+
 std::chrono::system_clock::time_point KmboxStart;
+
 void Aimbot()
 {  
 	UpdateAimKey->Execute();
@@ -166,7 +181,7 @@ void Aimbot()
 			return;
 		}
 		Vector2 screenpos = CameraInstance->WorldToScreen(AimbotTarget->GetPosition());
-		Vector2 Centerofscreen = Vector2(Configs.Overlay.OverrideResolution ? Configs.Overlay.Width / 2 : GetSystemMetrics(SM_CXSCREEN) / 2, Configs.Overlay.OverrideResolution ? Configs.Overlay.Height * 0.6f : GetSystemMetrics(SM_CYSCREEN) * 0.6f);
+		Vector2 Centerofscreen = GetCenterOfScreen();
 		if (Vector2::Distance(screenpos, Centerofscreen) > Configs.Aimbot.FOV)
 			return;
 		if (screenpos == Vector2::Zero())

@@ -29,6 +29,8 @@
 #include <dxgi.h>
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
 
 #ifdef DrawText
 #undef DrawText

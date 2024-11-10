@@ -65,9 +65,9 @@ void ESPRenderer::BeginFrame()
     s_drawList = ImGui::GetBackgroundDrawList();
 
     // Update screen dimensions if needed
-    if (Configs.Overlay.OverrideResolution) {
-        s_screenWidth = static_cast<float>(Configs.Overlay.Width);
-        s_screenHeight = static_cast<float>(Configs.Overlay.Height);
+    if (Configs.General.OverrideResolution) {
+        s_screenWidth = static_cast<float>(Configs.General.Width);
+        s_screenHeight = static_cast<float>(Configs.General.Height);
     }
     else {
         s_screenWidth = static_cast<float>(GetSystemMetrics(SM_CXSCREEN));
