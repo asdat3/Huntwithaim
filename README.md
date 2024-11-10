@@ -1,5 +1,5 @@
 # Hunt DMA Cheat
-Fully Featured Hunt DMA Cheat With Chams, Fuser ESP 
+Fully Featured Hunt DMA Cheat With Chams, Fuser ESP, Overlay mode.
 
 
 
@@ -23,7 +23,9 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP
 > [!IMPORTANT]
 > * You need to build this project first. I suggest using Visual Studio and building in **Release** configuration.  
 > * [Installation Guide](./Instructions.md)
-> * Open/close menu key - **Insert**
+> * Open/close menu key - **Insert** or **Home**
+> * Close menu - **Escape** or click outside the menu
+> * Exit app - **Home + End**
 
 ## Fixed and Supported Features
 * Player ESP
@@ -58,6 +60,14 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP
 * Spectating alarm
 * FPS
 * Auto SystemGlobalEnvironment offset detection (thanks [@spookykokojunge](https://github.com/spookykokojunge))
+* Crosshair rendering
+* Overlay mode
+  * Prevent recording
+
+### Overlay mode
+If you have single pc setup, you should enable this mode in the settings. Cheat will draw on top of everything.  
+Also, only in this mode transparency is supported (with fuser transparency is impossible).  
+Also works in fullscreen mode, tho it will switch to desctop if clicked in the menu (because it's different window).  
 
 ### Player ESP
 Chams are recommended to write after teammates are no longer tagged as enemy players or after raid starts.  
@@ -87,7 +97,7 @@ Can't be turned off. Shows you red frame and in big green number how many player
 Now can be controlled only via mouse: if you stick your cursor to the edge of the window, or move to the other screen, menu will close. Menu will open again when you move mouse back. And "app exit" button in the settings.
 
 # Known Issues
-\-
+- Memory leak
 
 # Todo
 - [ ] Optimize players read
@@ -95,6 +105,8 @@ Now can be controlled only via mouse: if you stick your cursor to the edge of th
 - [ ] Auto medkit esp turn on when low hp
 - [ ] Teams
 - [ ] View what is in player's hands
+- [ ] Add Icons to ESP
+- [x] Overlay mode
 - [x] Dark Sight Dynamite ESP
 - [x] Perks ESP/chams
 - [x] Draw player list like in Mr Smile's cheat
