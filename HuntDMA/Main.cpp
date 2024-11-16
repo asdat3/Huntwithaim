@@ -212,7 +212,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                     Sleep(1000);
                 }
 
-                if (EnvironmentInstance->GetObjectCount() == 0) {
+                if (EnvironmentInstance->GetObjectCount() < 10) {
                     LOG_DEBUG("No objects found, reinitializing environment...");
                     InitialiseClasses();
                     EnvironmentInstance->GetEntityList();

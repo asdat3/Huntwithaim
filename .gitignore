@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Dumps
+HuntDMA/Config.json
+HuntDMA/DefaultConfig.json
+HuntDMA/imgui.ini

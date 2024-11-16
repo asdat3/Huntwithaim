@@ -78,7 +78,6 @@ void Environment::UpdateLocalPlayer()
 	TargetProcess.CloseScatterHandle(handle);
 }
 
-
 void Environment::UpdatePlayerList()
 {
 	EnvironmentInstance->PlayerListMutex.lock();
@@ -115,7 +114,9 @@ void Environment::UpdatePlayerList()
 	Configs.Player.Chams = false;
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.ExecuteWriteScatter(writehandle);
+
 	TargetProcess.CloseScatterHandle(handle);
+	TargetProcess.CloseScatterHandle(writehandle);
 
 	bool spectatorCountChanged = false;
 	for (size_t index = 0; index < templist.size(); ++index)
@@ -167,7 +168,9 @@ void Environment::UpdateBossesList()
 	}
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.ExecuteWriteScatter(writehandle);
+
 	TargetProcess.CloseScatterHandle(handle);
+	TargetProcess.CloseScatterHandle(writehandle);
 
 	EnvironmentInstance->BossesListMutex.lock();
 	BossesList = templist;
@@ -177,16 +180,21 @@ void Environment::UpdateBossesList()
 void Environment::CacheEntities()
 {
 	GetEntities();
+
 	std::vector<uint64_t> entitylist;
 	entitylist.resize(ObjectCount);
+
 	std::unique_ptr<uint64_t[]> object_raw_ptr = std::make_unique<uint64_t[]>(ObjectCount);
 	TargetProcess.Read(EntityList, object_raw_ptr.get(), ObjectCount * sizeof(uint64_t));
+
+	// Copy raw pointers
 	for (size_t i = 0; i < ObjectCount; i++)
 	{
 		entitylist[i] = object_raw_ptr[i];
 	}
+
+	// Create entity pointers list
 	std::vector<std::shared_ptr<WorldEntity>> entitypointerlist;
-	auto handle = TargetProcess.CreateScatterHandle();
 	for (int i = 0; i < ObjectCount; i++)
 	{
 		uint64_t entity = entitylist[i];
@@ -197,10 +205,8 @@ void Environment::CacheEntities()
 		}
 		entitypointerlist.push_back(std::make_shared<WorldEntity>(entity));
 	}
-	TargetProcess.ExecuteReadScatter(handle);
-	TargetProcess.CloseScatterHandle(handle);
 
-	handle = TargetProcess.CreateScatterHandle();
+	auto handle = TargetProcess.CreateScatterHandle();
 	for (std::shared_ptr<WorldEntity> ent : entitypointerlist)
 	{
 		if (ent == nullptr)
@@ -208,9 +214,7 @@ void Environment::CacheEntities()
 		ent->SetUp(handle);
 	}
 	TargetProcess.ExecuteReadScatter(handle);
-	TargetProcess.CloseScatterHandle(handle);
 
-	handle = TargetProcess.CreateScatterHandle();
 	for (std::shared_ptr<WorldEntity> ent : entitypointerlist)
 	{
 		if (ent == nullptr)
@@ -218,9 +222,7 @@ void Environment::CacheEntities()
 		ent->SetUp1(handle);
 	}
 	TargetProcess.ExecuteReadScatter(handle);
-	TargetProcess.CloseScatterHandle(handle);
 
-	handle = TargetProcess.CreateScatterHandle();
 	for (std::shared_ptr<WorldEntity> ent : entitypointerlist)
 	{
 		if (ent == nullptr)
@@ -579,7 +581,6 @@ void Environment::CacheEntities()
 		ent->SetUp3(handle);
 	}
 	TargetProcess.ExecuteReadScatter(handle);
-	TargetProcess.CloseScatterHandle(handle);
 
 	for (std::shared_ptr<WorldEntity> ent : templayerlist) // got to do this after set up 3
 	{
@@ -589,7 +590,6 @@ void Environment::CacheEntities()
 		}
 	}
 
-	handle = TargetProcess.CreateScatterHandle();
 	for (std::shared_ptr<WorldEntity> ent : templayerlist)
 	{
 		if (ent == nullptr)
@@ -599,29 +599,35 @@ void Environment::CacheEntities()
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.CloseScatterHandle(handle);
 
-	PlayerListMutex.lock();
-	PlayerList = templayerlist;
-	PlayerListMutex.unlock();
+	{
+		std::lock_guard<std::mutex> player_lock(PlayerListMutex);
+		std::swap(PlayerList, templayerlist);
+	}
 
-	BossesListMutex.lock();
-	BossesList = tempbosseslist;
-	BossesListMutex.unlock();
+	{
+		std::lock_guard<std::mutex> boss_lock(BossesListMutex);
+		std::swap(BossesList, tempbosseslist);
+	}
 
-	SupplyListMutex.lock();
-	SupplyList = tempsupplylist;
-	SupplyListMutex.unlock();
+	{
+		std::lock_guard<std::mutex> supply_lock(SupplyListMutex);
+		std::swap(SupplyList, tempsupplylist);
+	}
 
-	BloodBondsListMutex.lock();
-	BloodBondsList = tempboodboundslist;
-	BloodBondsListMutex.unlock();
+	{
+		std::lock_guard<std::mutex> blood_lock(BloodBondsListMutex);
+		std::swap(BloodBondsList, tempboodboundslist);
+	}
 
-	TrapListMutex.lock();
-	TrapList = temptraplist;
-	TrapListMutex.unlock();
+	{
+		std::lock_guard<std::mutex> trap_lock(TrapListMutex);
+		std::swap(TrapList, temptraplist);
+	}
 
-	POIListMutex.lock();
-	POIList = temppoilist;
-	POIListMutex.unlock();
+	{
+		std::lock_guard<std::mutex> poi_lock(POIListMutex);
+		std::swap(POIList, temppoilist);
+	}
 }
 
 void Environment::ClearConsole()

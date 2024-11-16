@@ -149,7 +149,7 @@ bool AimKeyDown = false;
 std::shared_ptr<CheatFunction> UpdateAimKey = std::make_shared<CheatFunction>(50, [] {
 	if (EnvironmentInstance == nullptr)
 		return;
-	if (EnvironmentInstance->GetObjectCount() == 0)
+	if (EnvironmentInstance->GetObjectCount() < 10)
 		return;
 	if (Keyboard::IsKeyDown(Configs.Aimbot.Aimkey))
 	{

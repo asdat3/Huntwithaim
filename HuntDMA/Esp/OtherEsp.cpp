@@ -232,7 +232,7 @@ void DrawOtherEsp()
 	if (EnvironmentInstance == nullptr)
 		return;
 
-	if (EnvironmentInstance->GetObjectCount() == 0)
+	if (EnvironmentInstance->GetObjectCount() < 10)
 		return;
 
 	if (Configs.Supply.Enable)

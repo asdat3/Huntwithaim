@@ -10,6 +10,7 @@
 #include <chrono>
 #include "SpectatorAlarm.h"
 #include "Init.h"
+#include "CacheManager.h"
 
 ID2D1Factory* Factory;
 IDWriteFactory* FontFactory;
@@ -28,18 +29,10 @@ void InitialiseClasses()
 	CameraInstance = std::make_shared<Camera>();
 }
 
-std::shared_ptr<CheatFunction> Cache = std::make_shared<CheatFunction>(8000, [] {
-	if (EnvironmentInstance == nullptr)
-		return;
-	if (EnvironmentInstance->GetObjectCount() == 0)
-		return;
-	EnvironmentInstance->CacheEntities();
-});
-
 std::shared_ptr<CheatFunction> UpdateCam = std::make_shared<CheatFunction>(1, [] {
 	if (EnvironmentInstance == nullptr)
 		return;
-	if (EnvironmentInstance->GetObjectCount() == 0)
+	if (EnvironmentInstance->GetObjectCount() < 10)
 		return;
 	auto handle = TargetProcess.CreateScatterHandle();
 	CameraInstance->UpdateCamera(handle);
@@ -47,32 +40,9 @@ std::shared_ptr<CheatFunction> UpdateCam = std::make_shared<CheatFunction>(1, []
 	TargetProcess.CloseScatterHandle(handle);
 });
 
-std::shared_ptr<CheatFunction> UpdateLocalPlayer = std::make_shared<CheatFunction>(8000, [] {
-	if (EnvironmentInstance == nullptr)
-		return;
-	if (EnvironmentInstance->GetObjectCount() == 0)
-		return;
-	EnvironmentInstance->UpdateLocalPlayer();
-});
-
-void CacheThread()
-{
-	while (true)
-	{
-		if (EnvironmentInstance == nullptr || EnvironmentInstance->GetObjectCount() == 0)
-			continue;
-		UpdateLocalPlayer->Execute();
-		Cache->Execute();
-	}
-}
-
 void InitializeESP()
 {
-	if (!cacheThreadCreated)
-	{
-		cacheThreadCreated = true;
-		std::thread(CacheThread).detach();
-	}
+	g_CacheManager.Start();
 	if (enableAimBot)
 	{
 		Keyboard::InitKeyboard();

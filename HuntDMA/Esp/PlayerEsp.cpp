@@ -20,7 +20,7 @@ void DrawBossesEsp()
 	if (EnvironmentInstance == nullptr)
 		return;
 
-	if (EnvironmentInstance->GetObjectCount() == 0)
+	if (EnvironmentInstance->GetObjectCount() < 10)
 		return;
 
 	if (Configs.Bosses.Enable)
@@ -62,7 +62,7 @@ void DrawPlayersEsp()
 	if (EnvironmentInstance == nullptr)
 		return;
 	
-	if (EnvironmentInstance->GetObjectCount() == 0)
+	if (EnvironmentInstance->GetObjectCount() < 10)
 		return;
 	
 	if (Configs.Player.Enable || Configs.Player.DrawFrames)
