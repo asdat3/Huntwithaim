@@ -9,9 +9,7 @@
 
 void DrawSupply()
 {
-	EnvironmentInstance->SupplyListMutex.lock();
 	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetSupplyList();
-	EnvironmentInstance->SupplyListMutex.unlock();
 
 	if (templist.size() == 0)
 		return;
@@ -83,9 +81,7 @@ void DrawSupply()
 
 void DrawBloodBonds()
 {
-	EnvironmentInstance->BloodBondsListMutex.lock();
 	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetBloodBondsList();
-	EnvironmentInstance->BloodBondsListMutex.unlock();
 
 	if (templist.size() == 0)
 		return;
@@ -120,9 +116,7 @@ void DrawBloodBonds()
 
 void DrawTraps()
 {
-	EnvironmentInstance->TrapListMutex.lock();
 	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetTrapList();
-	EnvironmentInstance->TrapListMutex.unlock();
 
 	if (templist.size() == 0)
 		return;
@@ -171,9 +165,7 @@ void DrawTraps()
 
 void DrawPOI()
 {
-	EnvironmentInstance->POIListMutex.lock();
 	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetPOIList();
-	EnvironmentInstance->POIListMutex.unlock();
 
 	if (templist.size() == 0)
 		return;

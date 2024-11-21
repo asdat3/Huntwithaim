@@ -6,9 +6,7 @@
 
 void DrawSpectators()
 {
-	EnvironmentInstance->SpectatorCountMutex.lock();
 	int spectatorCount = EnvironmentInstance->GetSpectatorCount();
-	EnvironmentInstance->SpectatorCountMutex.unlock();
 
 	if (spectatorCount <= 0 || spectatorCount > 11) return;
 

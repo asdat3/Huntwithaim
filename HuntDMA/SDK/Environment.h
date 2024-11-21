@@ -45,13 +45,6 @@ public:
 	void CacheEntities();
 	Environment();
 	void ClearConsole();
-	std::mutex PlayerListMutex;
-	std::mutex BossesListMutex;
-	std::mutex SupplyListMutex;
-	std::mutex BloodBondsListMutex;
-	std::mutex TrapListMutex;
-	std::mutex POIListMutex;
-	std::mutex SpectatorCountMutex;
 	std::vector<std::shared_ptr<WorldEntity>> GetPlayerList() { return PlayerList; }
 	std::vector<std::shared_ptr<WorldEntity>> GetBossesList() { return BossesList; }
 	std::vector<std::shared_ptr<WorldEntity>> GetSupplyList() { return SupplyList; }

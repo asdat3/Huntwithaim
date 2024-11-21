@@ -108,10 +108,7 @@ void GetAimbotTarget()
 
 	std::vector<std::shared_ptr<WorldEntity>> templist;
 	Vector3 localpos = CameraInstance->GetPosition();
-	std::lock_guard<std::mutex> lock(EnvironmentInstance->PlayerListMutex);
-	{
-		templist = EnvironmentInstance->GetPlayerList();
-	}
+	templist = EnvironmentInstance->GetPlayerList();
 	if (templist.size() == 0)
 	{
 		return;

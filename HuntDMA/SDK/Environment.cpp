@@ -80,9 +80,7 @@ void Environment::UpdateLocalPlayer()
 
 void Environment::UpdatePlayerList()
 {
-	EnvironmentInstance->PlayerListMutex.lock();
 	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetPlayerList();
-	EnvironmentInstance->PlayerListMutex.unlock();
 	if (templist.size() == 0)
 		return;
 	auto handle = TargetProcess.CreateScatterHandle();
@@ -127,9 +125,7 @@ void Environment::UpdatePlayerList()
 		if (ent->GetType() == EntityType::LocalPlayer)
 		{
 			spectatorCountChanged = true;
-			EnvironmentInstance->SpectatorCountMutex.lock();
 			SpectatorCount = ent->SpecCount;
-			EnvironmentInstance->SpectatorCountMutex.unlock();
 			continue;
 		}
 
@@ -139,16 +135,12 @@ void Environment::UpdatePlayerList()
 	if (!spectatorCountChanged)
 		SpectatorCount = 0;
 
-	EnvironmentInstance->PlayerListMutex.lock();
 	PlayerList = templist;
-	EnvironmentInstance->PlayerListMutex.unlock();
 }
 
 void Environment::UpdateBossesList()
 {
-	EnvironmentInstance->BossesListMutex.lock();
 	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetBossesList();
-	EnvironmentInstance->BossesListMutex.unlock();
 	if (templist.size() == 0)
 		return;
 	auto handle = TargetProcess.CreateScatterHandle();
@@ -172,9 +164,7 @@ void Environment::UpdateBossesList()
 	TargetProcess.CloseScatterHandle(handle);
 	TargetProcess.CloseScatterHandle(writehandle);
 
-	EnvironmentInstance->BossesListMutex.lock();
 	BossesList = templist;
-	EnvironmentInstance->BossesListMutex.unlock();
 }
 
 void Environment::CacheEntities()
@@ -589,35 +579,12 @@ void Environment::CacheEntities()
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.CloseScatterHandle(handle);
 
-	{
-		std::lock_guard<std::mutex> player_lock(PlayerListMutex);
-		std::swap(PlayerList, templayerlist);
-	}
-
-	{
-		std::lock_guard<std::mutex> boss_lock(BossesListMutex);
-		std::swap(BossesList, tempbosseslist);
-	}
-
-	{
-		std::lock_guard<std::mutex> supply_lock(SupplyListMutex);
-		std::swap(SupplyList, tempsupplylist);
-	}
-
-	{
-		std::lock_guard<std::mutex> blood_lock(BloodBondsListMutex);
-		std::swap(BloodBondsList, tempboodboundslist);
-	}
-
-	{
-		std::lock_guard<std::mutex> trap_lock(TrapListMutex);
-		std::swap(TrapList, temptraplist);
-	}
-
-	{
-		std::lock_guard<std::mutex> poi_lock(POIListMutex);
-		std::swap(POIList, temppoilist);
-	}
+	std::swap(PlayerList, templayerlist);
+	std::swap(BossesList, tempbosseslist);
+	std::swap(SupplyList, tempsupplylist);
+	std::swap(BloodBondsList, tempboodboundslist);
+	std::swap(TrapList, temptraplist);
+	std::swap(POIList, temppoilist);
 }
 
 void Environment::ClearConsole()

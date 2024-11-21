@@ -25,9 +25,7 @@ void DrawBossesEsp()
 
 	if (Configs.Bosses.Enable)
 	{
-		EnvironmentInstance->BossesListMutex.lock();
 		std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetBossesList();
-		EnvironmentInstance->BossesListMutex.unlock();
 		if (templist.size() != 0)
 		{
 			for (std::shared_ptr<WorldEntity> ent : templist)
@@ -67,9 +65,7 @@ void DrawPlayersEsp()
 	
 	if (Configs.Player.Enable || Configs.Player.DrawFrames)
 	{
-		EnvironmentInstance->PlayerListMutex.lock();
 		std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetPlayerList();
-		EnvironmentInstance->PlayerListMutex.unlock();
 		if (templist.size() == 0)
 			return;
 		for (std::shared_ptr<WorldEntity> ent : templist)

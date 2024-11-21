@@ -31,9 +31,7 @@ static void DrawPlayerList()
 {
 	int y = ESPRenderer::GetScreenHeight() / 2;
 
-    EnvironmentInstance->PlayerListMutex.lock();
     std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetPlayerList();
-    EnvironmentInstance->PlayerListMutex.unlock();
 
     if (templist.empty())
         return;
