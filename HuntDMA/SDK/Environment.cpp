@@ -181,29 +181,19 @@ void Environment::CacheEntities()
 {
 	GetEntities();
 
-	std::vector<uint64_t> entitylist;
-	entitylist.resize(ObjectCount);
-
 	std::unique_ptr<uint64_t[]> object_raw_ptr = std::make_unique<uint64_t[]>(ObjectCount);
 	TargetProcess.Read(EntityList, object_raw_ptr.get(), ObjectCount * sizeof(uint64_t));
 
-	// Copy raw pointers
-	for (size_t i = 0; i < ObjectCount; i++)
-	{
-		entitylist[i] = object_raw_ptr[i];
-	}
-
 	// Create entity pointers list
 	std::vector<std::shared_ptr<WorldEntity>> entitypointerlist;
+	entitypointerlist.resize(ObjectCount);
+
 	for (int i = 0; i < ObjectCount; i++)
 	{
-		uint64_t entity = entitylist[i];
-		
-		if (entity == NULL)
-		{
+		if (object_raw_ptr[i] == NULL)
 			continue;
-		}
-		entitypointerlist.push_back(std::make_shared<WorldEntity>(entity));
+		
+		entitypointerlist[i] = std::make_shared<WorldEntity>(object_raw_ptr[i]);
 	}
 
 	auto handle = TargetProcess.CreateScatterHandle();
