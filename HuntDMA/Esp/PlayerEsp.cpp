@@ -78,16 +78,26 @@ void DrawPlayersEsp()
 			if (!Configs.Player.DrawFriends && ent->GetType() == EntityType::FriendlyPlayer)
 				continue;
 
-			int distance = (int)Vector3::Distance(playerPos, CameraInstance->GetPosition());
-			if (distance <= 0 || distance > Configs.Player.MaxDistance)
-				continue;
-
 			if (!ent->GetValid() || ent->IsHidden()) // Has extracted
 				continue;
 
-			if (!IsValidHP(ent->GetHealth().current_hp) ||
+			auto isDead = false;
+			if (ent->GetType() != EntityType::FriendlyPlayer &&
+				(!IsValidHP(ent->GetHealth().current_hp) ||
 				!IsValidHP(ent->GetHealth().current_max_hp) ||
-				!IsValidHP(ent->GetHealth().regenerable_max_hp))
+				!IsValidHP(ent->GetHealth().regenerable_max_hp)))
+			{
+				ent->SetType(EntityType::DeadPlayer);
+				isDead = true;
+			}
+			else
+				ent->SetType(EntityType::EnemyPlayer);
+
+			if (!Configs.Player.ShowDead && isDead)
+				continue;
+
+			int distance = (int)Vector3::Distance(playerPos, CameraInstance->GetPosition());
+			if (distance <= 0 || distance > (isDead ? Configs.Player.DeadMaxDistance : Configs.Player.MaxDistance))
 				continue;
 
 			auto tempPos = playerPos;
@@ -97,7 +107,7 @@ void DrawPlayersEsp()
 			
 			tempPos.z = playerPos.z + 1.7f;
 			Vector2 headPos;
-			if (Configs.Player.DrawHeadInFrames)
+			if (Configs.Player.DrawHeadInFrames && !isDead)
 			{
 				headPos = CameraInstance->WorldToScreen(tempPos, false);
 				if (headPos.IsZero())
@@ -106,7 +116,7 @@ void DrawPlayersEsp()
 
 			tempPos.z = playerPos.z + 2.0f;
 			Vector2 uppderFramePos;
-			if (Configs.Player.DrawFrames || Configs.Player.DrawHealthBars)
+			if ((Configs.Player.DrawFrames || Configs.Player.DrawHealthBars) && !isDead)
 			{
 				uppderFramePos = CameraInstance->WorldToScreen(tempPos, false);
 				if (uppderFramePos.IsZero())
@@ -115,7 +125,7 @@ void DrawPlayersEsp()
 
 			tempPos.z = playerPos.z + 2.1f;
 			Vector2 healthBarPos;
-			if (Configs.Player.DrawHealthBars)
+			if (Configs.Player.DrawHealthBars && !isDead)
 			{
 				healthBarPos = CameraInstance->WorldToScreen(tempPos, false);
 				if (healthBarPos.IsZero())
@@ -123,7 +133,7 @@ void DrawPlayersEsp()
 			}
 
 			Vector2 offset, normal;
-			if (Configs.Player.DrawFrames || Configs.Player.DrawHealthBars)
+			if ((Configs.Player.DrawFrames || Configs.Player.DrawHealthBars) && !isDead)
 			{
 				Vector2 v = uppderFramePos - feetPos;
 				float segmentLength = Vector2::Length(v);
@@ -131,7 +141,7 @@ void DrawPlayersEsp()
 				offset = normal / (2.0f * 2);
 			}
 
-			if (Configs.Player.DrawFrames)
+			if (Configs.Player.DrawFrames && !isDead)
 			{
 				Vector2 A1 = feetPos + offset;
 				Vector2 A2 = feetPos - offset;
@@ -188,7 +198,7 @@ void DrawPlayersEsp()
 				}
 			}
 
-			if (Configs.Player.DrawHealthBars)
+			if (Configs.Player.DrawHealthBars && !isDead)
 			{
 				auto health = ent->GetHealth();
 				Vector2 Health1 = healthBarPos - offset;
@@ -230,7 +240,7 @@ void DrawPlayersEsp()
 			if (!Configs.Player.Enable)
 				continue;
 
-			std::wstring wname = Configs.Player.Name ? ent->GetName() : L"";
+			std::wstring wname = (Configs.Player.Name || isDead) ? ent->GetName() : L"";
 			std::wstring wdistance = Configs.Player.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
 			std::wstring whealth = Configs.Player.HP ? std::to_wstring(ent->GetHealth().current_hp) + L"/" + std::to_wstring(ent->GetHealth().current_max_hp) + L"[" + std::to_wstring(ent->GetHealth().regenerable_max_hp) + L"]" : L"";
 			ESPRenderer::DrawText(

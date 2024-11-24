@@ -12,13 +12,15 @@ public:
     bool Enable = true;
     bool Name = true;
 	bool Distance = true;
-	int MaxDistance = 400;
+	int MaxDistance = 1500;
+    int DeadMaxDistance = 500;
     ImVec4 TextColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 	int FontSize = 13;
     bool Chams = false;
     int ChamMode = 5;
     bool HP = true;
     bool DrawFriends = false;
+    bool ShowDead = false;
     bool DrawFrames = true;
     bool DrawHeadInFrames = true;
     bool DrawHealthBars = true;
@@ -54,11 +56,13 @@ public:
         j[ConfigName][LIT("Name")] = Name;
         j[ConfigName][LIT("Distance")] = Distance;
         j[ConfigName][LIT("MaxDistance")] = MaxDistance;
+        j[ConfigName][LIT("DeadMaxDistance")] = DeadMaxDistance;
         j[ConfigName][LIT("FontSize")] = FontSize;
         j[ConfigName][LIT("Chams")] = Chams;
         j[ConfigName][LIT("ChamMode")] = ChamMode;
         j[ConfigName][LIT("HP")] = HP;
         j[ConfigName][LIT("DrawFriends")] = DrawFriends;
+        j[ConfigName][LIT("ShowDead")] = ShowDead;
         j[ConfigName][LIT("DrawFrames")] = DrawFrames;
         j[ConfigName][LIT("DrawHeadInFrames")] = DrawHeadInFrames;
         j[ConfigName][LIT("DrawHealthBars")] = DrawHealthBars;
@@ -85,6 +89,8 @@ public:
             FontSize = j[ConfigName][LIT("FontSize")];
         if (j[ConfigName].contains(LIT("MaxDistance")))
             MaxDistance = j[ConfigName][LIT("MaxDistance")];
+        if (j[ConfigName].contains(LIT("DeadMaxDistance")))
+            DeadMaxDistance = j[ConfigName][LIT("DeadMaxDistance")];
         if (j[ConfigName].contains(LIT("DrawFrames")))
             DrawFrames = j[ConfigName][LIT("DrawFrames")];
         if (j[ConfigName].contains(LIT("Chams")))
@@ -95,6 +101,8 @@ public:
             HP = j[ConfigName][LIT("HP")];
         if (j[ConfigName].contains(LIT("DrawFriends")))
             DrawFriends = j[ConfigName][LIT("DrawFriends")];
+        if (j[ConfigName].contains(LIT("ShowDead")))
+            ShowDead = j[ConfigName][LIT("ShowDead")];
         if (j[ConfigName].contains(LIT("DrawHeadInFrames")))
             DrawHeadInFrames = j[ConfigName][LIT("DrawHeadInFrames")];
         if (j[ConfigName].contains(LIT("DrawHealthBars")))

@@ -495,6 +495,9 @@ void ImGuiMenu::RenderPlayerESPTab() {
         ImGui::Checkbox("HP", &Configs.Player.HP);
     }
 
+    ImGui::Checkbox("Show Dead", &Configs.Player.ShowDead);
+    ImGui::SliderInt("Dead Max Distance", &Configs.Player.DeadMaxDistance, 0, 1500, "%d m");
+
     if (Configs.Player.Enable || Configs.Player.DrawFrames)
     {
         ImGui::Checkbox("Draw Friendly", &Configs.Player.DrawFriends);

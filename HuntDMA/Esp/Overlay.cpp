@@ -47,7 +47,8 @@ static void DrawPlayerList()
         if (ent->GetType() == EntityType::LocalPlayer || !ent->GetValid() || ent->IsHidden())
             continue;
 
-        if (!IsValidHP(ent->GetHealth().current_hp) || !IsValidHP(ent->GetHealth().current_max_hp) ||
+        if (!IsValidHP(ent->GetHealth().current_hp) ||
+            !IsValidHP(ent->GetHealth().current_max_hp) ||
             !IsValidHP(ent->GetHealth().regenerable_max_hp))
             continue;
 
