@@ -20,7 +20,21 @@ private:
 	uint64_t EntityList = 0x0;
 	const uint64_t EntityListOffset = 0x40098;
 
-	const char* LocalPlayerSignature = "48 8B 15 ? ? ? ? 48 2B F2 48 C1 FE 05 48 85 F6";
+	uint64_t IGameFramework = 0x0;
+	const uint64_t IGameFrameworkOffset = 0xD8;
+
+	uint64_t pGame = 0x0;
+	const uint64_t pGameOffset = 0x700;
+
+	uint64_t pGameClientNub = 0x0;
+	const uint64_t pGameClientNubOffset = 0x48;
+
+	uint64_t pGameClientChannel = 0x0;
+	const uint64_t pGameClientChannelOffset = 0x20;
+
+	uint64_t localPlayerIdx = 0x0;
+	const uint64_t localPlayerIdxOffset = 0x24;
+
 	uint64_t LocalPlayer = 0x0;
 
 	int SpectatorCount = 0;

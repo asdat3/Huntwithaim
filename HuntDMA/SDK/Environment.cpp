@@ -52,30 +52,31 @@ void Environment::GetEntities()
 
 void Environment::UpdateLocalPlayer()
 {
-	auto base = TargetProcess.GetBaseAddress("GameHunt.dll");
-	auto size = TargetProcess.GetBaseSize("GameHunt.dll");
-
-	uint64_t LocalPlayerSig = TargetProcess.FindSignature(LocalPlayerSignature, base, base + size);
-
-	auto handle = TargetProcess.CreateScatterHandle();
-
-	int relativeOffset;
-	TargetProcess.AddScatterReadRequest(handle, LocalPlayerSig + 3, &relativeOffset, sizeof(int));
-	TargetProcess.ExecuteReadScatter(handle);
-
-	uint64_t LocalPlayerBasePtr = LocalPlayerSig + 7 + relativeOffset;
-
-	TargetProcess.AddScatterReadRequest(handle, LocalPlayerBasePtr, &LocalPlayer, sizeof(LocalPlayer));
-	TargetProcess.ExecuteReadScatter(handle);
-
-	std::vector<uint64_t> offsets = { 0x8ull, 0x18ull };
-	for (uint64_t offset : offsets)
+	/*IGameFramework = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + IGameFrameworkOffset);
+	pGame = TargetProcess.Read<uint64_t>(IGameFramework + pGameOffset);
+	pGameClientNub = TargetProcess.Read<uint64_t>(pGame + pGameClientNubOffset);
+	pGameClientChannel = TargetProcess.Read<uint64_t>(pGame + pGameClientChannelOffset);
+	localPlayerIdx = TargetProcess.Read<uint64_t>(pGameClientChannel + localPlayerIdxOffset);
+	LocalPlayer = TargetProcess.Read<uint64_t>(EntityList + localPlayerIdx * sizeof(uint64_t));
+	LOG_INFO("LocalPlayerIndex = %llu", localPlayerIdx);*/
+	float minDistance = 69420;
+	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetPlayerList();
+	if (templist.size() == 0) return;
+	for (size_t index = 0; index < templist.size(); ++index)
 	{
-		TargetProcess.AddScatterReadRequest(handle, LocalPlayer + offset, &LocalPlayer, sizeof(LocalPlayer));
-		TargetProcess.ExecuteReadScatter(handle);
-	}
+		std::shared_ptr<WorldEntity> ent = templist[index];
+		if (ent == nullptr)
+			continue;
 
-	TargetProcess.CloseScatterHandle(handle);
+		float distance = Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
+		if (distance < minDistance)
+		{
+			minDistance = distance;
+			LocalPlayer = ent->GetClass();
+			LOG_ERROR("%f meters: %llu", minDistance, LocalPlayer);
+		}
+	}
+	LOG_ERROR("==============");
 }
 
 void Environment::UpdatePlayerList()
