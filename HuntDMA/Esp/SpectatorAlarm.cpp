@@ -19,7 +19,7 @@ void DrawSpectators()
     ESPRenderer::DrawRect(
         ImVec2(0, 0),
         ImVec2(screenWidth, screenHeight),
-        ImVec4(1.0f, 0.0f, 0.0f, Configs.General.OverlayMode ? 0.5f : 1.0f),
+        ImVec4(1.0f, 0.0f, 0.0f, Configs.General.OverlayMode ? 0.7f : 1.0f),
         static_cast<float>(lineWidth)
     );
 
@@ -27,7 +27,7 @@ void DrawSpectators()
     ESPRenderer::DrawText(
         ImVec2(0, 55),
         std::to_wstring(spectatorCount),
-        ImVec4(0.0f, 1.0f, 0.0f, Configs.General.OverlayMode ? 0.5f : 1.0f),
+        ImVec4(0.0f, 1.0f, 0.0f, Configs.General.OverlayMode ? 0.7f : 1.0f),
         40
     );
 }

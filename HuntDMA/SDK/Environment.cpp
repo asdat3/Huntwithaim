@@ -117,6 +117,26 @@ void Environment::UpdatePlayerList()
 	TargetProcess.CloseScatterHandle(handle);
 	TargetProcess.CloseScatterHandle(writehandle);
 
+	// Nearest player = local player
+	float minDistance = 69420;
+	std::shared_ptr<WorldEntity> nearestEntity = NULL;
+	if (templist.size() == 0) return;
+	for (size_t index = 0; index < templist.size(); ++index)
+	{
+		std::shared_ptr<WorldEntity> ent = templist[index];
+		if (ent == nullptr)
+			continue;
+
+		float distance = Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
+		if (distance < minDistance)
+		{
+			minDistance = distance;
+			nearestEntity = ent;
+		}
+	}
+	LocalPlayer = nearestEntity->GetClass();
+	nearestEntity->SetType(EntityType::LocalPlayer);
+
 	bool spectatorCountChanged = false;
 	for (size_t index = 0; index < templist.size(); ++index)
 	{

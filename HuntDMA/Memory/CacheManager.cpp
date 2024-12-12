@@ -32,7 +32,6 @@ void CacheManager::CacheThreadFunction()
         {
             //UpdateLocalPlayer();
             Cache();
-            UpdateLocalPlayer();
 
             auto sleep_time = std::chrono::milliseconds(8000);
 
