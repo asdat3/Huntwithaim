@@ -22,6 +22,8 @@ Environment::Environment()
 	TargetProcess.AddScatterReadRequest(handle, SystemGlobalEnvironment + pSystemOffset, &pSystem, sizeof(uint64_t));
 	TargetProcess.ExecuteReadScatter(handle);
 	TargetProcess.CloseScatterHandle(handle);
+	IGameFramework = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + IGameFrameworkOffset);
+	pGame = TargetProcess.Read<uint64_t>(IGameFramework + pGameOffset);
 	LOG_DEBUG(LIT("EntitySystem: 0x%X"), EntitySystem);
 	LOG_DEBUG(LIT("pSystem: 0x%X"), pSystem);
 }
@@ -52,31 +54,11 @@ void Environment::GetEntities()
 
 void Environment::UpdateLocalPlayer()
 {
-	/*IGameFramework = TargetProcess.Read<uint64_t>(SystemGlobalEnvironment + IGameFrameworkOffset);
-	pGame = TargetProcess.Read<uint64_t>(IGameFramework + pGameOffset);
 	pGameClientNub = TargetProcess.Read<uint64_t>(pGame + pGameClientNubOffset);
-	pGameClientChannel = TargetProcess.Read<uint64_t>(pGame + pGameClientChannelOffset);
-	localPlayerIdx = TargetProcess.Read<uint64_t>(pGameClientChannel + localPlayerIdxOffset);
-	LocalPlayer = TargetProcess.Read<uint64_t>(EntityList + localPlayerIdx * sizeof(uint64_t));
-	LOG_INFO("LocalPlayerIndex = %llu", localPlayerIdx);*/
-	float minDistance = 69420;
-	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetPlayerList();
-	if (templist.size() == 0) return;
-	for (size_t index = 0; index < templist.size(); ++index)
-	{
-		std::shared_ptr<WorldEntity> ent = templist[index];
-		if (ent == nullptr)
-			continue;
-
-		float distance = Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-		if (distance < minDistance)
-		{
-			minDistance = distance;
-			LocalPlayer = ent->GetClass();
-			LOG_ERROR("%f meters: %llu", minDistance, LocalPlayer);
-		}
-	}
-	LOG_ERROR("==============");
+	pGameClientChannel = TargetProcess.Read<uint64_t>(pGameClientNub + pGameClientChannelOffset);
+	localPlayerIdx = TargetProcess.Read<int>(pGameClientChannel + localPlayerIdxOffset);
+	LocalPlayer = TargetProcess.Read<uint64_t>(EntityList + (localPlayerIdx * sizeof(uint64_t)));
+	//LOG_INFO("LocalPlayerIndex = %llu", localPlayerIdx);
 }
 
 void Environment::UpdatePlayerList()
@@ -116,26 +98,6 @@ void Environment::UpdatePlayerList()
 
 	TargetProcess.CloseScatterHandle(handle);
 	TargetProcess.CloseScatterHandle(writehandle);
-
-	// Nearest player = local player
-	float minDistance = 69420;
-	std::shared_ptr<WorldEntity> nearestEntity = NULL;
-	if (templist.size() == 0) return;
-	for (size_t index = 0; index < templist.size(); ++index)
-	{
-		std::shared_ptr<WorldEntity> ent = templist[index];
-		if (ent == nullptr)
-			continue;
-
-		float distance = Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
-		if (distance < minDistance)
-		{
-			minDistance = distance;
-			nearestEntity = ent;
-		}
-	}
-	LocalPlayer = nearestEntity->GetClass();
-	nearestEntity->SetType(EntityType::LocalPlayer);
 
 	bool spectatorCountChanged = false;
 	for (size_t index = 0; index < templist.size(); ++index)
