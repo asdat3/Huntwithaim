@@ -9,9 +9,9 @@ public:
     {
         ConfigName = name;
     }
-    bool Enable = false;
+    bool Enable = true;
     int MaxDistance = 250;
-    bool TargetPlayers = false;
+    bool TargetPlayers = true;
     int Priority = 0;
     int FOV = 200;
     int Aimkey = 5;
