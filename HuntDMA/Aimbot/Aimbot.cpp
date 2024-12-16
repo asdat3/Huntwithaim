@@ -125,7 +125,6 @@ std::chrono::system_clock::time_point KmboxStart;
 
 void Aimbot()
 {  
-	UpdateAimKey->Execute();
 	if (!kmbox::connected || !AimKeyDown)
 	{
 		AimbotTarget = nullptr;
