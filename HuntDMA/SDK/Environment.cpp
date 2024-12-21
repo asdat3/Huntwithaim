@@ -483,7 +483,7 @@ void Environment::CacheEntities()
 		}
 		if ((std::string)(entityClassName) == "DestroyableReward")
 		{
-			ent->SetType(EntityType::Pumpkin);
+			ent->SetType(EntityType::Event);
 			temppoilist.push_back(ent);
 			continue;
 		}

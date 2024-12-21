@@ -102,6 +102,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)HuntDMA.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Aimbot\Aimbot.cpp" />
@@ -178,6 +181,7 @@
     <ClInclude Include="Misc\Input.h" />
     <ClInclude Include="Misc\Pch\Pch.h" />
     <ClInclude Include="Misc\Vector.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SDK\Camera.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="SDK\WorldEntity.h" />
@@ -191,6 +195,12 @@
     <ClInclude Include="Libs\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Libs\ImGui\imstb_textedit.h" />
     <ClInclude Include="Libs\ImGui\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HuntDMA.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

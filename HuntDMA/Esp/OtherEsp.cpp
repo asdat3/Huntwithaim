@@ -192,7 +192,7 @@ void DrawPOI()
 			continue;
 		if (!Configs.POI.ShowTraits && (type == EntityType::Trait))
 			continue;
-		if (!Configs.POI.ShowPumpkins && (type == EntityType::Pumpkin))
+		if (!Configs.POI.ShowSeasonalDestructibles && (type == EntityType::Event))
 			continue;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());

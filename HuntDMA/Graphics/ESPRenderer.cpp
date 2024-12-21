@@ -26,6 +26,11 @@ bool ESPRenderer::Initialize()
         return false;
     }
 
+    io.FontDefault = io.Fonts->AddFontDefault();
+    ImFontConfig config;
+    config.SizePixels = 13.0f * Configs.General.UIScale;
+    io.FontDefault = io.Fonts->AddFontDefault(&config);
+
     // Load all font sizes
     if (!std::filesystem::exists(fontPath)) {
         LOG_ERROR("[ESPRenderer] Font file not found at: %s", fontPath);

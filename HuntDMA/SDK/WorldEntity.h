@@ -77,7 +77,7 @@ enum class EntityType : int
 	ShotgunAmmoPackage,
 	Medkit,
 
-	Pumpkin,
+	Event,
 };
 struct Matrix4x4 {
 	float m[4][4];
@@ -208,7 +208,7 @@ private:
 		{EntityType::ShotgunAmmoPackage, L"Shotgun Ammo Package"},
 		{EntityType::Medkit, L"Medkit"},
 
-		{EntityType::Pumpkin, L"Pumpkin"},
+		{EntityType::Event, L"Event"},
 	};
 public:
 	WorldEntity( uint64_t classptr);

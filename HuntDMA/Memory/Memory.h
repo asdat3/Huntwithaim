@@ -278,7 +278,6 @@ public:
 	void ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0);
 	void ExecuteWriteScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0);
 
-
 	/*the FPGA handle*/
 	VMM_HANDLE vHandle;
 };

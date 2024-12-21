@@ -20,7 +20,7 @@
 
 void InitializeGame()
 {
-	while (!TargetProcess.Init("HuntGame.exe", true, true))
+	while (!TargetProcess.Init("HuntGame.exe", false, false))
 	{
         LOG_WARNING("Failed to attach to game process. Retrying in 2 seconds...");
 		Sleep(2000);
@@ -160,8 +160,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (Configs.General.OverlayMode)
             SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
-        SetParent(hWnd, GetDesktopWindow());
-
         ShowWindow(hWnd, nCmdShow);
         UpdateWindow(hWnd);
 
@@ -248,6 +246,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 if (Configs.General.OverlayMode)
                 {
                     if (MenuOpen) {
+                        SetForegroundWindow(hWnd);
                         if (exStyle & WS_EX_TRANSPARENT) {
                             exStyle &= ~WS_EX_TRANSPARENT;
                             SetWindowLongPtr(hWnd, GWL_EXSTYLE, exStyle);
