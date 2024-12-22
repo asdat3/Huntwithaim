@@ -29,7 +29,7 @@ public:
     static bool Initialize();
     static void BeginFrame();
 
-    static void DrawText(const ImVec2& pos, const std::wstring& text, const ImVec4& color, int fontSize = 13, FontAlignment alignment = TopLeft, float outline = 1.0f);
+    static void DrawText(const ImVec2& pos, const std::string& text, const ImVec4& color, int fontSize = 13, FontAlignment alignment = TopLeft, float outline = 1.0f);
     static void DrawLine(const ImVec2& from, const ImVec2& to, const ImVec4& color, float thickness = 1.0f);
     static void DrawCircle(const ImVec2& center, float radius, const ImVec4& color, float thickness = 1.0f, bool filled = false);
     static void DrawRect(const ImVec2& min, const ImVec2& max, const ImVec4& color, float thickness = 1.0f, bool filled = false);
@@ -42,5 +42,4 @@ public:
 
 private:
     static ImFont* GetFont(int size);
-    static std::string ConvertWideToUTF8(const std::wstring& wstr);
 };

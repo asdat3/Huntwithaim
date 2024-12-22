@@ -34,6 +34,7 @@ Memory::~Memory()
 
 bool Memory::DumpMemoryMap(bool debug)
 {
+	LOG_INFO("dumping memory map to file...");
 	LPSTR args[] = { (LPSTR)"", (LPSTR)"-device", (LPSTR)"fpga://algo=0", (LPSTR)"", (LPSTR)"" };
 	int argc = 3;
 	if (debug)
@@ -80,12 +81,12 @@ bool Memory::DumpMemoryMap(bool debug)
 	}
 
 	auto temp_path = std::filesystem::temp_directory_path();
-	std::ofstream nFile(temp_path.string() + "\\mmap.txt");
+	std::ofstream nFile((temp_path / "mmap.txt").string());
 	nFile << sb.str();
 	nFile.close();
 
 	VMMDLL_MemFree(pPhysMemMap);
-	LOG_INFO("Successfully dumped memory map to file!");
+	LOG_INFO("Successfully dumped memory map to file! At path %s", (temp_path / "mmap.txt").string());
 	//Little sleep to make sure it's written to file.
 	Sleep(3000);
 	VMMDLL_Close(handle);
@@ -147,13 +148,12 @@ bool Memory::Init(std::string process_name, bool memMap, bool debug)
 		if (memMap)
 		{
 			auto temp_path = std::filesystem::temp_directory_path();
-			path = (temp_path.string() + "\\mmap.txt");
+			path = (temp_path / "mmap.txt").string();
 			bool dumped = false;
 			if (!std::filesystem::exists(path))
 				dumped = this->DumpMemoryMap(debug);
 			else
 				dumped = true;
-			LOG_INFO("dumping memory map to file...");
 			if (!dumped)
 			{
 				LOG_ERROR("[!] ERROR: Could not dump memory map!");
@@ -314,35 +314,30 @@ VMMDLL_PROCESS_INFORMATION Memory::GetProcessInformation()
 
 size_t Memory::GetBaseAddress(std::string module_name)
 {
-	std::wstring str(module_name.begin(), module_name.end());
-	if (!Modules.contains(str))
+	if (!Modules.contains(module_name))
 	{
-
-
 		PVMMDLL_MAP_MODULEENTRY module_info;
-		if (!VMMDLL_Map_GetModuleFromNameW(this->vHandle, this->current_process.PID, (LPWSTR)str.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL))
+		if (!VMMDLL_Map_GetModuleFromNameU(this->vHandle, this->current_process.PID, (LPSTR)module_name.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL))
 		{
 			LOG_ERROR("[!] Couldn't find Base Address for %s", module_name.c_str());
 			return 0;
 		}
 
 		LOG_DEBUG("[+] Found Base Address for %s at 0x%p", module_name.c_str(), module_info->vaBase);
-		Modules[str] = module_info->vaBase;
+		Modules[module_name] = module_info->vaBase;
 		return module_info->vaBase;
 	}
 	else
 	{
-		return Modules[str];
+		return Modules[module_name];
 	}
 
 }
 
 size_t Memory::GetBaseSize(std::string module_name)
 {
-	std::wstring str(module_name.begin(), module_name.end());
-
 	PVMMDLL_MAP_MODULEENTRY module_info;
-	auto bResult = VMMDLL_Map_GetModuleFromNameW(this->vHandle, this->current_process.PID, (LPWSTR)str.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL);
+	auto bResult = VMMDLL_Map_GetModuleFromNameU(this->vHandle, this->current_process.PID, (LPSTR)module_name.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL);
 	if (bResult)
 	{
 		LOG_DEBUG("[+] Found Base Size for %s at 0x%p", module_name.c_str(), module_info->cbImageSize);
@@ -562,7 +557,7 @@ bool Memory::DumpMemory(uintptr_t address, std::string path)
 	}
 
 	//Dump file
-	const auto dumped_file = CreateFileW(std::wstring(path.begin(), path.end()).c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_COMPRESSED, NULL);
+	const auto dumped_file = CreateFileA(path.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_COMPRESSED, NULL);
 	if (dumped_file == INVALID_HANDLE_VALUE)
 	{
 		LOG_ERROR("[!] Failed creating file: %i", GetLastError());

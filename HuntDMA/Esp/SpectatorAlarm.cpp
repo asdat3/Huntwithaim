@@ -26,7 +26,7 @@ void DrawSpectators()
     // Draw spectator count
     ESPRenderer::DrawText(
         ImVec2(0, 55),
-        std::to_wstring(spectatorCount),
+        std::to_string(spectatorCount),
         ImVec4(0.0f, 1.0f, 0.0f, Configs.General.OverlayMode ? 0.7f : 1.0f),
         40
     );

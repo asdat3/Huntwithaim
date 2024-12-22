@@ -11,7 +11,7 @@ static void DrawFPS()
 {
     ESPRenderer::DrawText(
         ImVec2(25, 25),
-        L"Overlay FPS: " + std::to_wstring(FrameRate()),
+        "Overlay FPS: " + std::to_string(FrameRate()),
         Configs.Overlay.FpsColor,
         Configs.Overlay.FpsFontSize
     );
@@ -21,7 +21,7 @@ static void DrawObjectCount()
 {
     ESPRenderer::DrawText(
         ImVec2(25, 25 + Configs.Overlay.FpsFontSize),
-        L"Objects: " + std::to_wstring(EnvironmentInstance->GetObjectCount()),
+        "Objects: " + std::to_string(EnvironmentInstance->GetObjectCount()),
         Configs.Overlay.ObjectCountColor,
         Configs.Overlay.ObjectCountFontSize
     );
@@ -36,7 +36,7 @@ static void DrawPlayerList()
     if (templist.empty())
         return;
 
-    std::vector<std::pair<int, std::wstring>> playerInfoList;
+    std::vector<std::pair<int, std::string>> playerInfoList;
 
     for (std::shared_ptr<WorldEntity> ent : templist)
     {
@@ -52,11 +52,11 @@ static void DrawPlayerList()
             !IsValidHP(ent->GetHealth().regenerable_max_hp))
             continue;
 
-        std::wstring wname = Configs.Player.Name ? ent->GetName() : L"";
-        std::wstring wdistance = Configs.Player.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-        std::wstring whealth = std::to_wstring(ent->GetHealth().current_hp) + L"/" + std::to_wstring(ent->GetHealth().current_max_hp) + L"[" + std::to_wstring(ent->GetHealth().regenerable_max_hp) + L"]";
+        std::string wname = Configs.Player.Name ? ent->GetName() : "";
+        std::string wdistance = Configs.Player.Distance ? "[" + std::to_string(distance) + "m]" : "";
+        std::string whealth = std::to_string(ent->GetHealth().current_hp) + "/" + std::to_string(ent->GetHealth().current_max_hp) + "[" + std::to_string(ent->GetHealth().regenerable_max_hp) + "]";
 
-        std::wstring playerInfo = wname + L" " + whealth + L" " + wdistance;
+        std::string playerInfo = wname + " " + whealth + " " + wdistance;
 
         playerInfoList.push_back({ distance, playerInfo });
     }
@@ -65,12 +65,12 @@ static void DrawPlayerList()
         return a.first < b.first;
     });
 
-    std::wstringstream result;
+    std::stringstream result;
     for (size_t i = 0; i < playerInfoList.size(); ++i)
     {
         result << playerInfoList[i].second;
         if (i != playerInfoList.size() - 1)
-            result << L"\n";
+            result << "\n";
     }
 
     ESPRenderer::DrawText(

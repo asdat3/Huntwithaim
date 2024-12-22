@@ -58,7 +58,43 @@ void Environment::UpdateLocalPlayer()
 	pGameClientChannel = TargetProcess.Read<uint64_t>(pGameClientNub + pGameClientChannelOffset);
 	localPlayerIdx = TargetProcess.Read<int>(pGameClientChannel + localPlayerIdxOffset);
 	LocalPlayer = TargetProcess.Read<uint64_t>(EntityList + (localPlayerIdx * sizeof(uint64_t)));
+
+	//LogTrait();
 	//LOG_INFO("LocalPlayerIndex = %llu", localPlayerIdx);
+}
+
+void Environment::LogTrait()
+{
+	auto base = TargetProcess.GetBaseAddress("GameHunt.dll");
+	std::vector<std::shared_ptr<WorldEntity>> tempPoiList = EnvironmentInstance->GetPOIList();
+	std::vector<std::shared_ptr<WorldEntity>> tempPlayerList = EnvironmentInstance->GetPlayerList();
+	
+	std::shared_ptr<WorldEntity> LocalPlayer = NULL;
+	for (size_t index = 0; index < tempPlayerList.size(); ++index)
+	{
+		std::shared_ptr<WorldEntity> ent = tempPlayerList[index];
+		if (ent == nullptr)
+			continue;
+		if (ent->GetType() == EntityType::LocalPlayer)
+		{
+			LocalPlayer = ent;
+			break;
+		}
+	}
+
+	if (LocalPlayer == NULL)
+		return;
+
+	for (size_t index = 0; index < tempPoiList.size(); ++index)
+	{
+		std::shared_ptr<WorldEntity> ent = tempPoiList[index];
+		if (ent == nullptr)
+			continue;
+		if (ent->GetType() == EntityType::Trait)
+		{
+			LOG_INFO("%llx: [%f m], name=[%s], x=%f y=%f z=%f", ent->GetClass(), Vector3::Distance(ent->GetPosition(), LocalPlayer->GetPosition()), ent->GetTypeName(), ent->GetPosition().x, ent->GetPosition().y, ent->GetPosition().z);
+		}
+	}
 }
 
 void Environment::UpdatePlayerList()
@@ -211,10 +247,11 @@ void Environment::CacheEntities()
 			continue;
 		char* entityName = ent->GetEntityName().name;
 		char* entityClassName = ent->GetEntityClassName().name;
+		char* TraitName = ent->GetTypeName().name;
 
 		if (createEntitiesDump)
-			entitiesDump.push_back("Class: [" + std::string(entityClassName) + "]; Name: [" + std::string(entityName) + "];");
-
+			entitiesDump.push_back("Class: [" + std::string(entityClassName) + "]; Name: [" + std::string(entityName) + "], TypeName: [" + std::string(TraitName) + "];");
+ 
 		if (strstr(entityClassName, "ObjectSpawner") != NULL) // We do not want spawners to show as objects
 			continue;
 		if (entityClassName == nullptr || entityClassName[0] == '\0')
@@ -495,23 +532,6 @@ void Environment::CacheEntities()
 		}
 	}
 
-	if (createEntitiesDump)
-	{
-		std::ofstream outFile("classes-dump.txt", std::ios::trunc);
-
-		if (outFile.is_open()) {
-			for (const std::string& str : entitiesDump) {
-				outFile << str << std::endl;
-			}
-
-			outFile.close();
-			LOG_INFO(LIT("Rewrote classes dump."));
-		}
-		else {
-			LOG_ERROR(LIT("Could not write entities dump!"));
-		}
-	}
-
 	handle = TargetProcess.CreateScatterHandle();
 	for (std::shared_ptr<WorldEntity> ent : templayerlist)
 	{
@@ -550,6 +570,23 @@ void Environment::CacheEntities()
 		ent->SetUp3(handle);
 	}
 	TargetProcess.ExecuteReadScatter(handle);
+
+	if (createEntitiesDump)
+	{
+		std::ofstream outFile("classes-dump.txt", std::ios::trunc);
+
+		if (outFile.is_open()) {
+			for (const std::string& str : entitiesDump) {
+				outFile << str << std::endl;
+			}
+
+			outFile.close();
+			LOG_INFO(LIT("Rewrote classes dump."));
+		}
+		else {
+			LOG_ERROR(LIT("Could not write entities dump!"));
+		}
+	}
 
 	for (std::shared_ptr<WorldEntity> ent : templayerlist) // got to do this after set up 3
 	{

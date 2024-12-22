@@ -20,7 +20,7 @@
 
 void InitializeGame()
 {
-	while (!TargetProcess.Init("HuntGame.exe", false, false))
+	while (!TargetProcess.Init("HuntGame.exe", true, true))
 	{
         LOG_WARNING("Failed to attach to game process. Retrying in 2 seconds...");
 		Sleep(2000);

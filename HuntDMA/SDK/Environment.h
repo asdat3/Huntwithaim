@@ -53,6 +53,7 @@ public:
 	uint64_t GetEntityList() { return EntityList; }
 	uint64_t GetLocalPlayerPointer() { return LocalPlayer; }
 	void UpdateLocalPlayer();
+	void LogTrait();
 	void GetEntities();
 	void UpdatePlayerList();
 	void UpdateBossesList();

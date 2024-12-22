@@ -121,6 +121,13 @@ private:
 	Vector3 Position;
 	EntityType Type;
 
+	const uint64_t TypeNameOffset1 = 0x20;
+	const uint64_t TypeNameOffset2 = 0x8;
+	uint64_t TypeNamePointer1 = 0x0;
+	uint64_t TypeNamePointer2 = 0x0;
+	EntityNameStruct TypeName;
+	std::string CompactTypeName = "";
+
 	const uint64_t HpOffset1 = 0x198;
 	const uint64_t HpOffset2 = 0x20;
 	const uint64_t HpOffset3 = 0xD0;
@@ -150,67 +157,67 @@ private:
 	bool Hidden = false;
 
 	bool Valid = true;
-	std::unordered_map<EntityType, std::wstring> Names = {
-		{EntityType::Unknown, L"???"},
+	std::unordered_map<EntityType, std::string> Names = {
+		{EntityType::Unknown, "???"},
 
-		{EntityType::LocalPlayer, L"Me, Myself and I"},
-		{EntityType::EnemyPlayer, L"Hunter"},
-		{EntityType::FriendlyPlayer, L"Teammate"},
-		{EntityType::DeadPlayer, L"Dead"},
+		{EntityType::LocalPlayer, "Me, Myself and I"},
+		{EntityType::EnemyPlayer, "Hunter"},
+		{EntityType::FriendlyPlayer, "Teammate"},
+		{EntityType::DeadPlayer, "Dead"},
 
-		{EntityType::Butcher, L"Butcher"},
-		{EntityType::Assassin, L"Assassin"},
-		{EntityType::Scrapbeak, L"Screapbeak"},
-		{EntityType::Spider, L"Spider"},
-		{EntityType::Rotjaw, L"Rotjaw"},
-		{EntityType::Hellborn, L"Hellborn"},
+		{EntityType::Butcher, "Butcher"},
+		{EntityType::Assassin, "Assassin"},
+		{EntityType::Scrapbeak, "Screapbeak"},
+		{EntityType::Spider, "Spider"},
+		{EntityType::Rotjaw, "Rotjaw"},
+		{EntityType::Hellborn, "Hellborn"},
 
-		{EntityType::CashRegister, L"Cash Register"},
-		{EntityType::GoldCashRegister, L"GOLD CASH REGISTER (STONKS)"},
+		{EntityType::CashRegister, "Cash Register"},
+		{EntityType::GoldCashRegister, "GOLD CASH REGISTER (STONKS)"},
 
-		{EntityType::Pouch, L"Pouch"},
-		{EntityType::Poster, L"Poster"},
-		{EntityType::WorkbenchUpgrade, L"Blueprint"},
-		{EntityType::WorkbenchOil, L"Gun Oil"},
-		{EntityType::Trait, L"Trait"},
+		{EntityType::Pouch, "Pouch"},
+		{EntityType::Poster, "Poster"},
+		{EntityType::WorkbenchUpgrade, "Blueprint"},
+		{EntityType::WorkbenchOil, "Gun Oi"},
+		{EntityType::Trait, "Trait"},
 
-		{EntityType::ResupplyStation, L"Resupply"},
-		{EntityType::ExtractionPoint, L"Extraction"},
-		{EntityType::Clue, L"Clue"},
+		{EntityType::ResupplyStation, "Resupply"},
+		{EntityType::ExtractionPoint, "Extraction"},
+		{EntityType::Clue, "Clue"},
 
-		{EntityType::BearTrap, L"Bear Trap"},
-		{EntityType::TripMine, L"Trip Mine"},
-		{EntityType::DarksightDynamite, L"C4"},
+		{EntityType::BearTrap, "Bear Trap"},
+		{EntityType::TripMine, "Trip Mine"},
+		{EntityType::DarksightDynamite, "C4"},
 
-		{EntityType::OilBarrel, L"Oil Barrel"},
-		{EntityType::GunpowderBarrel, L"Barrel"},
-		{EntityType::BioBarrel, L"Bio Barrel"},
+		{EntityType::OilBarrel, "Oil Barre"},
+		{EntityType::GunpowderBarrel, "Barre"},
+		{EntityType::BioBarrel, "Bio Barre"},
 
-		{EntityType::AmmoSwapBox, L"AmmoSwap Box"},
-		{EntityType::SpitzerBullets, L"Spitzer Bullets"},
-		{EntityType::PoisonBullets, L"Poison Bullets"},
-		{EntityType::HighVelocityBullets, L"High Velocity Bullets"},
-		{EntityType::IncendiaryBullets, L"Incendiary Bullets"},
-		{EntityType::DumDumBullets, L"Dum Dum Bullets"},
-		{EntityType::ExplosiveBullets, L"Explosive Bullets"},
-		{EntityType::FMJBullets, L"FMJ Bullets"},
-		{EntityType::PoisonBolts, L"Poison Bolts"},
-		{EntityType::ExplosiveBolts, L"Explosive Bolts"},
-		{EntityType::IncendiaryShells, L"Incendiary Shells"},
-		{EntityType::PennyShotShells, L"Penny Shot Shells"},
-		{EntityType::FlechetteShells, L"Flechette Shells"},
-		{EntityType::SlugShells, L"Slug Shells"},
+		{EntityType::AmmoSwapBox, "AmmoSwap Box"},
+		{EntityType::SpitzerBullets, "Spitzer Bullets"},
+		{EntityType::PoisonBullets, "Poison Bullets"},
+		{EntityType::HighVelocityBullets, "High Velocity Bullets"},
+		{EntityType::IncendiaryBullets, "Incendiary Bullets"},
+		{EntityType::DumDumBullets, "Dum Dum Bullets"},
+		{EntityType::ExplosiveBullets, "Explosive Bullets"},
+		{EntityType::FMJBullets, "FMJ Bullets"},
+		{EntityType::PoisonBolts, "Poison Bolts"},
+		{EntityType::ExplosiveBolts, "Explosive Bolts"},
+		{EntityType::IncendiaryShells, "Incendiary Shells"},
+		{EntityType::PennyShotShells, "Penny Shot Shells"},
+		{EntityType::FlechetteShells, "Flechette Shells"},
+		{EntityType::SlugShells, "Slug Shells"},
 
-		{EntityType::SupplyBox, L"Supply Box"},
-		{EntityType::AmmoCrate, L"Ammo Crate"},
-		{EntityType::SpecialAmmoCrate, L"Special Ammo Crate"},
-		{EntityType::CompactAmmoPackage, L"Compact Ammo Package"},
-		{EntityType::MediumAmmoPackage, L"Medium Ammo Package"},
-		{EntityType::LongAmmoPackage, L"Long Ammo Package"},
-		{EntityType::ShotgunAmmoPackage, L"Shotgun Ammo Package"},
-		{EntityType::Medkit, L"Medkit"},
+		{EntityType::SupplyBox, "Supply Box"},
+		{EntityType::AmmoCrate, "Ammo Crate"},
+		{EntityType::SpecialAmmoCrate, "Special Ammo Crate"},
+		{EntityType::CompactAmmoPackage, "Compact Ammo Package"},
+		{EntityType::MediumAmmoPackage, "Medium Ammo Package"},
+		{EntityType::LongAmmoPackage, "Long Ammo Package"},
+		{EntityType::ShotgunAmmoPackage, "Shotgun Ammo Package"},
+		{EntityType::Medkit, "Medkit"},
 
-		{EntityType::Event, L"Event"},
+		{EntityType::Event, "Event"},
 	};
 public:
 	WorldEntity( uint64_t classptr);
@@ -221,6 +228,8 @@ public:
 	void SetUp4(VMMDLL_SCATTER_HANDLE handle);
 	EntityNameStruct GetEntityName() { return EntityName; }
 	EntityNameStruct GetEntityClassName() { return ClassName; }
+	EntityNameStruct GetTypeName() { return TypeName; }
+	std::string GetCompactTypeName() { return CompactTypeName; }
 	Vector3 GetPosition() { return Position; }
 	RenderNode GetRenderNode() { return Node; }
 	HealthBar GetHealth() { return Health; }
@@ -239,7 +248,7 @@ public:
 	void SetHidden(bool isHidden) { Hidden = isHidden; }
 	bool GetValid() { return Valid; }
 	void SetValid(bool valid) { Valid = valid; }
-	std::wstring GetName() { return Names[Type]; };
+	std::string GetName() { return Names[Type]; };
 	bool IsLocalPlayer();
 	Vector3 GetHeadPosition() const { return HeadPosition; }
 
