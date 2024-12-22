@@ -662,6 +662,7 @@ void ImGuiMenu::RenderPOIESPTab() {
     // POI Types Column 1
     ImGui::BeginGroup();
     ImGui::Text("Main POIs:");
+    ImGui::Checkbox("Show Resupply Points", &Configs.POI.ShowResupplyStation);
     ImGui::Checkbox("Show Extraction Points", &Configs.POI.ShowExtraction);
     ImGui::Checkbox("Show Cash Registers", &Configs.POI.ShowCashRegisters);
     ImGui::Checkbox("Show Pouches", &Configs.POI.ShowPouches);

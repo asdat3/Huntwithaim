@@ -176,6 +176,8 @@ void DrawPOI()
 			continue;
 
 		auto type = ent->GetType();
+		if (!Configs.POI.ShowResupplyStation && (type == EntityType::ResupplyStation))
+			continue;
 		if (!Configs.POI.ShowExtraction && (type == EntityType::ExtractionPoint))
 			continue;
 		if (!Configs.POI.ShowCashRegisters && (type == EntityType::CashRegister))

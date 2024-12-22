@@ -42,6 +42,7 @@ enum class EntityType : int
 	WorkbenchOil,
 	Trait,
 
+	ResupplyStation,
 	ExtractionPoint,
 	Clue,
 
@@ -173,6 +174,7 @@ private:
 		{EntityType::WorkbenchOil, L"Gun Oil"},
 		{EntityType::Trait, L"Trait"},
 
+		{EntityType::ResupplyStation, L"Resupply"},
 		{EntityType::ExtractionPoint, L"Extraction"},
 		{EntityType::Clue, L"Clue"},
 

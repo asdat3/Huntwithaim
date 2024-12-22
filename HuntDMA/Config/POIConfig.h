@@ -13,6 +13,7 @@ public:
     bool Name = true;
     bool Distance = true;
     int MaxDistance = 900;
+    bool ShowResupplyStation = true;
     bool ShowExtraction = true;
     bool ShowCashRegisters = false;
     bool ShowPouches = false;
@@ -52,6 +53,7 @@ public:
         j[ConfigName][LIT("Distance")] = Distance;
         j[ConfigName][LIT("MaxDistance")] = MaxDistance;
         j[ConfigName][LIT("FontSize")] = FontSize;
+        j[ConfigName][LIT("ShowResupplyStation")] = ShowResupplyStation;
         j[ConfigName][LIT("ShowExtraction")] = ShowExtraction;
         j[ConfigName][LIT("ShowCashRegisters")] = ShowCashRegisters;
         j[ConfigName][LIT("ShowPouches")] = ShowPouches;
@@ -79,6 +81,8 @@ public:
             FontSize = j[ConfigName][LIT("FontSize")];
         if (j[ConfigName].contains(LIT("MaxDistance")))
             MaxDistance = j[ConfigName][LIT("MaxDistance")];
+        if (j[ConfigName].contains(LIT("ShowResupplyStation")))
+            ShowResupplyStation = j[ConfigName][LIT("ShowResupplyStation")];
         if (j[ConfigName].contains(LIT("ShowExtraction")))
             ShowExtraction = j[ConfigName][LIT("ShowExtraction")];
         if (j[ConfigName].contains(LIT("ShowCashRegisters")))

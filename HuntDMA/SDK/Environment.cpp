@@ -276,6 +276,12 @@ void Environment::CacheEntities()
 			temppoilist.push_back(ent);
 			continue;
 		}
+		if (strstr(entityClassName, "ResupplyStation") != NULL)
+		{
+			ent->SetType(EntityType::ResupplyStation);
+			temppoilist.push_back(ent);
+			continue;
+		}
 		if ((std::string)(entityClassName) == "AmmoSwapBox")
 		{
 			ent->SetType(EntityType::AmmoSwapBox);
