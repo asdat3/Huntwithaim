@@ -571,7 +571,7 @@ bool Memory::DumpMemory(uintptr_t address, std::string path)
 		return false;
 	}
 
-	LOG_INFO("[+] Successfully dumped memory at %s", path);
+	LOG_INFO("[+] Successfully dumped memory at %s", path.c_str());
 	CloseHandle(dumped_file);
 	return true;
 }
