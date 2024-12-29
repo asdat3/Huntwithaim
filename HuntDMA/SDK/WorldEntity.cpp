@@ -15,6 +15,7 @@ void WorldEntity::SetUp(VMMDLL_SCATTER_HANDLE handle)
 	TargetProcess.AddScatterReadRequest(handle, this->Class + PosOffset, &Position, sizeof(Vector3));
 	TargetProcess.AddScatterReadRequest(handle, this->Class + StringBufferOffset, &EntityNamePointer, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle, this->Class + ClassPointerOffset,&ClassPointer, sizeof(uint64_t));
+	TargetProcess.AddScatterReadRequest(handle, this->Class + TypeNameOffset1, &TypeNamePointer1, sizeof(uint64_t));
 	if (Class != 0)
 		TargetProcess.AddScatterReadRequest(handle, this->Class + SlotsPointerOffset, &SlotsPointer, sizeof(uint64_t));
 	else
@@ -26,6 +27,7 @@ void WorldEntity::SetUp1(VMMDLL_SCATTER_HANDLE handle)
 	TargetProcess.AddScatterReadRequest(handle, this->HpPointer1 + HpOffset2, &HpPointer2, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle,this->EntityNamePointer, &EntityName, sizeof(EntityNameStruct));
 	TargetProcess.AddScatterReadRequest(handle, this->ClassPointer + StringBufferOffset,&ClassNamePointer, sizeof(uint64_t));
+	TargetProcess.AddScatterReadRequest(handle, this->TypeNamePointer1 + TypeNameOffset2, &TypeNamePointer2, sizeof(uint64_t));
 	if (SlotsPointer != 0)
 		TargetProcess.AddScatterReadRequest(handle, this->SlotsPointer, &Slot, sizeof(uint64_t));
 	else
@@ -35,6 +37,7 @@ void WorldEntity::SetUp2(VMMDLL_SCATTER_HANDLE handle)
 {
 	TargetProcess.AddScatterReadRequest(handle, this->SpecCountPointer2 + SpecCountOffset3, &SpecCountPointer3, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle, this->HpPointer2 + HpOffset3, &HpPointer3, sizeof(uint64_t));
+	TargetProcess.AddScatterReadRequest(handle, this->TypeNamePointer2, &TypeName, sizeof(EntityNameStruct));
 	if (Slot != 0)
 		TargetProcess.AddScatterReadRequest(handle, this->Slot + RenderNodePointerOffset, &RenderNodePointer, sizeof(uint64_t));
 	else
@@ -48,6 +51,11 @@ void WorldEntity::SetUp3(VMMDLL_SCATTER_HANDLE handle)
 	TargetProcess.AddScatterReadRequest(handle, this->HpPointer3 + HpOffset4, &HpPointer4, sizeof(uint64_t));
 	ClassName.name[99] = '\0';
 	EntityName.name[99] = '\0';
+	TypeName.name[99] = '\0';
+	std::string typeName(TypeName.name);
+	if (typeName != "")
+		CompactTypeName = typeName.substr(typeName.find_last_of("./") + 1);
+	
 	TargetProcess.AddScatterReadRequest(handle, RenderNodePointer, &Node, sizeof(RenderNode));
 }
 void WorldEntity::SetUp4(VMMDLL_SCATTER_HANDLE handle)

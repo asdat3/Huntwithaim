@@ -254,16 +254,16 @@ void ImGuiMenu::EndFrame() {
 void ImGuiMenu::HandleInput() {
     float currentTime = ImGuiUtils::GetTime();
 
-    if ((ImGuiUtils::IsKeyPressed(VK_INSERT) || ImGuiUtils::IsKeyPressed(VK_HOME)) && (currentTime - lastKeyPressTime) > KEY_PRESS_DELAY) {
+    if (ImGuiUtils::IsKeyPressed(Configs.General.OpenMenuKey) && (currentTime - lastKeyPressTime) > KEY_PRESS_DELAY) {
         MenuOpen = !MenuOpen;
         lastKeyPressTime = currentTime;
     }
 
-    if (ImGuiUtils::IsKeyPressed(VK_ESCAPE)) {
+    if (Configs.General.CloseMenuOnEsc && ImGuiUtils::IsKeyPressed(VK_ESCAPE)) {
         MenuOpen = false;
     }
 
-    if (ImGuiUtils::IsKeyPressed(VK_HOME) && ImGuiUtils::IsKeyPressed(VK_END)) {
+    if (ImGuiUtils::IsKeyPressed(Configs.General.OpenMenuKey) && ImGuiUtils::IsKeyPressed(VK_END)) {
         exit(0);
     }
 }
@@ -412,6 +412,8 @@ void ImGuiMenu::SetupTheme() {
     style.GrabRounding = 3;
     style.LogSliderDeadzone = 4;
     style.TabRounding = 4;
+
+    style.ScaleAllSizes(Configs.General.UIScale);
 }
 
 void ImGuiMenu::RenderMenu() {
@@ -581,7 +583,7 @@ void ImGuiMenu::RenderSupplyESPTab() {
     ImGui::EndGroup();
 
     // Supply Types Column 2
-    ImGui::SameLine(250);
+    ImGui::SameLine(250 * Configs.General.UIScale);
     ImGui::BeginGroup();
     ImGui::Text("Other Types:");
     ImGui::Checkbox("Show AmmoSwap Box", &Configs.Supply.ShowAmmoSwapBox);
@@ -596,6 +598,8 @@ void ImGuiMenu::RenderBloodBondsESPTab() {
     ImGui::BeginChild("BloodBondsESPTab", ImVec2(0, 0), false);
 
     ImGui::Checkbox("Enable", &Configs.BloodBonds.Enable);
+    ImGui::SameLine();
+    HelpMarker("Golden cash register ESP");
     ImGui::SameLine();
     ColorPickerWithText("Text Color", &Configs.BloodBonds.TextColor);
 
@@ -632,7 +636,7 @@ void ImGuiMenu::RenderTrapESPTab() {
     ImGui::EndGroup();
 
     // Barrels Column
-    ImGui::SameLine(250);
+    ImGui::SameLine(250 * Configs.General.UIScale);
     ImGui::BeginGroup();
     ImGui::Text("Barrels:");
     ImGui::Checkbox("Show Gunpowder Barrels", &Configs.Trap.ShowGunpowderBurrels);
@@ -658,6 +662,7 @@ void ImGuiMenu::RenderPOIESPTab() {
     // POI Types Column 1
     ImGui::BeginGroup();
     ImGui::Text("Main POIs:");
+    ImGui::Checkbox("Show Resupply Points", &Configs.POI.ShowResupplyStation);
     ImGui::Checkbox("Show Extraction Points", &Configs.POI.ShowExtraction);
     ImGui::Checkbox("Show Cash Registers", &Configs.POI.ShowCashRegisters);
     ImGui::Checkbox("Show Pouches", &Configs.POI.ShowPouches);
@@ -665,14 +670,16 @@ void ImGuiMenu::RenderPOIESPTab() {
     ImGui::EndGroup();
 
     // POI Types Column 2
-    ImGui::SameLine(250);
+    ImGui::SameLine(250 * Configs.General.UIScale);
     ImGui::BeginGroup();
     ImGui::Text("Additional POIs:");
     ImGui::Checkbox("Show Posters", &Configs.POI.ShowPosters);
     ImGui::Checkbox("Show Blueprints", &Configs.POI.ShowBlueprints);
     ImGui::Checkbox("Show Gun Oil", &Configs.POI.ShowGunOil);
     ImGui::Checkbox("Show Traits", &Configs.POI.ShowTraits);
-    ImGui::Checkbox("Show Pumpkins", &Configs.POI.ShowPumpkins);
+    ImGui::Checkbox("Show Seasonal destructibles", &Configs.POI.ShowSeasonalDestructibles);
+    ImGui::SameLine();
+    HelpMarker("Pumpkins, Balloons, etc");
     ImGui::EndGroup();
 
     ImGui::EndChild();
@@ -879,6 +886,15 @@ void ImGuiMenu::RenderSettingsTab() {
 
     ImGui::Separator();
 
+    ImGui::InputFloat("UI Scale", &Configs.General.UIScale);
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Default is set to you DPI scale.\nNeed restart to apply.");
+        ImGui::EndTooltip();
+    }
+
+    ImGui::Separator();
+
     ImGui::Checkbox("Crosshair lower position", &Configs.General.CrosshairLowerPosition);
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
@@ -902,12 +918,18 @@ void ImGuiMenu::RenderSettingsTab() {
 
     ImGui::Separator();
 
-    if (ImGui::Button("Exit App", ImVec2(100, 100))) {
+    HotKey("Change key to open/close menu", &Configs.General.OpenMenuKey);
+
+    ImGui::Checkbox("Close menu on Esc", &Configs.General.CloseMenuOnEsc);
+
+    ImGui::Separator();
+
+    if (ImGui::Button("Exit App", ImVec2(100 * Configs.General.UIScale, 100 * Configs.General.UIScale))) {
         exit(0);
     }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        ImGui::Text("[Home+End] Closes the application immediately");
+        ImGui::Text("Closes the application immediately");
         ImGui::EndTooltip();
     }
 

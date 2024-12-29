@@ -21,7 +21,7 @@ private:
 		size_t base_size = 0;
 		std::string process_name = "";
 	};
-	std::unordered_map<std::wstring, ULONG64> Modules;
+	std::unordered_map<std::string, ULONG64> Modules;
 
 
 	static inline BOOLEAN DMA_INITIALIZED = FALSE;
@@ -277,7 +277,6 @@ public:
 	 */
 	void ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0);
 	void ExecuteWriteScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0);
-
 
 	/*the FPGA handle*/
 	VMM_HANDLE vHandle;

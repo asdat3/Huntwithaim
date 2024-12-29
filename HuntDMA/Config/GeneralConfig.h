@@ -15,6 +15,9 @@ public:
     bool OverlayMode = false;
     bool PreventRecording = false;
     bool CrosshairLowerPosition = false;
+    float UIScale = (float)GetDpiForSystem() / (float)USER_DEFAULT_SCREEN_DPI;
+    int OpenMenuKey = 36;
+    bool CloseMenuOnEsc = true;
 
     void ToJsonColor(json* j, const std::string& name, ImVec4* color)
     {
@@ -44,6 +47,9 @@ public:
         j[ConfigName][LIT("OverlayMode")] = OverlayMode;
         j[ConfigName][LIT("PreventRecording")] = PreventRecording;
         j[ConfigName][LIT("CrosshairLowerPosition")] = CrosshairLowerPosition;
+        j[ConfigName][LIT("UIScale")] = UIScale;
+        j[ConfigName][LIT("OpenMenuKey")] = OpenMenuKey;
+        j[ConfigName][LIT("CloseMenuOnEsc")] = CloseMenuOnEsc;
 
         return j;
     }
@@ -64,6 +70,12 @@ public:
             PreventRecording = j[ConfigName][LIT("PreventRecording")];
         if (j[ConfigName].contains(LIT("CrosshairLowerPosition")))
             CrosshairLowerPosition = j[ConfigName][LIT("CrosshairLowerPosition")];
+        if (j[ConfigName].contains(LIT("UIScale")))
+            UIScale = j[ConfigName][LIT("UIScale")];
+        if (j[ConfigName].contains(LIT("OpenMenuKey")))
+            OpenMenuKey = j[ConfigName][LIT("OpenMenuKey")];
+        if (j[ConfigName].contains(LIT("CloseMenuOnEsc")))
+            CloseMenuOnEsc = j[ConfigName][LIT("CloseMenuOnEsc")];
     }
 };
 

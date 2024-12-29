@@ -13,6 +13,7 @@ public:
     bool Name = true;
     bool Distance = true;
     int MaxDistance = 900;
+    bool ShowResupplyStation = true;
     bool ShowExtraction = true;
     bool ShowCashRegisters = false;
     bool ShowPouches = false;
@@ -21,7 +22,7 @@ public:
     bool ShowGunOil = false;
     bool ShowClues = false;
     bool ShowTraits = true;
-    bool ShowPumpkins = false;
+    bool ShowSeasonalDestructibles = false;
     ImVec4 TextColor = ImVec4(0.0f, 1.0f, 0.866666f, 1.0f);
     int FontSize = 12;
     
@@ -52,6 +53,7 @@ public:
         j[ConfigName][LIT("Distance")] = Distance;
         j[ConfigName][LIT("MaxDistance")] = MaxDistance;
         j[ConfigName][LIT("FontSize")] = FontSize;
+        j[ConfigName][LIT("ShowResupplyStation")] = ShowResupplyStation;
         j[ConfigName][LIT("ShowExtraction")] = ShowExtraction;
         j[ConfigName][LIT("ShowCashRegisters")] = ShowCashRegisters;
         j[ConfigName][LIT("ShowPouches")] = ShowPouches;
@@ -60,7 +62,7 @@ public:
         j[ConfigName][LIT("ShowGunOil")] = ShowGunOil;
         j[ConfigName][LIT("ShowClues")] = ShowClues;
         j[ConfigName][LIT("ShowTraits")] = ShowTraits;
-        j[ConfigName][LIT("ShowPumpkins")] = ShowPumpkins;
+        j[ConfigName][LIT("ShowSeasonalDestructibles")] = ShowSeasonalDestructibles;
         ToJsonColor(&j, LIT("TextColor"), &TextColor);
 
         return j;
@@ -79,6 +81,8 @@ public:
             FontSize = j[ConfigName][LIT("FontSize")];
         if (j[ConfigName].contains(LIT("MaxDistance")))
             MaxDistance = j[ConfigName][LIT("MaxDistance")];
+        if (j[ConfigName].contains(LIT("ShowResupplyStation")))
+            ShowResupplyStation = j[ConfigName][LIT("ShowResupplyStation")];
         if (j[ConfigName].contains(LIT("ShowExtraction")))
             ShowExtraction = j[ConfigName][LIT("ShowExtraction")];
         if (j[ConfigName].contains(LIT("ShowCashRegisters")))
@@ -95,8 +99,8 @@ public:
             ShowClues = j[ConfigName][LIT("ShowClues")];
         if (j[ConfigName].contains(LIT("ShowTraits")))
             ShowTraits = j[ConfigName][LIT("ShowTraits")];
-        if (j[ConfigName].contains(LIT("ShowPumpkins")))
-            ShowPumpkins = j[ConfigName][LIT("ShowPumpkins")];
+        if (j[ConfigName].contains(LIT("ShowSeasonalDestructibles")))
+            ShowSeasonalDestructibles = j[ConfigName][LIT("ShowSeasonalDestructibles")];
         FromJsonColor(j, LIT("TextColor"), &TextColor);
     }
 };

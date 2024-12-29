@@ -66,12 +66,12 @@ void DrawSupply()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::wstring wname = Configs.Supply.Name ? ent->GetName() : L"";
-		std::wstring wdistance = Configs.Supply.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
+		std::string name = Configs.Supply.Name ? ent->GetName() : "";
+		std::string distanceText = Configs.Supply.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
-			wname + wdistance,
+			name + distanceText,
 			Configs.Supply.TextColor,
 			Configs.Supply.FontSize,
 			Center
@@ -101,12 +101,12 @@ void DrawBloodBonds()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::wstring wname = Configs.BloodBonds.Name ? ent->GetName() : L"";
-		std::wstring wdistance = Configs.BloodBonds.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
+		std::string name = Configs.BloodBonds.Name ? ent->GetName() : "";
+		std::string distanceText = Configs.BloodBonds.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
-			wname + wdistance,
+			name + distanceText,
 			Configs.BloodBonds.TextColor,
 			Configs.BloodBonds.FontSize,
 			Center
@@ -150,12 +150,12 @@ void DrawTraps()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::wstring wname = Configs.Trap.Name ? ent->GetName() : L"";
-		std::wstring wdistance = Configs.Trap.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
+		std::string name = Configs.Trap.Name ? ent->GetName() : "";
+		std::string distanceText = Configs.Trap.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
-			wname + wdistance,
+			name + distanceText,
 			(type == EntityType::BearTrap || type == EntityType::TripMine || type == EntityType::DarksightDynamite) ? Configs.Trap.TrapColor : Configs.Trap.BarrelColor,
 			Configs.Trap.FontSize,
 			Center
@@ -176,6 +176,8 @@ void DrawPOI()
 			continue;
 
 		auto type = ent->GetType();
+		if (!Configs.POI.ShowResupplyStation && (type == EntityType::ResupplyStation))
+			continue;
 		if (!Configs.POI.ShowExtraction && (type == EntityType::ExtractionPoint))
 			continue;
 		if (!Configs.POI.ShowCashRegisters && (type == EntityType::CashRegister))
@@ -192,7 +194,7 @@ void DrawPOI()
 			continue;
 		if (!Configs.POI.ShowTraits && (type == EntityType::Trait))
 			continue;
-		if (!Configs.POI.ShowPumpkins && (type == EntityType::Pumpkin))
+		if (!Configs.POI.ShowSeasonalDestructibles && (type == EntityType::Event))
 			continue;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
@@ -206,12 +208,16 @@ void DrawPOI()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::wstring wname = Configs.POI.Name ? ent->GetName() : L"";
-		std::wstring wdistance = Configs.POI.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
+		std::string name;
+		if (type == EntityType::Trait)
+			name = Configs.POI.Name ? ent->GetName() + " [" + ent->GetCompactTypeName() + "]" : "";
+		else
+			name = Configs.POI.Name ? ent->GetName() : "";
+		std::string distanceText = Configs.POI.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
-			wname + wdistance,
+			name + distanceText,
 			Configs.POI.TextColor,
 			Configs.POI.FontSize,
 			Center

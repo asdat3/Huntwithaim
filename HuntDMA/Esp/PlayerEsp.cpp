@@ -41,8 +41,8 @@ void DrawBossesEsp()
 				Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
 				if (pos.x <= 0 || pos.y <= 0)
 					continue;
-				std::wstring wname = Configs.Bosses.Name ? ent->GetName() : L"";
-				std::wstring wdistance = Configs.Bosses.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
+				std::string wname = Configs.Bosses.Name ? ent->GetName() : "";
+				std::string wdistance = Configs.Bosses.Distance ? "[" + std::to_string(distance) + "m]" : "";
 				ESPRenderer::DrawText(
 					ImVec2(pos.x, pos.y),
 					wname + wdistance,
@@ -240,12 +240,12 @@ void DrawPlayersEsp()
 			if (!Configs.Player.Enable)
 				continue;
 
-			std::wstring wname = (Configs.Player.Name || isDead) ? ent->GetName() : L"";
-			std::wstring wdistance = Configs.Player.Distance ? L"[" + std::to_wstring(distance) + L"m]" : L"";
-			std::wstring whealth = Configs.Player.HP ? std::to_wstring(ent->GetHealth().current_hp) + L"/" + std::to_wstring(ent->GetHealth().current_max_hp) + L"[" + std::to_wstring(ent->GetHealth().regenerable_max_hp) + L"]" : L"";
+			std::string wname = (Configs.Player.Name || isDead) ? ent->GetName() : "";
+			std::string wdistance = Configs.Player.Distance ? "[" + std::to_string(distance) + "m]" : "";
+			std::string whealth = Configs.Player.HP ? std::to_string(ent->GetHealth().current_hp) + "/" + std::to_string(ent->GetHealth().current_max_hp) + "[" + std::to_string(ent->GetHealth().regenerable_max_hp) + "]" : "";
 			ESPRenderer::DrawText(
 				ImVec2(feetPos.x, feetPos.y),
-				wname + wdistance + L"\n" + whealth,
+				wname + wdistance + "\n" + whealth,
 				ent->GetType() == EntityType::FriendlyPlayer ? Configs.Player.FriendColor : Configs.Player.TextColor,
 				Configs.Player.FontSize,
 				TopCenter

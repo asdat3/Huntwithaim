@@ -26,6 +26,11 @@ bool ESPRenderer::Initialize()
         return false;
     }
 
+    io.FontDefault = io.Fonts->AddFontDefault();
+    ImFontConfig config;
+    config.SizePixels = 13.0f * Configs.General.UIScale;
+    io.FontDefault = io.Fonts->AddFontDefault(&config);
+
     // Load all font sizes
     if (!std::filesystem::exists(fontPath)) {
         LOG_ERROR("[ESPRenderer] Font file not found at: %s", fontPath);
@@ -77,12 +82,11 @@ void ESPRenderer::BeginFrame()
     s_screenCenter = ImVec2(s_screenWidth * 0.5f, s_screenHeight * 0.5f);
 }
 
-void ESPRenderer::DrawText(const ImVec2& pos, const std::wstring& text, const ImVec4& color, int fontSize, FontAlignment alignment, float outline)
+void ESPRenderer::DrawText(const ImVec2& pos, const std::string& text, const ImVec4& color, int fontSize, FontAlignment alignment, float outline)
 {
     if (!s_drawList) return;
 
     const ImU32 outlineColor = ImGui::ColorConvertFloat4ToU32(ImVec4(0.05f, 0.05f, 0.05f, color.w));
-    std::string utf8Text = ConvertWideToUTF8(text);
     ImFont* font = GetFont(fontSize);
 
     ImVec2 newPos;
@@ -90,7 +94,7 @@ void ESPRenderer::DrawText(const ImVec2& pos, const std::wstring& text, const Im
         newPos = pos;
     else
     {
-        ImVec2 textSize = font->CalcTextSizeA(static_cast<float>(fontSize), FLT_MAX, 0.0f, utf8Text.c_str());
+        ImVec2 textSize = font->CalcTextSizeA(static_cast<float>(fontSize), FLT_MAX, 0.0f, text.c_str());
         switch (alignment)
         {
             case TopLeft:
@@ -134,7 +138,7 @@ void ESPRenderer::DrawText(const ImVec2& pos, const std::wstring& text, const Im
                     static_cast<float>(fontSize),
                     ImVec2(newPos.x + (dx * outline), newPos.y + (dy * outline)),
                     outlineColor,
-                    utf8Text.c_str());
+                    text.c_str());
             }
         }
     }
@@ -143,7 +147,7 @@ void ESPRenderer::DrawText(const ImVec2& pos, const std::wstring& text, const Im
         static_cast<float>(fontSize),
         newPos,
         ImGui::ColorConvertFloat4ToU32(color),
-        utf8Text.c_str());
+        text.c_str());
 }
 
 void ESPRenderer::DrawLine(const ImVec2& from, const ImVec2& to, const ImVec4& color, float thickness)
@@ -172,17 +176,6 @@ void ESPRenderer::DrawRect(const ImVec2& min, const ImVec2& max, const ImVec4& c
     else {
         s_drawList->AddRect(min, max, ImGui::ColorConvertFloat4ToU32(color), 0.0f, ImDrawFlags_None, thickness);
     }
-}
-
-std::string ESPRenderer::ConvertWideToUTF8(const std::wstring& wstr)
-{
-    if (wstr.empty()) return std::string();
-
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-    std::string strTo(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
-
-    return strTo;
 }
 
 ImFont* ESPRenderer::GetFont(int size)

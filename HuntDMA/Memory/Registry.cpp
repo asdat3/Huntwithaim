@@ -13,6 +13,5 @@ std::string c_registry::QueryValue(const char* path, e_registry_type type)
 		LOG_ERROR("[!] failed QueryValueExU call");
 		return "";
 	}
-	std::wstring wstr = std::wstring((wchar_t*)buffer);
-	return std::string(wstr.begin(), wstr.end());
+	return std::string((char*)buffer);
 }
