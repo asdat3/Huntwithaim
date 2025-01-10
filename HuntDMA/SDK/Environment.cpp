@@ -614,7 +614,7 @@ void Environment::CacheEntities()
 
 	for (std::shared_ptr<WorldEntity> ent : templayerlist) // got to do this after set up 3
 	{
-		if (ent->GetRenderNode().silhouettes_param == 0x8CD2FF)
+		if (ent->GetRenderNode().silhouettes_param == 0x8CD2FF || ent->GetRenderNode().silhouettes_param == 0x3322eeff)
 		{
 			ent->SetType(EntityType::FriendlyPlayer);
 		}
