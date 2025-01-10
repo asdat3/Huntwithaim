@@ -6,6 +6,7 @@
 #include "ConfigInstance.h"
 #include <WorldEntity.h>
 #include "ConfigUtilities.h"
+#include "Localization/Localization.h"
 
 void DrawSupply()
 {
@@ -66,7 +67,7 @@ void DrawSupply()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::string name = Configs.Supply.Name ? ent->GetName() : "";
+		std::string name = Configs.Supply.Name ? LOC("entity", ent->GetTypeAsString()) : "";
 		std::string distanceText = Configs.Supply.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
@@ -101,7 +102,7 @@ void DrawBloodBonds()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::string name = Configs.BloodBonds.Name ? ent->GetName() : "";
+		std::string name = Configs.BloodBonds.Name ? LOC("entity", ent->GetTypeAsString()) : "";
 		std::string distanceText = Configs.BloodBonds.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
@@ -150,7 +151,7 @@ void DrawTraps()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::string name = Configs.Trap.Name ? ent->GetName() : "";
+		std::string name = Configs.Trap.Name ? LOC("entity", ent->GetTypeAsString()) : "";
 		std::string distanceText = Configs.Trap.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
@@ -192,8 +193,6 @@ void DrawPOI()
 			continue;
 		if (!Configs.POI.ShowClues && (type == EntityType::Clue))
 			continue;
-		if (!Configs.POI.ShowTraits && (type == EntityType::Trait))
-			continue;
 		if (!Configs.POI.ShowSeasonalDestructibles && (type == EntityType::Event))
 			continue;
 
@@ -208,11 +207,45 @@ void DrawPOI()
 		if (pos.x == 0 || pos.y == 0)
 			continue;
 
-		std::string name;
-		if (type == EntityType::Trait)
-			name = Configs.POI.Name ? ent->GetName() + " [" + ent->GetCompactTypeName() + "]" : "";
-		else
-			name = Configs.POI.Name ? ent->GetName() : "";
+		std::string name = Configs.POI.Name ? LOC("entity", ent->GetTypeAsString()) : "";
+		std::string distanceText = Configs.POI.Distance ? "[" + std::to_string(distance) + "m]" : "";
+
+		ESPRenderer::DrawText(
+			ImVec2(pos.x, pos.y),
+			name + distanceText,
+			Configs.POI.TextColor,
+			Configs.POI.FontSize,
+			Center
+		);
+	}
+}
+
+void DrawTraits()
+{
+	std::vector<std::shared_ptr<WorldEntity>> templist = EnvironmentInstance->GetTraitList();
+
+	if (templist.size() == 0)
+		return;
+
+	for (std::shared_ptr<WorldEntity> ent : templist)
+	{
+		if (ent == nullptr)
+			continue;
+
+		auto type = ent->GetType();
+
+		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
+		if (distance <= 0 || distance > Configs.POI.MaxDistance)
+			continue;
+
+		if (!ent->GetValid())
+			continue;
+
+		Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
+		if (pos.x == 0 || pos.y == 0)
+			continue;
+
+		std::string name = Configs.POI.Name ? LOC("entity", ent->GetTypeAsString()) + " [" + LOC("trait", ent->CompactTypeName) + "]" : "";
 		std::string distanceText = Configs.POI.Distance ? "[" + std::to_string(distance) + "m]" : "";
 
 		ESPRenderer::DrawText(
@@ -244,4 +277,7 @@ void DrawOtherEsp()
 
 	if (Configs.POI.Enable)
 		DrawPOI();
+
+	if (Configs.POI.ShowTraits)
+		DrawTraits();
 }

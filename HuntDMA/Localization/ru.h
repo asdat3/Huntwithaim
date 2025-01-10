@@ -1,0 +1,148 @@
+#pragma once
+#include "LocalizationData.h"
+
+namespace Localizations {
+    inline LocalizationData GetLocalization_RU() {
+        return {
+            .version = LocalizationData::LOCALIZATION_VERSION, // DO NOT FORGET TO INCREMENT THIS (in the LocalizationData.h) IF MADE ANY CHANGES
+            .translations = {
+                {"entity", {
+                    {"Unknown", "Неизвестно"},
+
+                    {"LocalPlayer", "Me, Myself and I"}, // Not used
+                    {"EnemyPlayer", "Охотник"},
+                    {"FriendlyPlayer", "Тиммейт"},
+                    {"DeadPlayer", "Мертвец"},
+
+                    {"Butcher", "Мясник"},
+                    {"Assassin", "Убийца"},
+                    {"Scrapbeak", "Хламоклюв"},
+                    {"Spider", "Паук"},
+                    {"Rotjaw", "Мерзопасть"},
+                    {"Hellborn", "Демон"},
+
+                    {"CashRegister", "Касса"},
+                    {"GoldCashRegister", "ЗОЛОТАЯ СУКА КАССА (STONKS)"},
+
+                    {"Pouch", "Мешочек"},
+                    {"Poster", "Конверт"},
+                    {"WorkbenchUpgrade", "Чертеж"},
+                    {"WorkbenchOil", "Масло"},
+                    {"Trait", "Перк"},
+                    {"Sealed Trait", "Платный Перк"},
+
+                    {"ResupplyStation", "Дилижанс"},
+                    {"ExtractionPoint", "Выход"},
+                    {"Clue", "Подсказка"},
+
+                    {"BearTrap", "Капкан"},
+                    {"TripMine", "Растяжка"},
+                    {"DarksightDynamite", "C4"},
+
+                    {"OilBarrel", "Нефтяная Бочка"},
+                    {"GunpowderBarrel", "Пороховая Бочка"},
+                    {"BioBarrel", "Ядовитая Бочка"},
+
+                    {"AmmoSwapBox", "Коробка смены патронов"},
+                    {"SpitzerBullets", "Остроконечные пули"},
+                    {"PoisonBullets", "Ядовитые боеприпасы"},
+                    {"HighVelocityBullets", "Высокоскоростные пули"},
+                    {"IncendiaryBullets", "Зажигательные боеприпасы"},
+                    {"DumDumBullets", "Экспансивные пули"},
+                    {"ExplosiveBullets", "Взрывчатые боеприпасы"},
+                    {"FMJBullets", "Боеприпасы с ЦО"},
+                    {"PoisonBolts", "Ядовитый болт"},
+                    {"ExplosiveBolts", "Взрывчатый болт"},
+                    {"IncendiaryShells", "Дыхание дракона"},
+                    {"PennyShotShells", "Боеприпасы с монетами"},
+                    {"FlechetteShells", "Флешетты"},
+                    {"SlugShells", "Жакан"},
+
+                    {"SupplyBox", "Supply Box"},
+                    {"AmmoCrate", "Ящик патронов"},
+                    {"SpecialAmmoCrate", "Ящик особых патронов"},
+                    {"CompactAmmoPackage", "Пачка патронов (малый)"},
+                    {"MediumAmmoPackage", "Пачка патронов (средний)"},
+                    {"LongAmmoPackage", "Пачка патронов (большой)"},
+                    {"ShotgunAmmoPackage", "Пачка патронов (дробь)"},
+                    {"Medkit", "Аптечка"},
+
+                    {"Event", "Событие"},
+                }},
+                {"menu", {
+                    {"window.name", "Hunt DMA"},
+                    {"tabs.PlayerESP", "Player ESP"},
+                    {"tabs.BossesESP", "Bosses ESP"},
+                    {"tabs.SupplyESP", "Supply ESP"},
+                    {"tabs.BBESP", "BB ESP"},
+                    {"tabs.TrapESP", "Trap ESP"},
+                    {"tabs.POIESP", "POI ESP"},
+                    {"tabs.TraitESP", "Trait ESP"},
+                    {"tabs.Overlay", "Overlay"},
+                    {"tabs.Aimbot", "Aimbot"},
+                    {"tabs.Settings", "Настройки"},
+                    {"hotkey.SelectKey", "Select Key"},
+                    {"hotkey.Instructions", "Press any key or click to cancel"},
+                }},
+                {"trait", {
+                    {"adrenaline", "Адреналин (1)"},
+                    {"ambidextrous", "Амбидекстр (3)"},
+                    {"assailant", "Зачинщик (1)"},
+                    {"beastface", "Звериный лик (4)"},
+                    {"bladeseer", "Зоркий глаз (1)"},
+                    {"bloodless", "Густая кровь (3)"},
+                    {"boltthrower", "Арбалетчик (3)"},
+                    {"bulletgrubber", "Ловкие пальцы (4)"},
+                    {"bulwark", "Взрывостойкость (2)"},
+                    {"conduit", "Прикосновение жизни (5)"},
+                    {"dauntless", "Бесстрашный (1)"},
+                    {"decoysupply", "Барахольщик (1)"},
+                    {"determination", "Целеустремленность (4)"},
+                    {"doctor", "Врач (9)"},
+                    {"fanning", "Шквальный огонь (8)"},
+                    {"fastfingers", "Быстрые пальцы (6)"},
+                    {"frontiersman", "Первопроходец (5)"},
+                    {"gatorlegs", "Крокодильи лапы (3)"},
+                    {"ghoul", "Могильщик (3)"},
+                    {"greyhound", "Гончая (5)"},
+                    {"hornskin", "Дубовая кожа (3)"},
+                    {"hundredhands", "Сторукий (2)"},
+                    {"ironeye", "На мушке (3)"},
+                    {"kiteskin", "Воздушный змей (1)"},
+                    {"levering", "Рычажный механизм (7)"},
+                    {"lightfoot", "Легкая поступь (5)"},
+                    {"magpie", "Сорока (1)"},
+                    {"martialist", "Мастер (2)"},
+                    {"mithridatist", "Митридатизм (3)"},
+                    {"packmule", "Вьючный мул (4)"},
+                    {"physician", "Медик (5)"},
+                    {"pitcher", "Подающий (4)"},
+                    {"poacher", "Браконьер (1)"},
+                    {"poisonsense", "Чувство боли (3)"},
+                    {"quartermaster", "Интендант (6)"},
+                    {"resilience", "Стойкость (3)"},
+                    {"salveskin", "Саламандра (3)"},
+                    {"scopesmith", "Стрелок (2)"},
+                    {"serpent", "Змея (4)"},
+                    {"silentkiller", "Бесшумный убийца (3)"},
+                    {"steadyaim", "Точная стрельба (2)"},
+                    {"surefoot", "Устойчивость (4)"},
+                    {"vigilant", "Бдительный (1)"},
+                    {"vigor", "Рвение (3)"},
+                    {"vulture", "Стервятник (2)"},
+                    {"whispersmith", "Тихоня (1)"},
+                    {"witness", "Свидетель (5)"},
+
+                    {"berserker", "Берсерк (!)"},
+                    {"deathcheat", "Мнимая смерть (!)"},
+                    {"necromancer", "Некромант (4)"},
+                    {"rampage", "Буйство (!)"},
+                    {"relentless", "Двужильность (!)"},
+                    {"remedy", "Целительная сила (!)"},
+                    {"shadow", "Тень (!)"},
+                    {"shadowleap", "Теневой скачок (!)"},
+                }}
+            }
+        };
+    }
+}

@@ -17,6 +17,7 @@
 #include "Overlay.h"
 #include "Aimbot.h"
 #include "SystemInfo.h"
+#include "Localization/Localization.h"
 
 void InitializeGame()
 {
@@ -95,6 +96,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         LOG_INFO("Initializing configurations...");
         SetUpConfig();
         LoadConfig(ConfigPath);
+
+        LOG_INFO("Initializing localization system...");
+        Localization::Initialize();
 
         LOG_INFO("Initializing game connection...");
         InitializeGame();

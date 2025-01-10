@@ -117,6 +117,7 @@
     <ClCompile Include="Graphics\ImGuiMenu.cpp" />
     <ClCompile Include="Graphics\Start Up\Init.cpp" />
     <ClCompile Include="Graphics\Utility\Kmbox.cpp" />
+    <ClCompile Include="Localization\Localization.cpp" />
     <ClCompile Include="Logger\SystemInfo.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Memory\CacheManager.cpp" />
@@ -172,6 +173,10 @@
     <ClInclude Include="Graphics\Start Up\Init.h" />
     <ClInclude Include="Graphics\ImGuiMenu.h" />
     <ClInclude Include="Graphics\Utility\Kmbox.h" />
+    <ClInclude Include="Localization\Localization.h" />
+    <ClInclude Include="Localization\LocalizationData.h" />
+    <ClInclude Include="Localization\en.h" />
+    <ClInclude Include="Localization\ru.h" />
     <ClInclude Include="Logger\SystemInfo.h" />
     <ClInclude Include="Memory\CacheManager.h" />
     <ClInclude Include="Memory\InputManager.h" />

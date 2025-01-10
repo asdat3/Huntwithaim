@@ -5,6 +5,7 @@
 #include "Kmbox.h"
 #include "Globals.h"
 #include "ESPRenderer.h"
+#include "Localization/Localization.h"
 
 // Global instances
 ImGuiMenu g_ImGuiMenu;
@@ -848,6 +849,49 @@ void ImGuiMenu::RenderSettingsTab() {
         ImGuiWindowFlags_NoCollapse)) {
         ImGui::Text("Configuration loaded successfully!");
         ImGui::EndPopup();
+    }
+
+    ImGui::Separator();
+
+    {
+        ImGui::Text("Language");
+        ImGui::SameLine();
+
+        // Get current language name for display
+        std::string currentLang = Configs.General.Language;
+
+        if (ImGui::BeginCombo("##Language", currentLang.c_str())) {
+            std::vector<std::string> availableLanguages;
+            availableLanguages.reserve(Localization::Languages.size());
+
+            for (const auto& kv : Localization::Languages) {
+                availableLanguages.push_back(kv.first.c_str());
+            }
+
+            for (const auto& lang : availableLanguages) {
+                bool isSelected = (currentLang == lang);
+                if (ImGui::Selectable(lang.c_str(), isSelected)) {
+                    Configs.General.Language = lang;
+
+                    // Reload localization with new language
+                    Localization::Initialize();
+
+                    // Save config to persist language choice
+                    SaveConfig(ConfigPath);
+                }
+
+                if (isSelected) {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            ImGui::Text("Select interface language");
+            ImGui::EndTooltip();
+        }
     }
 
     ImGui::Separator();

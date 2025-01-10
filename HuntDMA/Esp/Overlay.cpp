@@ -4,8 +4,9 @@
 #include "ConfigUtilities.h"
 #include "Init.h"
 #include "PlayerEsp.h"
-#include <algorithm>
 #include "ESPRenderer.h"
+#include "Localization/Localization.h"
+#include <algorithm>
 
 static void DrawFPS()
 {
@@ -52,7 +53,7 @@ static void DrawPlayerList()
             !IsValidHP(ent->GetHealth().regenerable_max_hp))
             continue;
 
-        std::string wname = Configs.Player.Name ? ent->GetName() : "";
+        std::string wname = Configs.Player.Name ? LOC("entity", ent->GetTypeAsString()) : "";
         std::string wdistance = Configs.Player.Distance ? "[" + std::to_string(distance) + "m]" : "";
         std::string whealth = std::to_string(ent->GetHealth().current_hp) + "/" + std::to_string(ent->GetHealth().current_max_hp) + "[" + std::to_string(ent->GetHealth().regenerable_max_hp) + "]";
 

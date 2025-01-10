@@ -4,8 +4,9 @@
 #include "CheatFunction.h"
 #include "ESPRenderer.h"
 #include "ConfigInstance.h"
-#include <WorldEntity.h>
+#include "WorldEntity.h"
 #include "ConfigUtilities.h"
+#include "Localization/Localization.h"
 
 std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(1, [] {
 	
@@ -41,7 +42,7 @@ void DrawBossesEsp()
 				Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
 				if (pos.x <= 0 || pos.y <= 0)
 					continue;
-				std::string wname = Configs.Bosses.Name ? ent->GetName() : "";
+				std::string wname = Configs.Bosses.Name ? LOC("entity", ent->GetTypeAsString()) : "";
 				std::string wdistance = Configs.Bosses.Distance ? "[" + std::to_string(distance) + "m]" : "";
 				ESPRenderer::DrawText(
 					ImVec2(pos.x, pos.y),
@@ -240,7 +241,7 @@ void DrawPlayersEsp()
 			if (!Configs.Player.Enable)
 				continue;
 
-			std::string wname = (Configs.Player.Name || isDead) ? ent->GetName() : "";
+			std::string wname = (Configs.Player.Name || isDead) ? LOC("entity", ent->GetTypeAsString()) : "";
 			std::string wdistance = Configs.Player.Distance ? "[" + std::to_string(distance) + "m]" : "";
 			std::string whealth = Configs.Player.HP ? std::to_string(ent->GetHealth().current_hp) + "/" + std::to_string(ent->GetHealth().current_max_hp) + "[" + std::to_string(ent->GetHealth().regenerable_max_hp) + "]" : "";
 			ESPRenderer::DrawText(

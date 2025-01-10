@@ -17,6 +17,17 @@ const std::vector<int> ESPRenderer::FONT_SIZES = {
 
 bool ESPRenderer::Initialize()
 {
+    static const ImWchar ranges[] = {
+        0x0020, 0x00FF,  // Basic Latin + Latin Supplement
+        0x0400, 0x052F,  // Cyrillic + Cyrillic Supplement
+        0x2DE0, 0x2DFF,  // Cyrillic Extended-A
+        0xA640, 0xA69F,  // Cyrillic Extended-B
+        0x4E00, 0x9FFF,  // CJK Unified Ideographs (main chinese chars)
+        0x3000, 0x30FF,  // CJK Symbols and Punctuation, Hiragana, Katakana
+        0xFF00, 0xFFEF,  // Half-width/Full-width Forms
+        0,
+    };
+
     ImGuiIO& io = ImGui::GetIO();
 
     // Init default font
@@ -29,6 +40,7 @@ bool ESPRenderer::Initialize()
     io.FontDefault = io.Fonts->AddFontDefault();
     ImFontConfig config;
     config.SizePixels = 13.0f * Configs.General.UIScale;
+    config.GlyphRanges = ranges;
     io.FontDefault = io.Fonts->AddFontDefault(&config);
 
     // Load all font sizes
@@ -40,6 +52,7 @@ bool ESPRenderer::Initialize()
     for (int size : FONT_SIZES) {
         ImFontConfig config;
         config.SizePixels = static_cast<float>(size);
+        config.GlyphRanges = ranges;
 
         ImFont* font = io.Fonts->AddFontFromFileTTF(fontPath,
             static_cast<float>(size),

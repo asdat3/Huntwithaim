@@ -135,7 +135,6 @@ void GetAimbotTarget()
 		if (Vector2::Distance(CameraInstance->WorldToScreen(player->GetPosition()), Centerofscreen) >Configs.Aimbot.FOV)
 			continue;
 		AimbotTarget = player;
-		//printf("Targeting: %s\n", AimbotTarget->GetName().c_str());
 		return;
 	}
 	AimbotTarget = nullptr;
