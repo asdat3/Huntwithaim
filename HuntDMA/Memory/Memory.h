@@ -21,7 +21,7 @@ private:
 		size_t base_size = 0;
 		std::string process_name = "";
 	};
-	std::unordered_map<std::string, ULONG64> Modules;
+	std::unordered_map<std::wstring, ULONG64> Modules;
 
 
 	static inline BOOLEAN DMA_INITIALIZED = FALSE;

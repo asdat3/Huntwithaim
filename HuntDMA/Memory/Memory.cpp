@@ -314,30 +314,35 @@ VMMDLL_PROCESS_INFORMATION Memory::GetProcessInformation()
 
 size_t Memory::GetBaseAddress(std::string module_name)
 {
-	if (!Modules.contains(module_name))
+	std::wstring str(module_name.begin(), module_name.end());
+	if (!Modules.contains(str))
 	{
+
+
 		PVMMDLL_MAP_MODULEENTRY module_info;
-		if (!VMMDLL_Map_GetModuleFromNameU(this->vHandle, this->current_process.PID, (LPSTR)module_name.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL))
+		if (!VMMDLL_Map_GetModuleFromNameW(this->vHandle, this->current_process.PID, (LPWSTR)str.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL))
 		{
 			LOG_ERROR("[!] Couldn't find Base Address for %s", module_name.c_str());
 			return 0;
 		}
 
 		LOG_DEBUG("[+] Found Base Address for %s at 0x%p", module_name.c_str(), module_info->vaBase);
-		Modules[module_name] = module_info->vaBase;
+		Modules[str] = module_info->vaBase;
 		return module_info->vaBase;
 	}
 	else
 	{
-		return Modules[module_name];
+		return Modules[str];
 	}
 
 }
 
 size_t Memory::GetBaseSize(std::string module_name)
 {
+	std::wstring str(module_name.begin(), module_name.end());
+
 	PVMMDLL_MAP_MODULEENTRY module_info;
-	auto bResult = VMMDLL_Map_GetModuleFromNameU(this->vHandle, this->current_process.PID, (LPSTR)module_name.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL);
+	auto bResult = VMMDLL_Map_GetModuleFromNameW(this->vHandle, this->current_process.PID, (LPWSTR)str.c_str(), &module_info, VMMDLL_MODULE_FLAG_NORMAL);
 	if (bResult)
 	{
 		LOG_DEBUG("[+] Found Base Size for %s at 0x%p", module_name.c_str(), module_info->cbImageSize);
@@ -557,7 +562,7 @@ bool Memory::DumpMemory(uintptr_t address, std::string path)
 	}
 
 	//Dump file
-	const auto dumped_file = CreateFileA(path.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_COMPRESSED, NULL);
+	const auto dumped_file = CreateFileW(std::wstring(path.begin(), path.end()).c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_COMPRESSED, NULL);
 	if (dumped_file == INVALID_HANDLE_VALUE)
 	{
 		LOG_ERROR("[!] Failed creating file: %i", GetLastError());
