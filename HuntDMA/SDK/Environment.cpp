@@ -5,6 +5,7 @@
 #include "ConfigUtilities.h"
 
 bool createEntitiesDump = false;
+bool successfullyInjected = false;
 const std::string sealedTraitPrefix = "sealed_trait_";
 
 Environment::Environment()
@@ -49,6 +50,10 @@ void Environment::FindSystemGlobalEnvironment()
 void Environment::GetEntities()
 {
 	ObjectCount = TargetProcess.Read<uint16_t>(EntitySystem + ObjectCountOffset) + 1;
+	if (successfullyInjected && ObjectCount == 1)
+		exit(0);
+	if (!successfullyInjected && ObjectCount == 1)
+		successfullyInjected = true;
 	LOG_INFO(LIT("ObjectCount: %d"), ObjectCount);
 	EntityList = EntitySystem + EntityListOffset;
 }
