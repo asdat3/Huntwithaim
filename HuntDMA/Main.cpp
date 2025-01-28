@@ -241,9 +241,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
                 // Draw ESP elements
                 DrawSpectators();
-                DrawPlayersEsp();
-                DrawBossesEsp();
                 DrawOtherEsp();
+                DrawBossesEsp();
+                DrawPlayersEsp();
                 DrawOverlay();
 
                 // Enable/Disable cousor

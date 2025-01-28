@@ -306,12 +306,12 @@ bool ImGuiMenu::HotKey(const char* label, int* key) {
     sprintf_s(buf, "%s [%s]", label, ImGuiUtils::GetKeyName(*key));
     
     if (ImGui::Button(buf)) {
-        ImGui::OpenPopup("Select Key");
+        ImGui::OpenPopup(LOC(category, "hotkey.SelectKey").c_str());
     }
 
     // Modular window for choosing key
-    if (ImGui::BeginPopupModal("Select Key", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Press any key or click to cancel");
+    if (ImGui::BeginPopupModal(LOC(category, "hotkey.SelectKey").c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text(LOC(category, "hotkey.Instructions").c_str());
         
         // Check key input
         for (int i = ImGuiKey_NamedKey_BEGIN; i < ImGuiKey_NamedKey_END; i++) {
@@ -425,42 +425,46 @@ void ImGuiMenu::RenderMenu() {
     ImGui::SetNextWindowPos(ImVec2(190, 102), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(580, 362), ImGuiCond_FirstUseEver);
 
-    ImGui::Begin("Hunt DMA", &MenuOpen, ImGuiWindowFlags_NoCollapse);
+    ImGui::Begin(LOC(category, "window.name").c_str(), &MenuOpen, ImGuiWindowFlags_NoCollapse);
 
     if (ImGui::BeginTabBar("##Tabs")) {
-        if (ImGui::BeginTabItem("Player ESP")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.PlayerESP").c_str())) {
             RenderPlayerESPTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Bosses ESP")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.BossesESP").c_str())) {
             RenderBossesESPTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Supply ESP")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.SupplyESP").c_str())) {
             RenderSupplyESPTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("BB ESP")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.BBESP").c_str())) {
             RenderBloodBondsESPTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Trap ESP")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.TrapESP").c_str())) {
             RenderTrapESPTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("POI ESP")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.POIESP").c_str())) {
             RenderPOIESPTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Overlay")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.TraitESP").c_str())) {
+            RenderTraitESPTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem(LOC(category, "tabs.Overlay").c_str())) {
             RenderOverlayTab();
             ImGui::EndTabItem();
         }
-        if (enableAimBot && ImGui::BeginTabItem("Aimbot")) {
+        if (enableAimBot && ImGui::BeginTabItem(LOC(category, "tabs.Aimbot").c_str())) {
             RenderAimbotTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Settings")) {
+        if (ImGui::BeginTabItem(LOC(category, "tabs.Settings").c_str())) {
             RenderSettingsTab();
             ImGui::EndTabItem();
         }
@@ -549,6 +553,7 @@ void ImGuiMenu::RenderBossesESPTab() {
     ColorPickerWithText("Text Color", &Configs.Bosses.TextColor);
 
     ImGui::Checkbox("Name", &Configs.Bosses.Name);
+    ImGui::SameLine();
     ImGui::Checkbox("Distance", &Configs.Bosses.Distance);
 
     ImGui::SliderInt("Max Distance", &Configs.Bosses.MaxDistance, 0, 1500, "%d m");
@@ -624,7 +629,9 @@ void ImGuiMenu::RenderTrapESPTab() {
     ColorPickerWithText("Barrel Color", &Configs.Trap.BarrelColor);
 
     ImGui::Checkbox("Name", &Configs.Trap.Name);
+    ImGui::SameLine();
     ImGui::Checkbox("Distance", &Configs.Trap.Distance);
+
     ImGui::SliderInt("Max Distance", &Configs.Trap.MaxDistance, 0, 1500, "%d m");
     RenderFontSizeSlider("Text Size", Configs.Trap.FontSize);
 
@@ -656,7 +663,9 @@ void ImGuiMenu::RenderPOIESPTab() {
     ColorPickerWithText("Text Color", &Configs.POI.TextColor);
 
     ImGui::Checkbox("Name", &Configs.POI.Name);
+    ImGui::SameLine();
     ImGui::Checkbox("Distance", &Configs.POI.Distance);
+
     ImGui::SliderInt("Max Distance", &Configs.POI.MaxDistance, 0, 1500, "%d m");
     RenderFontSizeSlider("Text Size", Configs.POI.FontSize);
 
@@ -681,6 +690,175 @@ void ImGuiMenu::RenderPOIESPTab() {
     ImGui::Checkbox("Show Seasonal destructibles", &Configs.POI.ShowSeasonalDestructibles);
     ImGui::SameLine();
     HelpMarker("Pumpkins, Balloons, etc");
+    ImGui::EndGroup();
+
+    ImGui::EndChild();
+}
+
+void ImGuiMenu::RenderTraitESPTab() {
+    ImGui::BeginChild("TraitESPTab", ImVec2(0, 0), false);
+
+    ImGui::BeginGroup();
+
+    ImGui::Checkbox("Enable", &Configs.Traits.Enable);
+    ImGui::SameLine();
+    ColorPickerWithText("Text Color", &Configs.Traits.TraitColor);
+    
+    ImGui::Checkbox("Name", &Configs.Traits.Name);
+    ImGui::SameLine();
+    ImGui::Checkbox("Distance", &Configs.Traits.Distance);
+
+    RenderFontSizeSlider("Text Size", Configs.Traits.FontSize);
+
+    ImGui::EndGroup();
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+    ImGui::BeginGroup();
+
+    ImGui::Checkbox("Berserker", &Configs.Traits.EnableBerserker);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##berserker", &Configs.Traits.BerserkerDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Deathcheat", &Configs.Traits.EnableDeathcheat);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##deathcheat", &Configs.Traits.DeathcheatDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Necromancer", &Configs.Traits.EnableNecromancer);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##necromancer", &Configs.Traits.NecromancerDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Rampage", &Configs.Traits.EnableRampage);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##rampage", &Configs.Traits.RampageDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Relentless", &Configs.Traits.EnableRelentless);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##relentless", &Configs.Traits.RelentlessDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Remedy", &Configs.Traits.EnableRemedy);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##remedy", &Configs.Traits.RemedyDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Shadow", &Configs.Traits.EnableShadow);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##shadow", &Configs.Traits.ShadowDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Shadowleap", &Configs.Traits.EnableShadowleap);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##shadowleap", &Configs.Traits.ShadowleapDistance, 0, 1500, "%d m");
+
+    ImGui::EndGroup();
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+    ImGui::BeginGroup();
+
+    ImGui::Checkbox("Beastface", &Configs.Traits.EnableBeastface);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##beastface", &Configs.Traits.BeastfaceDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Bloodless", &Configs.Traits.EnableBloodless);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##bloodless", &Configs.Traits.BloodlessDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Bulletgrubber", &Configs.Traits.EnableBulletgrubber);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##bulletgrubber", &Configs.Traits.BulletgrubberDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Conduit", &Configs.Traits.EnableConduit);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##conduit", &Configs.Traits.ConduitDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Determination", &Configs.Traits.EnableDetermination);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##determination", &Configs.Traits.DeterminationDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Doctor", &Configs.Traits.EnableDoctor);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##doctor", &Configs.Traits.DoctorDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Fanning", &Configs.Traits.EnableFanning);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##fanning", &Configs.Traits.FanningDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Fastfingers", &Configs.Traits.EnableFastfingers);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##fastfingers", &Configs.Traits.FastfingersDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Gatorlegs", &Configs.Traits.EnableGatorlegs);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##gatorlegs", &Configs.Traits.GatorlegsDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Ghoul", &Configs.Traits.EnableGhoul);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##ghoul", &Configs.Traits.GhoulDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Greyhound", &Configs.Traits.EnableGreyhound);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##greyhound", &Configs.Traits.GreyhoundDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Levering", &Configs.Traits.EnableLevering);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##levering", &Configs.Traits.LeveringDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Lightfoot", &Configs.Traits.EnableLightfoot);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##lightfoot", &Configs.Traits.LightfootDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Magpie", &Configs.Traits.EnableMagpie);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##magpie", &Configs.Traits.MagpieDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Packmule", &Configs.Traits.EnablePackmule);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##packmule", &Configs.Traits.PackmuleDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Physician", &Configs.Traits.EnablePhysician);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##physician", &Configs.Traits.PhysicianDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Pitcher", &Configs.Traits.EnablePitcher);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##pitcher", &Configs.Traits.PitcherDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Quartermaster", &Configs.Traits.EnableQuartermaster);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##quartermaster", &Configs.Traits.QuartermasterDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Resilience", &Configs.Traits.EnableResilience);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##resilience", &Configs.Traits.ResilienceDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Salveskin", &Configs.Traits.EnableSalveskin);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##salveskin", &Configs.Traits.SalveskinDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Serpent", &Configs.Traits.EnableSerpent);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##serpent", &Configs.Traits.SerpentDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Vigor", &Configs.Traits.EnableVigor);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##vigor", &Configs.Traits.VigorDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Whispersmith", &Configs.Traits.EnableWhispersmith);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##whispersmith", &Configs.Traits.WhispersmithDistance, 0, 1500, "%d m");
+
+    ImGui::Checkbox("Witness", &Configs.Traits.EnableWitness);
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt("Max Distance##witness", &Configs.Traits.WitnessDistance, 0, 1500, "%d m");
+
+    ImGui::EndGroup();
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+    ImGui::BeginGroup();
+
+    ImGui::Checkbox("Other that don't appear in normal game", &Configs.Traits.EnableOther);
+    ImGui::SliderInt("Max Distance##other", &Configs.Traits.OtherDistance, 0, 1500, "%d m");
+
     ImGui::EndGroup();
 
     ImGui::EndChild();

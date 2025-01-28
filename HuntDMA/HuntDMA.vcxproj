@@ -162,6 +162,7 @@
     <ClInclude Include="Config\PlayerConfig.h" />
     <ClInclude Include="Config\POIConfig.h" />
     <ClInclude Include="Config\SupplyConfig.h" />
+    <ClInclude Include="Config\TraitConfig.h" />
     <ClInclude Include="Config\TrapConfig.h" />
     <ClInclude Include="Config\BossesConfig.h" />
     <ClInclude Include="Esp\OtherEsp.h" />

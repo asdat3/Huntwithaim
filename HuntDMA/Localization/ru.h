@@ -22,7 +22,7 @@ namespace Localizations {
                     {"Hellborn", "Демон"},
 
                     {"CashRegister", "Касса"},
-                    {"GoldCashRegister", "ЗОЛОТАЯ СУКА КАССА (STONKS)"},
+                    {"GoldCashRegister", "ЗОЛОТАЯ КАССА ЗОЛОТАЯ (STONKS)"},
 
                     {"Pouch", "Мешочек"},
                     {"Poster", "Конверт"},
@@ -80,7 +80,7 @@ namespace Localizations {
                     {"tabs.TraitESP", "Trait ESP"},
                     {"tabs.Overlay", "Overlay"},
                     {"tabs.Aimbot", "Aimbot"},
-                    {"tabs.Settings", "Настройки"},
+                    {"tabs.Settings", "Settings"},
                     {"hotkey.SelectKey", "Select Key"},
                     {"hotkey.Instructions", "Press any key or click to cancel"},
                 }},

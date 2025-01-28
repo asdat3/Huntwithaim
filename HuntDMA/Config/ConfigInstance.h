@@ -9,6 +9,7 @@
 #include "OverlayConfig.h"
 #include "AimbotConfig.h"
 #include "GeneralConfig.h"
+#include "TraitConfig.h"
 class ConfigInstances
 {
 public:
@@ -19,6 +20,7 @@ public:
 	BloodBondsConfig BloodBonds = BloodBondsConfig(LIT("BloodBouds"));
 	TrapConfig Trap = TrapConfig(LIT("Trap"));
 	POIConfig POI = POIConfig(LIT("POI"));
+	TraitConfig Traits = TraitConfig(LIT("Traits"));
 	OverlayConfig Overlay = OverlayConfig(LIT("Overlay"));
 	AimbotConfig Aimbot = AimbotConfig(LIT("Aimbot"));
 
@@ -32,6 +34,7 @@ public:
 		jsoned.merge_patch(BloodBonds.ToJson());
 		jsoned.merge_patch(Trap.ToJson());
 		jsoned.merge_patch(POI.ToJson());
+		jsoned.merge_patch(Traits.ToJson());
 		jsoned.merge_patch(Overlay.ToJson());
 		jsoned.merge_patch(Aimbot.ToJson());
 		return jsoned;
@@ -46,6 +49,7 @@ public:
 		BloodBonds.FromJson(jsoned);
 		Trap.FromJson(jsoned);
 		POI.FromJson(jsoned);
+		Traits.FromJson(jsoned);
 		Overlay.FromJson(jsoned);
 		Aimbot.FromJson(jsoned);
 	}
