@@ -502,6 +502,16 @@ void ImGuiMenu::RenderPlayerESPTab() {
         ImGui::Checkbox("HP", &Configs.Player.HP);
     }
 
+    ImGui::Checkbox("Draw Map Radar", &Configs.Player.DrawRadar);
+    ImGui::SameLine;
+    if (Configs.Player.DrawRadar) {
+        ImGui::Checkbox("Draw Self", &Configs.Player.RadarDrawSelf);
+        ImGui::SameLine();
+        ColorPickerWithText("Player Color", &Configs.Player.PlayerRadarColor);
+        ImGui::SameLine();
+        ColorPickerWithText("Enemy Color", &Configs.Player.EnemyRadarColor);
+    }
+
     ImGui::Checkbox("Show Dead", &Configs.Player.ShowDead);
     ImGui::SliderInt("Dead Max Distance", &Configs.Player.DeadMaxDistance, 0, 1500, "%d m");
 

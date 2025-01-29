@@ -117,7 +117,6 @@ void Environment::UpdatePlayerList()
 		if (ent->GetType() == EntityType::LocalPlayer)
 		{
 			TargetProcess.AddScatterReadRequest(handle, ent->SpecCountPointer4 + ent->SpecCountOffset5, &ent->SpecCount, sizeof(int));
-			continue;
 		}	
 		if (!(ent->GetClass() > 0x2000000 && ent->GetClass() < 0x7FFFFFFFFFFF))
 		{

@@ -7,6 +7,7 @@
 #include "WorldEntity.h"
 #include "ConfigUtilities.h"
 #include "Localization/Localization.h"
+#include "ImGuiMenu.h"
 
 std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(1, [] {
 	
@@ -85,8 +86,8 @@ void DrawPlayersEsp()
 			auto isDead = false;
 			if (ent->GetType() != EntityType::FriendlyPlayer &&
 				(!IsValidHP(ent->GetHealth().current_hp) ||
-				!IsValidHP(ent->GetHealth().current_max_hp) ||
-				!IsValidHP(ent->GetHealth().regenerable_max_hp)))
+					!IsValidHP(ent->GetHealth().current_max_hp) ||
+					!IsValidHP(ent->GetHealth().regenerable_max_hp)))
 			{
 				ent->SetType(EntityType::DeadPlayer);
 				isDead = true;
@@ -105,7 +106,7 @@ void DrawPlayersEsp()
 			Vector2 feetPos = CameraInstance->WorldToScreen(playerPos, false);
 			if (feetPos.IsZero())
 				continue;
-			
+
 			tempPos.z = playerPos.z + 1.7f;
 			Vector2 headPos;
 			if (Configs.Player.DrawHeadInFrames && !isDead)
@@ -251,6 +252,139 @@ void DrawPlayersEsp()
 				Configs.Player.FontSize,
 				TopCenter
 			);
+		}
+	}
+}
+
+
+void DrawRadar()
+{
+	//RYANS RADAR 
+
+	//MAP BOUNDS FOR DEBUGGING 1024X1024 IS CENTER SO MAP IS 2048X2048 
+	//BOTTOM RIGHT VOID IS 0,0
+	//BOTTOM RIGHT MAP IS 512,512
+
+	std::vector<std::shared_ptr<WorldEntity>> tempPlayerList = EnvironmentInstance->GetPlayerList();
+
+	std::shared_ptr<WorldEntity> LocalPlayer = NULL;
+	for (size_t index = 0; index < tempPlayerList.size(); ++index)
+	{
+		std::shared_ptr<WorldEntity> ent = tempPlayerList[index];
+		if (ent == nullptr)
+			continue;
+		if (ent->GetType() == EntityType::LocalPlayer)
+		{
+			LocalPlayer = ent;
+			break;
+		}
+	}
+
+	if (LocalPlayer == NULL)
+		return;
+
+	if (Configs.Player.DrawRadar) {
+		if (ImGuiUtils::IsKeyPressed(VK_TAB)) {
+
+			// Screen dimensions
+			float screenWidth;
+			float screenHeight;
+
+			if (Configs.General.OverrideResolution) {
+				screenWidth = static_cast<float>(Configs.General.Width);
+				screenHeight = static_cast<float>(Configs.General.Height);
+			}
+			else {
+				screenWidth = static_cast<float>(GetSystemMetrics(SM_CXSCREEN));
+				screenHeight = static_cast<float>(GetSystemMetrics(SM_CYSCREEN));
+			}
+
+			// MiniMap Size
+			float MapWidth = 935.0f;
+			float MapHeight = 935.0f;
+
+			// Radar center on the screen
+			float mapCenterX = screenWidth / 2.0f;
+			float mapCenterY = screenHeight / 2.0f;
+
+			// World Bounds
+			float worldMinX = 512.0f, worldMaxX = 1535.0f;
+			float worldMinY = 512.0f, worldMaxY = 1535.0f;
+
+			// Offset for map
+			float horizontaloffset = (screenWidth * 0.001171875) * -1.0; //This gets the offset through screenspace of the monitor and * -1 to get negative offset using standard 16:9
+			float verticaloffset = screenHeight * 0.0090277; //This gets the offset through screenspace height using standard 16:9 aspect ratio
+
+			// Draw MiniMap Background (Rectangle Outline)
+			ESPRenderer::DrawRect(
+				ImVec2(mapCenterX - MapWidth / 2 + horizontaloffset, mapCenterY - MapHeight / 2 + verticaloffset),
+				ImVec2(mapCenterX + MapWidth / 2 + horizontaloffset, mapCenterY + MapHeight / 2 + verticaloffset),
+				ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+				1.0f, false
+			);
+
+			// Local Player Position
+			float playerWorldX = LocalPlayer->GetPosition().x;
+			float playerWorldY = LocalPlayer->GetPosition().y;
+
+			// Normalize Local Player Position to MiniMap Space
+			float playerMapX = ((playerWorldX - worldMinX) / (worldMaxX - worldMinX)) * MapWidth;
+			float playerMapY = ((worldMaxY - playerWorldY) / (worldMaxY - worldMinY)) * MapHeight;
+
+			// Convert MiniMap Position to Screen Space
+			float playerScreenX = mapCenterX - (MapWidth / 2) + playerMapX + horizontaloffset;
+			float playerScreenY = mapCenterY - (MapHeight / 2) + playerMapY + verticaloffset;
+
+			// Draw Local Player
+			if (Configs.Player.RadarDrawSelf) {
+
+				ESPRenderer::DrawCircle(ImVec2(playerScreenX, playerScreenY), 5.0f, Configs.Player.PlayerRadarColor, 1.0f, true);
+			}
+
+			// Draw Enemies
+			if (tempPlayerList.size() == 0)
+				return;
+			for (std::shared_ptr<WorldEntity> ent : tempPlayerList)
+			{
+				if (ent == nullptr || ent->GetType() == EntityType::LocalPlayer)
+					continue;
+
+				auto playerPos = ent->GetPosition();
+
+				if (!Configs.Player.DrawFriends && ent->GetType() == EntityType::FriendlyPlayer)
+					continue;
+
+				if (!ent->GetValid() || ent->IsHidden()) // Has extracted
+					continue;
+
+				auto isDead = false;
+				if (ent->GetType() != EntityType::FriendlyPlayer &&
+					(!IsValidHP(ent->GetHealth().current_hp) ||
+						!IsValidHP(ent->GetHealth().current_max_hp) ||
+						!IsValidHP(ent->GetHealth().regenerable_max_hp)))
+				{
+					ent->SetType(EntityType::DeadPlayer);
+					isDead = true;
+				}
+				else
+					ent->SetType(EntityType::EnemyPlayer);
+
+				if (isDead)
+					continue;
+
+				float enemyWorldX = playerPos.x;
+				float enemyWorldY = playerPos.y;
+
+				// Normalize enemy position 
+				float enemyMapX = ((enemyWorldX - worldMinX) / (worldMaxX - worldMinX)) * MapWidth;
+				float enemyMapY = ((worldMaxY - enemyWorldY) / (worldMaxY - worldMinY)) * MapHeight;
+
+				// Convert MiniMap Position to Screen Space
+				float enemyScreenX = mapCenterX - (MapWidth / 2) + enemyMapX + horizontaloffset;
+				float enemyScreenY = mapCenterY - (MapHeight / 2) + enemyMapY + verticaloffset;
+
+				ESPRenderer::DrawCircle(ImVec2(enemyScreenX, enemyScreenY), 5.0f, Configs.Player.EnemyRadarColor, 1.0f, true);
+			}
 		}
 	}
 }
