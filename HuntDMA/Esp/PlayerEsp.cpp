@@ -300,8 +300,8 @@ void DrawRadar()
 			}
 
 			// MiniMap Size
-			float MapWidth = 935.0f;
-			float MapHeight = 935.0f;
+			float MapSizeMagicalNumber = 0.6493056f;
+			float MapSize = MapSizeMagicalNumber * screenHeight;
 
 			// Radar center on the screen
 			float mapCenterX = screenWidth / 2.0f;
@@ -317,8 +317,8 @@ void DrawRadar()
 
 			// Draw MiniMap Background (Rectangle Outline)
 			ESPRenderer::DrawRect(
-				ImVec2(mapCenterX - MapWidth / 2 + horizontaloffset, mapCenterY - MapHeight / 2 + verticaloffset),
-				ImVec2(mapCenterX + MapWidth / 2 + horizontaloffset, mapCenterY + MapHeight / 2 + verticaloffset),
+				ImVec2(mapCenterX - MapSize / 2 + horizontaloffset, mapCenterY - MapSize / 2 + verticaloffset),
+				ImVec2(mapCenterX + MapSize / 2 + horizontaloffset, mapCenterY + MapSize / 2 + verticaloffset),
 				ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
 				1.0f, false
 			);
@@ -328,12 +328,12 @@ void DrawRadar()
 			float playerWorldY = LocalPlayer->GetPosition().y;
 
 			// Normalize Local Player Position to MiniMap Space
-			float playerMapX = ((playerWorldX - worldMinX) / (worldMaxX - worldMinX)) * MapWidth;
-			float playerMapY = ((worldMaxY - playerWorldY) / (worldMaxY - worldMinY)) * MapHeight;
+			float playerMapX = ((playerWorldX - worldMinX) / (worldMaxX - worldMinX)) * MapSize;
+			float playerMapY = ((worldMaxY - playerWorldY) / (worldMaxY - worldMinY)) * MapSize;
 
 			// Convert MiniMap Position to Screen Space
-			float playerScreenX = mapCenterX - (MapWidth / 2) + playerMapX + horizontaloffset;
-			float playerScreenY = mapCenterY - (MapHeight / 2) + playerMapY + verticaloffset;
+			float playerScreenX = mapCenterX - (MapSize / 2) + playerMapX + horizontaloffset;
+			float playerScreenY = mapCenterY - (MapSize / 2) + playerMapY + verticaloffset;
 
 			// Draw Local Player
 			if (Configs.Player.RadarDrawSelf) {
@@ -376,12 +376,12 @@ void DrawRadar()
 				float enemyWorldY = playerPos.y;
 
 				// Normalize enemy position 
-				float enemyMapX = ((enemyWorldX - worldMinX) / (worldMaxX - worldMinX)) * MapWidth;
-				float enemyMapY = ((worldMaxY - enemyWorldY) / (worldMaxY - worldMinY)) * MapHeight;
+				float enemyMapX = ((enemyWorldX - worldMinX) / (worldMaxX - worldMinX)) * MapSize;
+				float enemyMapY = ((worldMaxY - enemyWorldY) / (worldMaxY - worldMinY)) * MapSize;
 
 				// Convert MiniMap Position to Screen Space
-				float enemyScreenX = mapCenterX - (MapWidth / 2) + enemyMapX + horizontaloffset;
-				float enemyScreenY = mapCenterY - (MapHeight / 2) + enemyMapY + verticaloffset;
+				float enemyScreenX = mapCenterX - (MapSize / 2) + enemyMapX + horizontaloffset;
+				float enemyScreenY = mapCenterY - (MapSize / 2) + enemyMapY + verticaloffset;
 
 				ESPRenderer::DrawCircle(ImVec2(enemyScreenX, enemyScreenY), 5.0f, Configs.Player.EnemyRadarColor, 1.0f, true);
 			}

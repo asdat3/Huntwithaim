@@ -503,8 +503,8 @@ void ImGuiMenu::RenderPlayerESPTab() {
     }
 
     ImGui::Checkbox("Draw Map Radar", &Configs.Player.DrawRadar);
-    ImGui::SameLine;
     if (Configs.Player.DrawRadar) {
+        ImGui::SameLine;
         ImGui::Checkbox("Draw Self", &Configs.Player.RadarDrawSelf);
         ImGui::SameLine();
         ColorPickerWithText("Player Color", &Configs.Player.PlayerRadarColor);
