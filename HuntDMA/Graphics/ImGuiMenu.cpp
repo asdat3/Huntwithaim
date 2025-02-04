@@ -696,7 +696,6 @@ void ImGuiMenu::RenderPOIESPTab() {
     ImGui::Checkbox("Show Posters", &Configs.POI.ShowPosters);
     ImGui::Checkbox("Show Blueprints", &Configs.POI.ShowBlueprints);
     ImGui::Checkbox("Show Gun Oil", &Configs.POI.ShowGunOil);
-    ImGui::Checkbox("Show Traits", &Configs.POI.ShowTraits);
     ImGui::Checkbox("Show Seasonal destructibles", &Configs.POI.ShowSeasonalDestructibles);
     ImGui::SameLine();
     HelpMarker("Pumpkins, Balloons, etc");

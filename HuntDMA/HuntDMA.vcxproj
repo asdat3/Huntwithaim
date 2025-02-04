@@ -184,6 +184,7 @@
     <ClInclude Include="Memory\Registry.h" />
     <ClInclude Include="Misc\CheatFunction.h" />
     <ClInclude Include="Memory\Memory.h" />
+    <ClInclude Include="Misc\Fonts.h" />
     <ClInclude Include="Misc\Input.h" />
     <ClInclude Include="Misc\Pch\Pch.h" />
     <ClInclude Include="Misc\Vector.h" />

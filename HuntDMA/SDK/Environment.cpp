@@ -55,7 +55,6 @@ void Environment::GetEntities()
 	if (ObjectCount < 1000)
 	{
 		mapType = MapType::None;
-		LOG_INFO("Map is None");
 		if (mapLoaded)
 			mapLoaded = false;
 	}
@@ -90,6 +89,11 @@ void Environment::AssignMapType(char* name)
 	{
 		mapType = MapType::MammonsGulch;
 		LOG_INFO("Map is Mammon's Gulch");
+	}
+	else if (strstr(name, "LevelBorder"))
+	{
+		mapType = MapType::LawsonDeltaShootingRange;
+		LOG_INFO("Map is Shooting Range");
 	}
 }
 

@@ -6,6 +6,7 @@ enum class MapType : int
 	Unknown,
 	StillwaterBayou,
 	LawsonDelta,
+	LawsonDeltaShootingRange,
 	DeSalle,
 	MammonsGulch,
 };
