@@ -1,5 +1,14 @@
 #pragma once
 #include "WorldEntity.h"
+enum class MapType : int
+{
+	None,
+	Unknown,
+	StillwaterBayou,
+	LawsonDelta,
+	DeSalle,
+	MammonsGulch,
+};
 class Environment
 {
 private:
@@ -59,6 +68,7 @@ public:
 	void UpdatePlayerList();
 	void UpdateBossesList();
 	void CacheEntities();
+	void AssignMapType(char* name);
 	Environment();
 	void ClearConsole();
 	std::vector<std::shared_ptr<WorldEntity>> GetPlayerList() { return PlayerList; }
@@ -69,5 +79,6 @@ public:
 	std::vector<std::shared_ptr<WorldEntity>> GetPOIList() { return POIList; }
 	std::vector<std::shared_ptr<WorldEntity>> GetTraitList() { return TraitList; }
 	int GetSpectatorCount() { return SpectatorCount; }
+	MapType mapType = MapType::None;
 };
 extern bool createEntitiesDump;

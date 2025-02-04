@@ -49,13 +49,48 @@ void Environment::FindSystemGlobalEnvironment()
 
 void Environment::GetEntities()
 {
+	bool mapLoaded = ObjectCount < 1000;
 	ObjectCount = TargetProcess.Read<uint16_t>(EntitySystem + ObjectCountOffset) + 1;
+
+	if (ObjectCount < 1000)
+	{
+		mapType = MapType::None;
+		LOG_INFO("Map is None");
+		if (mapLoaded)
+			mapLoaded = false;
+	}
 	if (successfullyInjected && ObjectCount == 1)
 		exit(0);
 	if (!successfullyInjected && ObjectCount == 1)
 		successfullyInjected = true;
 	LOG_INFO(LIT("ObjectCount: %d"), ObjectCount);
 	EntityList = EntitySystem + EntityListOffset;
+	if (mapLoaded)
+		mapType = MapType::Unknown;
+}
+
+void Environment::AssignMapType(char* name)
+{
+	if (strstr(name, "stillwater"))
+	{
+		mapType = MapType::StillwaterBayou;
+		LOG_INFO("Map is Stillwater Bayou");
+	}
+	else if (strstr(name, "lawson"))
+	{
+		mapType = MapType::LawsonDelta;
+		LOG_INFO("Map is Lawson Delta");
+	}
+	else if (strstr(name, "desalle"))
+	{
+		mapType = MapType::DeSalle;
+		LOG_INFO("Map is DeSalle");
+	}
+	else if (strstr(name, "colorado"))
+	{
+		mapType = MapType::MammonsGulch;
+		LOG_INFO("Map is Mammon's Gulch");
+	}
 }
 
 void Environment::UpdateLocalPlayer()
@@ -251,10 +286,13 @@ void Environment::CacheEntities()
 			continue;
 		char* entityName = ent->GetEntityName().name;
 		char* entityClassName = ent->GetEntityClassName().name;
-		char* TraitName = ent->GetTypeName().name;
+		char* entityTypeName = ent->GetTypeName().name;
+
+		if (mapType == MapType::Unknown)
+			AssignMapType(entityName);
 
 		if (createEntitiesDump)
-			entitiesDump.push_back("Class: [" + std::string(entityClassName) + "]; Name: [" + std::string(entityName) + "], TypeName: [" + std::string(TraitName) + "];");
+			entitiesDump.push_back("Class: [" + std::string(entityClassName) + "]; Name: [" + std::string(entityName) + "], TypeName: [" + std::string(entityTypeName) + "];");
  
 		if (strstr(entityClassName, "ObjectSpawner") != NULL) // We do not want spawners to show as objects
 			continue;
