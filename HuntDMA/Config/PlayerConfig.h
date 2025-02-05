@@ -24,10 +24,6 @@ public:
     bool DrawFrames = true;
     bool DrawHeadInFrames = true;
     bool DrawHealthBars = true;
-    bool DrawRadar = true;
-    bool RadarDrawSelf = false;
-    ImVec4 PlayerRadarColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
-    ImVec4 EnemyRadarColor = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
     ImVec4 FramesColor = ImVec4(0.988235f, 0.949019f, 0.019607f, 1.0f);
     ImVec4 FriendColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
     bool ShowPlayerList = true;
@@ -72,14 +68,10 @@ public:
         j[ConfigName][LIT("DrawHealthBars")] = DrawHealthBars;
         j[ConfigName][LIT("ShowPlayerList")] = ShowPlayerList;
         j[ConfigName][LIT("PlayerListFontSize")] = PlayerListFontSize;
-        j[ConfigName][LIT("DrawRadar")] = DrawRadar;
-        j[ConfigName][LIT("RadarDrawSelf")] = RadarDrawSelf;
         ToJsonColor(&j, LIT("TextColor"), &TextColor);
         ToJsonColor(&j, LIT("FramesColor"), &FramesColor);
         ToJsonColor(&j, LIT("FriendColor"), &FriendColor);
         ToJsonColor(&j, LIT("PlayerListColor"), &PlayerListColor);
-        ToJsonColor(&j, LIT("PlayerRadarColor"), &PlayerRadarColor);
-        ToJsonColor(&j, LIT("EnemyRadarColor"), &EnemyRadarColor);
 
         return j;
     }
@@ -119,16 +111,10 @@ public:
             ShowPlayerList = j[ConfigName][LIT("ShowPlayerList")];
         if (j[ConfigName].contains(LIT("PlayerListFontSize")))
             PlayerListFontSize = j[ConfigName][LIT("PlayerListFontSize")];
-        if (j[ConfigName].contains(LIT("DrawRadar")))
-            DrawRadar = j[ConfigName][LIT("DrawRadar")];
-        if (j[ConfigName].contains(LIT("RadarDrawSelf")))
-            RadarDrawSelf = j[ConfigName][LIT("RadarDrawSelf")];
         FromJsonColor(j, LIT("FriendColor"), &FriendColor);
         FromJsonColor(j, LIT("FramesColor"), &FramesColor);
         FromJsonColor(j, LIT("TextColor"), &TextColor);
         FromJsonColor(j, LIT("PlayerListColor"), &PlayerListColor);
-        FromJsonColor(j, LIT("PlayerRadarColor"), &PlayerRadarColor);
-        FromJsonColor(j, LIT("EnemyRadarColor"), &EnemyRadarColor);
     }
 };
 

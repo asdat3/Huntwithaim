@@ -245,6 +245,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
                 // Draw ESP elements
                 DrawSpectators();
+                DrawRadar();
                 DrawOtherEsp();
                 DrawBossesEsp();
                 DrawPlayersEsp();

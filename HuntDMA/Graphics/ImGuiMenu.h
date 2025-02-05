@@ -8,8 +8,6 @@
 
 class ImGuiMenu {
 private:
-    const std::string category = "menu";
-
     // D3D11 Device Objects
     ID3D11Device* d3dDevice = nullptr;
     ID3D11DeviceContext* d3dDeviceContext = nullptr;
