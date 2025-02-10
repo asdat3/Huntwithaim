@@ -1,6 +1,35 @@
-MIT License
+Personal Use License
 
-Copyright (c) 2024 SDM
+Copyright © 2025 Whitebrim
+
+This software is licensed, not sold. By using this software, you agree to the following terms:  
+
+1. Personal Use Only  
+   - You may use, compile, and run this software solely for your personal, non-commercial purposes.  
+
+2. No Distribution  
+   - You may not distribute, share, sublicense, rent, lease, or sell this software or its source code, in whole or in part, to any third party.  
+
+3. No Commercial Use  
+   - You may not use this software for any commercial purposes, including but not limited to monetized content, services, or products.  
+
+4. Open Access for Educational Purposes  
+   - This software is provided as open-access for educational purposes.  
+   - Any derivative works based on this software must retain this license.  
+
+5. Disclaimer of Warranty  
+   - This software is provided "as is", without warranty of any kind, express or implied. The author is not liable for any damage or issues resulting from the use of this software.  
+
+6. Termination  
+   - Any violation of these terms will result in the immediate termination of this license.  
+
+By downloading, compiling, or using this software, you acknowledge and agree to these terms.  
+
+-------------------------------
+
+The files: Memory.сpp, Memory.h, Registry.cpp, Registry.h, Kmbox.cpp, Kmbox.h, Aimbot.cpp, Aimbot.h — are licensed under the MIT License:
+
+Copyright © 2024 SDM
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
