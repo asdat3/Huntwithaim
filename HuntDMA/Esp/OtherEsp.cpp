@@ -68,7 +68,7 @@ void DrawSupply()
 			continue;
 
 		std::string name = Configs.Supply.Name ? LOC("entity", ent->GetTypeAsString()) : "";
-		std::string distanceText = Configs.Supply.Distance ? "[" + std::to_string(distance) + "m]" : "";
+		std::string distanceText = Configs.Supply.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
@@ -103,7 +103,7 @@ void DrawBloodBonds()
 			continue;
 
 		std::string name = Configs.BloodBonds.Name ? LOC("entity", ent->GetTypeAsString()) : "";
-		std::string distanceText = Configs.BloodBonds.Distance ? "[" + std::to_string(distance) + "m]" : "";
+		std::string distanceText = Configs.BloodBonds.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
@@ -152,7 +152,7 @@ void DrawTraps()
 			continue;
 
 		std::string name = Configs.Trap.Name ? LOC("entity", ent->GetTypeAsString()) : "";
-		std::string distanceText = Configs.Trap.Distance ? "[" + std::to_string(distance) + "m]" : "";
+		std::string distanceText = Configs.Trap.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
@@ -208,7 +208,7 @@ void DrawPOI()
 			continue;
 
 		std::string name = Configs.POI.Name ? LOC("entity", ent->GetTypeAsString()) : "";
-		std::string distanceText = Configs.POI.Distance ? "[" + std::to_string(distance) + "m]" : "";
+		std::string distanceText = Configs.POI.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),
@@ -449,7 +449,7 @@ void DrawTraits()
 			continue;
 
 		std::string name = Configs.Traits.Name ? LOC("entity", ent->GetTypeAsString()) + " [" + LOC("trait", compactTypeName) + "]" : "";
-		std::string distanceText = Configs.Traits.Distance ? "[" + std::to_string(distance) + "m]" : "";
+		std::string distanceText = Configs.Traits.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 
 		ESPRenderer::DrawText(
 			ImVec2(pos.x, pos.y),

@@ -43,7 +43,7 @@ void DrawBossesEsp()
 				if (pos.x <= 0 || pos.y <= 0)
 					continue;
 				std::string wname = Configs.Bosses.Name ? LOC("entity", ent->GetTypeAsString()) : "";
-				std::string wdistance = Configs.Bosses.Distance ? "[" + std::to_string(distance) + "m]" : "";
+				std::string wdistance = Configs.Bosses.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 				ESPRenderer::DrawText(
 					ImVec2(pos.x, pos.y),
 					wname + wdistance,
@@ -242,7 +242,7 @@ void DrawPlayersEsp()
 				continue;
 
 			std::string wname = (Configs.Player.Name || isDead) ? LOC("entity", ent->GetTypeAsString()) : "";
-			std::string wdistance = Configs.Player.Distance ? "[" + std::to_string(distance) + "m]" : "";
+			std::string wdistance = Configs.Player.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 			std::string whealth = Configs.Player.HP ? std::to_string(ent->GetHealth().current_hp) + "/" + std::to_string(ent->GetHealth().current_max_hp) + "[" + std::to_string(ent->GetHealth().regenerable_max_hp) + "]" : "";
 			ESPRenderer::DrawText(
 				ImVec2(feetPos.x, feetPos.y),

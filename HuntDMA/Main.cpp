@@ -1,3 +1,9 @@
+#pragma warning(disable: 4200) // Zero-sized arrays
+#pragma warning(disable: 4477) // Format string mismatches
+#pragma warning(disable: 4018) // Signed/unsigned mismatch
+#pragma warning(disable: 4267) // Data loss in conversion
+#pragma warning(disable: 4313) // Format string conflicts
+
 #include "pch.h"
 #include "Memory.h"
 #include "CheatFunction.h"

@@ -83,6 +83,7 @@ namespace Localizations {
                     {"tabs.Settings", "Настройки"},
                     {"hotkey.SelectKey", "Выбрать клавишу"},
                     {"hotkey.Instructions", "Нажмите любую клавишу или кликните для отмены"},
+                    {"esp.Meters", " [{}м]"},
                     {"general.Enable", "Включить"},
                     {"general.TextColor", "Цвет текста"},
                     {"general.Name", "Названия"},
