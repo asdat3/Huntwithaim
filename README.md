@@ -60,7 +60,7 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP, Overlay mode.
   * Save
 * Spectating alarm
 * FPS
-* Auto SystemGlobalEnvironment offset detection (thanks [@spookykokojunge](https://github.com/spookykokojunge))
+* Auto SystemGlobalEnvironment offset detection (thanks [@Spookyisnice](https://github.com/spookyisnice))
 * Crosshair rendering
 * Overlay mode
   * Prevent recording
