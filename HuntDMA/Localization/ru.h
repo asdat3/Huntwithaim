@@ -96,7 +96,7 @@ namespace Localizations {
                     {"players.HP", "Здоровье"},
                     {"players.ShowDead", "Показывать мёртвых"},
                     {"players.DeadMaxDistance", "Макс. дистанция для мёртвых"},
-                    {"players.DrawFriendly", "Отображать союзников"},
+                    {"players.DrawFriendlyHP", "Отображать здоровье союзников"},
                     {"players.FriendColor", "Цвет союзников"},
                     {"players.ChamMode", "Тип силуэтов"},
                     {"players.WriteChams", "Включить/Обновить силуэты"},

@@ -59,7 +59,8 @@ void Environment::GetEntities()
 			mapLoaded = false;
 	}
 	if (successfullyInjected && ObjectCount == 1)
-		exit(0);
+		return;
+		//exit(0);
 	if (!successfullyInjected && ObjectCount == 1)
 		successfullyInjected = true;
 	LOG_INFO(LIT("ObjectCount: %d"), ObjectCount);

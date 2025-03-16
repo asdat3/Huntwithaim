@@ -19,7 +19,7 @@ public:
     bool Chams = false;
     int ChamMode = 5;
     bool HP = true;
-    bool DrawFriends = false;
+    bool DrawFriendsHP = false;
     bool ShowDead = false;
     bool DrawFrames = true;
     bool DrawHeadInFrames = true;
@@ -61,7 +61,7 @@ public:
         j[ConfigName][LIT("Chams")] = Chams;
         j[ConfigName][LIT("ChamMode")] = ChamMode;
         j[ConfigName][LIT("HP")] = HP;
-        j[ConfigName][LIT("DrawFriends")] = DrawFriends;
+        j[ConfigName][LIT("DrawFriends")] = DrawFriendsHP;
         j[ConfigName][LIT("ShowDead")] = ShowDead;
         j[ConfigName][LIT("DrawFrames")] = DrawFrames;
         j[ConfigName][LIT("DrawHeadInFrames")] = DrawHeadInFrames;
@@ -100,7 +100,7 @@ public:
         if (j[ConfigName].contains(LIT("HP")))
             HP = j[ConfigName][LIT("HP")];
         if (j[ConfigName].contains(LIT("DrawFriends")))
-            DrawFriends = j[ConfigName][LIT("DrawFriends")];
+            DrawFriendsHP = j[ConfigName][LIT("DrawFriends")];
         if (j[ConfigName].contains(LIT("ShowDead")))
             ShowDead = j[ConfigName][LIT("ShowDead")];
         if (j[ConfigName].contains(LIT("DrawHeadInFrames")))

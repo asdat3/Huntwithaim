@@ -506,11 +506,11 @@ void ImGuiMenu::RenderPlayerESPTab() {
     ImGui::Checkbox(LOC("menu", "players.ShowDead").c_str(), &Configs.Player.ShowDead);
     ImGui::SliderInt(LOC("menu", "players.DeadMaxDistance").c_str(), &Configs.Player.DeadMaxDistance, 0, 1500, LOC("menu", "general.Meters").c_str());
 
-    if (Configs.Player.Enable || Configs.Player.DrawFrames)
+    if (Configs.Player.Enable)
     {
-        ImGui::Checkbox(LOC("menu", "players.DrawFriendly").c_str(), &Configs.Player.DrawFriends);
-        ImGui::SameLine();
-        ColorPickerWithText(LOC("menu", "players.FriendColor").c_str(), &Configs.Player.FriendColor);
+        ImGui::Checkbox(LOC("menu", "players.DrawFriendlyHP").c_str(), &Configs.Player.DrawFriendsHP);
+        //ImGui::SameLine();
+        //ColorPickerWithText(LOC("menu", "players.FriendColor").c_str(), &Configs.Player.FriendColor);
     }
 
     if (Configs.Player.Enable)

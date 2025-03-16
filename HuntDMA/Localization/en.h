@@ -96,7 +96,7 @@ namespace Localizations {
                     {"players.HP", "HP"},
                     {"players.ShowDead", "Show Dead"},
                     {"players.DeadMaxDistance", "Dead Max Distance"},
-                    {"players.DrawFriendly", "Draw Friendly"},
+                    {"players.DrawFriendlyHP", "Draw Friendly HP"},
                     {"players.FriendColor", "Friend Color"},
                     {"players.ChamMode", "Cham Mode"},
                     {"players.WriteChams", "Write Chams (enable/update)"},

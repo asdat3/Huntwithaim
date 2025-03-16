@@ -42,7 +42,7 @@ static void DrawPlayerList()
 
     for (std::shared_ptr<WorldEntity> ent : templist)
     {
-        if (!ent || !Configs.Player.DrawFriends && ent->GetType() == EntityType::FriendlyPlayer)
+        if (!ent || ent->GetType() == EntityType::FriendlyPlayer)
             continue;
 
         int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
@@ -68,6 +68,7 @@ static void DrawPlayerList()
     });
 
     std::stringstream result;
+	result << "[" + std::to_string(playerInfoList.size()) + "]\n";
     for (size_t i = 0; i < playerInfoList.size(); ++i)
     {
         result << playerInfoList[i].second;
@@ -245,7 +246,7 @@ void DrawRadar()
 
 				auto playerPos = ent->GetPosition();
 
-				if (!Configs.Player.DrawFriends && ent->GetType() == EntityType::FriendlyPlayer)
+				if (ent->GetType() == EntityType::FriendlyPlayer)
 					continue;
 
 				if (!ent->GetValid() || ent->IsHidden()) // Has extracted

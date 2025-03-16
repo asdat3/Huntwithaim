@@ -9,7 +9,6 @@
 #include "Localization/Localization.h"
 
 std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(1, [] {
-	
 	EnvironmentInstance->UpdatePlayerList();
 });
 std::shared_ptr<CheatFunction> UpdateBosses = std::make_shared<CheatFunction>(5, [] {
@@ -76,7 +75,7 @@ void DrawPlayersEsp()
 
 			auto playerPos = ent->GetPosition();
 
-			if (!Configs.Player.DrawFriends && ent->GetType() == EntityType::FriendlyPlayer)
+			if (!Configs.Player.DrawFriendsHP && ent->GetType() == EntityType::FriendlyPlayer)
 				continue;
 
 			if (!ent->GetValid() || ent->IsHidden()) // Has extracted
@@ -92,7 +91,13 @@ void DrawPlayersEsp()
 				isDead = true;
 			}
 			else
-				ent->SetType(EntityType::EnemyPlayer);
+			{
+				if (ent->GetRenderNode().silhouettes_param == 0x8CD2FF || ent->GetRenderNode().silhouettes_param == 0x3322eeff)
+				{
+					ent->SetType(EntityType::FriendlyPlayer);
+				}
+				else ent->SetType(EntityType::EnemyPlayer);
+			}
 
 			if (!Configs.Player.ShowDead && isDead)
 				continue;
@@ -142,7 +147,7 @@ void DrawPlayersEsp()
 				offset = normal / (2.0f * 2);
 			}
 
-			if (Configs.Player.DrawFrames && !isDead)
+			if (Configs.Player.DrawFrames && !isDead && ent->GetType() != EntityType::FriendlyPlayer)
 			{
 				Vector2 A1 = feetPos + offset;
 				Vector2 A2 = feetPos - offset;
@@ -215,7 +220,7 @@ void DrawPlayersEsp()
 				ESPRenderer::DrawLine(                             // current health
 					ImVec2(Health1.x, Health1.y),
 					ImVec2(currentHpPos.x, currentHpPos.y),
-					ImVec4(0.784313f, 0.039215f, 0.039215f, 1.0f),
+					ent->GetType() == EntityType::FriendlyPlayer ? ImVec4(0.058823f, 0.407843f, 0.909803f, 1.0f) : ImVec4(0.784313f, 0.039215f, 0.039215f, 1.0f),
 					lineHeight
 				);
 				ESPRenderer::DrawLine(                             // regenerable black health
@@ -238,7 +243,7 @@ void DrawPlayersEsp()
 				);
 			}
 
-			if (!Configs.Player.Enable)
+			if (!Configs.Player.Enable || ent->GetType() == EntityType::FriendlyPlayer)
 				continue;
 
 			std::string wname = (Configs.Player.Name || isDead) ? LOC("entity", ent->GetTypeAsString()) : "";
