@@ -261,6 +261,10 @@ namespace Localizations {
                     {"remedy", "Целительная сила (!)"},
                     {"shadow", "Тень (!)"},
                     {"shadowleap", "Теневой скачок (!)"},
+
+                    {"blademancer", "Заклинатель ножей"},
+                    {"corpseseer", "Глаза трупа"},
+                    {"gunrunner", "Поставщик оружия"}
                 }}
             }
         };

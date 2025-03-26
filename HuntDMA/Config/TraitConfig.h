@@ -91,7 +91,7 @@ public:
     int BerserkerDistance = 750;
 
     bool EnableDeathcheat = true;
-    int DeathcheatDistance = 750;
+    int DeathcheatDistance = 1500;
 
     bool EnableNecromancer = true;
     int NecromancerDistance = 750;
@@ -113,6 +113,15 @@ public:
 
     bool EnableOther = false;
     int OtherDistance = 750;
+
+    bool EnableBlademancer = true;
+    int BlademancerDistance = 1500;
+
+    bool EnableCorpseseer = true;
+    int CorpseseerDistance = 1500;
+
+    bool EnableGunrunner = true;
+    int GunrunnerDistance = 1500;
 
     void ToJsonColor(json* j, const std::string& name, ImVec4* color)
     {
@@ -204,6 +213,12 @@ public:
         j[ConfigName][LIT("ShadowDistance")] = ShadowDistance;
         j[ConfigName][LIT("EnableShadowleap")] = EnableShadowleap;
         j[ConfigName][LIT("ShadowleapDistance")] = ShadowleapDistance;
+        j[ConfigName][LIT("EnableBlademancer")] = EnableBlademancer;
+        j[ConfigName][LIT("BlademancerDistance")] = BlademancerDistance;
+        j[ConfigName][LIT("EnableCorpseseer")] = EnableCorpseseer;
+        j[ConfigName][LIT("CorpseseerDistance")] = CorpseseerDistance;
+        j[ConfigName][LIT("EnableGunrunner")] = EnableGunrunner;
+        j[ConfigName][LIT("GunrunnerDistance")] = GunrunnerDistance;
         j[ConfigName][LIT("EnableOther")] = EnableOther;
         j[ConfigName][LIT("OtherDistance")] = OtherDistance;
         ToJsonColor(&j, LIT("TraitColor"), &TraitColor);

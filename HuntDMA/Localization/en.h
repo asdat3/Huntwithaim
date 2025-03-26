@@ -261,6 +261,10 @@ namespace Localizations {
                     {"remedy", "Remedy (!)"},
                     {"shadow", "Shadow (!)"},
                     {"shadowleap", "Shadow Leap (!)"},
+
+                    {"blademancer", "Blademancer"},
+                    {"corpseseer", "Corpse Seer"},
+                    {"gunrunner", "Gunrunner"}
                 }}
             }
         };

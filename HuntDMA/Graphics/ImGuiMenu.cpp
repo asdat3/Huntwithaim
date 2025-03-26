@@ -725,6 +725,27 @@ void ImGuiMenu::RenderTraitESPTab() {
     ImGui::Spacing();
     ImGui::BeginGroup();
 
+    ImGui::Checkbox(LOC("trait", "blademancer").c_str(), &Configs.Traits.EnableBlademancer);
+    if (ImGui::IsItemHovered()) { ImGui::BeginTooltip(); ImGui::Text(LOC("trait", "blademancer").c_str()); ImGui::EndTooltip(); }
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt((LOC("menu", "general.MaxDistance") + "##blademancer").c_str(), &Configs.Traits.BlademancerDistance, 0, 1500, LOC("menu", "general.Meters").c_str());
+
+    ImGui::Checkbox(LOC("trait", "corpseseer").c_str(), &Configs.Traits.EnableCorpseseer);
+    if (ImGui::IsItemHovered()) { ImGui::BeginTooltip(); ImGui::Text(LOC("trait", "corpseseer").c_str()); ImGui::EndTooltip(); }
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt((LOC("menu", "general.MaxDistance") + "##corpseseer").c_str(), &Configs.Traits.CorpseseerDistance, 0, 1500, LOC("menu", "general.Meters").c_str());
+
+    ImGui::Checkbox(LOC("trait", "gunrunner").c_str(), &Configs.Traits.EnableGunrunner);
+    if (ImGui::IsItemHovered()) { ImGui::BeginTooltip(); ImGui::Text(LOC("trait", "gunrunner").c_str()); ImGui::EndTooltip(); }
+    ImGui::SameLine(120 * Configs.General.UIScale);
+    ImGui::SliderInt((LOC("menu", "general.MaxDistance") + "##gunrunner").c_str(), &Configs.Traits.GunrunnerDistance, 0, 1500, LOC("menu", "general.Meters").c_str());
+
+    ImGui::EndGroup();
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+    ImGui::BeginGroup();
+
     ImGui::Checkbox(LOC("trait", "berserker").c_str(), &Configs.Traits.EnableBerserker);
     if (ImGui::IsItemHovered()) { ImGui::BeginTooltip(); ImGui::Text(LOC("trait", "berserker").c_str()); ImGui::EndTooltip(); }
     ImGui::SameLine(120 * Configs.General.UIScale);
