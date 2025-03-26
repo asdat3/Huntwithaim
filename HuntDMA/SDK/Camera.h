@@ -2,7 +2,7 @@
 class Camera
 {
 private:
-	uint64_t CameraBase = 0x928;
+	uint64_t CameraBaseOffset = 0x838;
 	uint64_t ViewMatrixOffset = 0x230;
 	uint64_t CameraPosOffset = 0x2F0;
 	uint64_t ProjectionMatrixOffset = 0x270;
