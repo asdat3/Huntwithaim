@@ -365,6 +365,18 @@ public:
             EnableShadowleap = j[ConfigName][LIT("EnableShadowleap")];
         if (j[ConfigName].contains(LIT("ShadowleapDistance")))
             ShadowleapDistance = j[ConfigName][LIT("ShadowleapDistance")];
+        if (j[ConfigName].contains(LIT("EnableBlademancer")))
+            EnableBlademancer = j[ConfigName][LIT("EnableBlademancer")];
+        if (j[ConfigName].contains(LIT("BlademancerDistance")))
+            BlademancerDistance = j[ConfigName][LIT("BlademancerDistance")];
+        if (j[ConfigName].contains(LIT("EnableCorpseseer")))
+            EnableCorpseseer = j[ConfigName][LIT("EnableCorpseseer")];
+        if (j[ConfigName].contains(LIT("CorpseseerDistance")))
+            CorpseseerDistance = j[ConfigName][LIT("CorpseseerDistance")];
+        if (j[ConfigName].contains(LIT("EnableGunrunner")))
+            EnableGunrunner = j[ConfigName][LIT("EnableGunrunner")];
+        if (j[ConfigName].contains(LIT("GunrunnerDistance")))
+            GunrunnerDistance = j[ConfigName][LIT("GunrunnerDistance")];
         if (j[ConfigName].contains(LIT("EnableOther")))
             EnableOther = j[ConfigName][LIT("EnableOther")];
         if (j[ConfigName].contains(LIT("OtherDistance")))

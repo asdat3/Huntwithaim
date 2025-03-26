@@ -232,7 +232,6 @@ void DrawTraits()
 		if (ent == nullptr)
 			continue;
 
-		auto type = ent->GetType();
 		auto compactTypeName = ent->CompactTypeName;
 
 		int distance = (int)Vector3::Distance(ent->GetPosition(), CameraInstance->GetPosition());
@@ -432,6 +431,24 @@ void DrawTraits()
 			if (!Configs.Traits.EnableWitness)
 				continue;
 			if (distance > Configs.Traits.WitnessDistance)
+				continue;
+		}
+		else if (compactTypeName == "blademancer") {
+			if (!Configs.Traits.EnableBlademancer)
+				continue;
+			if (distance > Configs.Traits.BlademancerDistance)
+				continue;
+		}
+		else if (compactTypeName == "corpseseer") {
+			if (!Configs.Traits.EnableCorpseseer)
+				continue;
+			if (distance > Configs.Traits.CorpseseerDistance)
+				continue;
+		}
+		else if (compactTypeName == "gunrunner") {
+			if (!Configs.Traits.EnableGunrunner)
+				continue;
+			if (distance > Configs.Traits.GunrunnerDistance)
 				continue;
 		}
 		else {
