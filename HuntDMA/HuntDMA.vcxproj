@@ -46,13 +46,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(ProjectName)</OutDir>
     <IntDir>$(SolutionDir)Build/obj\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Include;$(SolutionDir)Include\ImGui;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Build\$(Configuration)\$(ProjectName)</OutDir>
     <IntDir>$(SolutionDir)Build/obj\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Include;$(SolutionDir)Include\ImGui;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -100,7 +100,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(ProjectDir)HuntDMA.manifest</AdditionalManifestFiles>
@@ -117,6 +117,7 @@
     <ClCompile Include="Graphics\ImGuiMenu.cpp" />
     <ClCompile Include="Graphics\Start Up\Init.cpp" />
     <ClCompile Include="Graphics\Utility\Kmbox.cpp" />
+    <ClCompile Include="Localization\Localization.cpp" />
     <ClCompile Include="Logger\SystemInfo.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Memory\CacheManager.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Config\PlayerConfig.h" />
     <ClInclude Include="Config\POIConfig.h" />
     <ClInclude Include="Config\SupplyConfig.h" />
+    <ClInclude Include="Config\TraitConfig.h" />
     <ClInclude Include="Config\TrapConfig.h" />
     <ClInclude Include="Config\BossesConfig.h" />
     <ClInclude Include="Esp\OtherEsp.h" />
@@ -172,12 +174,17 @@
     <ClInclude Include="Graphics\Start Up\Init.h" />
     <ClInclude Include="Graphics\ImGuiMenu.h" />
     <ClInclude Include="Graphics\Utility\Kmbox.h" />
+    <ClInclude Include="Localization\Localization.h" />
+    <ClInclude Include="Localization\LocalizationData.h" />
+    <ClInclude Include="Localization\en.h" />
+    <ClInclude Include="Localization\ru.h" />
     <ClInclude Include="Logger\SystemInfo.h" />
     <ClInclude Include="Memory\CacheManager.h" />
     <ClInclude Include="Memory\InputManager.h" />
     <ClInclude Include="Memory\Registry.h" />
     <ClInclude Include="Misc\CheatFunction.h" />
     <ClInclude Include="Memory\Memory.h" />
+    <ClInclude Include="Misc\Fonts.h" />
     <ClInclude Include="Misc\Input.h" />
     <ClInclude Include="Misc\Pch\Pch.h" />
     <ClInclude Include="Misc\Vector.h" />

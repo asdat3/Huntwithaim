@@ -1,5 +1,15 @@
 #pragma once
 #include "WorldEntity.h"
+enum class MapType : int
+{
+	None,
+	Unknown,
+	StillwaterBayou,
+	LawsonDelta,
+	LawsonDeltaShootingRange,
+	DeSalle,
+	MammonsGulch,
+};
 class Environment
 {
 private:
@@ -45,6 +55,7 @@ private:
 	std::vector<std::shared_ptr<WorldEntity>> BloodBondsList;
 	std::vector<std::shared_ptr<WorldEntity>> TrapList;
 	std::vector<std::shared_ptr<WorldEntity>> POIList;
+	std::vector<std::shared_ptr<WorldEntity>> TraitList;
 public:
 	uint64_t GetSystemGlobalEnvironment() { return SystemGlobalEnvironment; }
 	uint64_t GetEntitySystem() { return EntitySystem; }
@@ -58,6 +69,7 @@ public:
 	void UpdatePlayerList();
 	void UpdateBossesList();
 	void CacheEntities();
+	void AssignMapType(char* name);
 	Environment();
 	void ClearConsole();
 	std::vector<std::shared_ptr<WorldEntity>> GetPlayerList() { return PlayerList; }
@@ -66,6 +78,8 @@ public:
 	std::vector<std::shared_ptr<WorldEntity>> GetBloodBondsList() { return BloodBondsList; }
 	std::vector<std::shared_ptr<WorldEntity>> GetTrapList() { return TrapList; }
 	std::vector<std::shared_ptr<WorldEntity>> GetPOIList() { return POIList; }
+	std::vector<std::shared_ptr<WorldEntity>> GetTraitList() { return TraitList; }
 	int GetSpectatorCount() { return SpectatorCount; }
+	MapType mapType = MapType::None;
 };
 extern bool createEntitiesDump;

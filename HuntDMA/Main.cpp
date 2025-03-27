@@ -1,3 +1,9 @@
+#pragma warning(disable: 4200) // Zero-sized arrays
+#pragma warning(disable: 4477) // Format string mismatches
+#pragma warning(disable: 4018) // Signed/unsigned mismatch
+#pragma warning(disable: 4267) // Data loss in conversion
+#pragma warning(disable: 4313) // Format string conflicts
+
 #include "pch.h"
 #include "Memory.h"
 #include "CheatFunction.h"
@@ -17,6 +23,9 @@
 #include "Overlay.h"
 #include "Aimbot.h"
 #include "SystemInfo.h"
+#include "Localization/Localization.h"
+#include <windows.h>
+#include "resource.h"
 
 void InitializeGame()
 {
@@ -96,8 +105,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         SetUpConfig();
         LoadConfig(ConfigPath);
 
+        LOG_INFO("Initializing localization system...");
+        Localization::Initialize();
+
         LOG_INFO("Initializing game connection...");
         InitializeGame();
+
+        PlaySound(MAKEINTRESOURCE(IDR_WAVE1), GetModuleHandle(NULL), SND_RESOURCE | SND_ASYNC);
 
         // Create window
         WNDCLASSEX wc = { sizeof(WNDCLASSEX) };
@@ -237,9 +251,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
                 // Draw ESP elements
                 DrawSpectators();
-                DrawPlayersEsp();
-                DrawBossesEsp();
+                DrawRadar();
                 DrawOtherEsp();
+                DrawBossesEsp();
+                DrawPlayersEsp();
+                DrawRadar();
                 DrawOverlay();
 
                 // Enable/Disable cousor

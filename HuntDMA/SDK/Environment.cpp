@@ -5,6 +5,8 @@
 #include "ConfigUtilities.h"
 
 bool createEntitiesDump = false;
+bool successfullyInjected = false;
+const std::string sealedTraitPrefix = "sealed_trait_";
 
 Environment::Environment()
 {
@@ -47,9 +49,53 @@ void Environment::FindSystemGlobalEnvironment()
 
 void Environment::GetEntities()
 {
+	bool mapLoaded = ObjectCount < 1000;
 	ObjectCount = TargetProcess.Read<uint16_t>(EntitySystem + ObjectCountOffset) + 1;
+
+	if (ObjectCount < 1000)
+	{
+		mapType = MapType::None;
+		if (mapLoaded)
+			mapLoaded = false;
+	}
+	if (successfullyInjected && ObjectCount == 1)
+		return;
+		//exit(0);
+	if (!successfullyInjected && ObjectCount == 1)
+		successfullyInjected = true;
 	LOG_INFO(LIT("ObjectCount: %d"), ObjectCount);
 	EntityList = EntitySystem + EntityListOffset;
+	if (mapLoaded)
+		mapType = MapType::Unknown;
+}
+
+void Environment::AssignMapType(char* name)
+{
+	if (strstr(name, "stillwater"))
+	{
+		mapType = MapType::StillwaterBayou;
+		LOG_INFO("Map is Stillwater Bayou");
+	}
+	else if (strstr(name, "lawson"))
+	{
+		mapType = MapType::LawsonDelta;
+		LOG_INFO("Map is Lawson Delta");
+	}
+	else if (strstr(name, "desalle"))
+	{
+		mapType = MapType::DeSalle;
+		LOG_INFO("Map is DeSalle");
+	}
+	else if (strstr(name, "colorado"))
+	{
+		mapType = MapType::MammonsGulch;
+		LOG_INFO("Map is Mammon's Gulch");
+	}
+	else if (strstr(name, "LevelBorder"))
+	{
+		mapType = MapType::LawsonDeltaShootingRange;
+		LOG_INFO("Map is Shooting Range");
+	}
 }
 
 void Environment::UpdateLocalPlayer()
@@ -66,7 +112,7 @@ void Environment::UpdateLocalPlayer()
 void Environment::LogTrait()
 {
 	auto base = TargetProcess.GetBaseAddress("GameHunt.dll");
-	std::vector<std::shared_ptr<WorldEntity>> tempPoiList = EnvironmentInstance->GetPOIList();
+	std::vector<std::shared_ptr<WorldEntity>> tempTraitList = EnvironmentInstance->GetTraitList();
 	std::vector<std::shared_ptr<WorldEntity>> tempPlayerList = EnvironmentInstance->GetPlayerList();
 	
 	std::shared_ptr<WorldEntity> LocalPlayer = NULL;
@@ -85,15 +131,13 @@ void Environment::LogTrait()
 	if (LocalPlayer == NULL)
 		return;
 
-	for (size_t index = 0; index < tempPoiList.size(); ++index)
+	for (size_t index = 0; index < tempTraitList.size(); ++index)
 	{
-		std::shared_ptr<WorldEntity> ent = tempPoiList[index];
+		std::shared_ptr<WorldEntity> ent = tempTraitList[index];
 		if (ent == nullptr)
 			continue;
-		if (ent->GetType() == EntityType::Trait)
-		{
-			LOG_INFO("%llx: [%f m], name=[%s], x=%f y=%f z=%f", ent->GetClass(), Vector3::Distance(ent->GetPosition(), LocalPlayer->GetPosition()), ent->GetTypeName(), ent->GetPosition().x, ent->GetPosition().y, ent->GetPosition().z);
-		}
+
+		LOG_INFO("%llx: [%f m], name=[%s], x=%f y=%f z=%f", ent->GetClass(), Vector3::Distance(ent->GetPosition(), LocalPlayer->GetPosition()), ent->GetTypeName(), ent->GetPosition().x, ent->GetPosition().y, ent->GetPosition().z);
 	}
 }
 
@@ -113,7 +157,6 @@ void Environment::UpdatePlayerList()
 		if (ent->GetType() == EntityType::LocalPlayer)
 		{
 			TargetProcess.AddScatterReadRequest(handle, ent->SpecCountPointer4 + ent->SpecCountOffset5, &ent->SpecCount, sizeof(int));
-			continue;
 		}	
 		if (!(ent->GetClass() > 0x2000000 && ent->GetClass() < 0x7FFFFFFFFFFF))
 		{
@@ -241,16 +284,20 @@ void Environment::CacheEntities()
 	std::vector<std::shared_ptr<WorldEntity>> tempboodboundslist;
 	std::vector<std::shared_ptr<WorldEntity>> temptraplist;
 	std::vector<std::shared_ptr<WorldEntity>> temppoilist;
+	std::vector<std::shared_ptr<WorldEntity>> temptraitlist;
 	for (std::shared_ptr<WorldEntity> ent : entitypointerlist)
 	{
 		if (ent == nullptr)
 			continue;
 		char* entityName = ent->GetEntityName().name;
 		char* entityClassName = ent->GetEntityClassName().name;
-		char* TraitName = ent->GetTypeName().name;
+		char* entityTypeName = ent->GetTypeName().name;
+
+		if (mapType == MapType::Unknown)
+			AssignMapType(entityName);
 
 		if (createEntitiesDump)
-			entitiesDump.push_back("Class: [" + std::string(entityClassName) + "]; Name: [" + std::string(entityName) + "], TypeName: [" + std::string(TraitName) + "];");
+			entitiesDump.push_back("Class: [" + std::string(entityClassName) + "]; Name: [" + std::string(entityName) + "], TypeName: [" + std::string(entityTypeName) + "];");
  
 		if (strstr(entityClassName, "ObjectSpawner") != NULL) // We do not want spawners to show as objects
 			continue;
@@ -431,8 +478,8 @@ void Environment::CacheEntities()
 		}
 		if ((std::string)(entityClassName) == "TraitCharm")
 		{
-			ent->SetType(EntityType::Trait);
-			temppoilist.push_back(ent);
+			// Type is assigned later based on TypeName
+			temptraitlist.push_back(ent);
 			continue;
 		}
 		if ((std::string)(entityClassName) == "Clue_Slave")
@@ -569,7 +616,31 @@ void Environment::CacheEntities()
 			continue;
 		ent->SetUp3(handle);
 	}
+	for (std::shared_ptr<WorldEntity> ent : temptraitlist)
+	{
+		if (ent == nullptr)
+			continue;
+		ent->SetUp3(handle);
+	}
 	TargetProcess.ExecuteReadScatter(handle);
+
+	for (std::shared_ptr<WorldEntity> ent : temptraitlist)
+	{
+		if (ent == nullptr)
+			continue;
+
+		auto& traitName = ent->CompactTypeName;
+		if (traitName.find(sealedTraitPrefix, 0) == 0) {
+			traitName = traitName.substr(sealedTraitPrefix.size());
+			ent->SetType(EntityType::SealedTrait);
+		}
+		else
+			ent->SetType(EntityType::Trait);
+		traitName.erase(std::remove(traitName.begin(), traitName.end(), '_'), traitName.end());
+		std::transform(traitName.begin(), traitName.end(), traitName.begin(), [](unsigned char c) {
+			return std::tolower(c);
+		});
+	}
 
 	if (createEntitiesDump)
 	{
@@ -590,7 +661,7 @@ void Environment::CacheEntities()
 
 	for (std::shared_ptr<WorldEntity> ent : templayerlist) // got to do this after set up 3
 	{
-		if (ent->GetRenderNode().silhouettes_param == 0x8CD2FF)
+		if (ent->GetRenderNode().silhouettes_param == 0x8CD2FF || ent->GetRenderNode().silhouettes_param == 0x3322eeff)
 		{
 			ent->SetType(EntityType::FriendlyPlayer);
 		}
@@ -611,6 +682,7 @@ void Environment::CacheEntities()
 	std::swap(BloodBondsList, tempboodboundslist);
 	std::swap(TrapList, temptraplist);
 	std::swap(POIList, temppoilist);
+	std::swap(TraitList, temptraitlist);
 }
 
 void Environment::ClearConsole()

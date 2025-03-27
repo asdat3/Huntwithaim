@@ -1,6 +1,7 @@
 #include "Pch.h"
 #include "ESPRenderer.h"
 #include "XorStr.h"
+#include "Fonts.h"
 
 // Static member initialization
 ImDrawList* ESPRenderer::s_drawList = nullptr;
@@ -10,38 +11,46 @@ float ESPRenderer::s_screenWidth = 0.0f;
 float ESPRenderer::s_screenHeight = 0.0f;
 ImVec2 ESPRenderer::s_screenCenter = ImVec2(0.0f, 0.0f);
 
-const char* fontPath = "C:\\Windows\\Fonts\\verdana.ttf"; // Verdana
+//const char* fontPath = "C:\\Windows\\Fonts\\verdana.ttf"; // Verdana
 const std::vector<int> ESPRenderer::FONT_SIZES = {
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 40, 50, 60, 70, 80, 90, 100
 };
 
 bool ESPRenderer::Initialize()
 {
+    static const ImWchar glyphRanges[] = {
+        0x0020, 0x00FF,  // Basic Latin + Latin Supplement
+        0x0400, 0x052F,  // Cyrillic + Cyrillic Supplement
+        0x2DE0, 0x2DFF,  // Cyrillic Extended-A
+        0xA640, 0xA69F,  // Cyrillic Extended-B
+        0x4E00, 0x9FFF,  // CJK Unified Ideographs (main chinese chars)
+        0x3000, 0x30FF,  // CJK Symbols and Punctuation, Hiragana, Katakana
+        0xFF00, 0xFFEF,  // Half-width/Full-width Forms
+        0,
+    };
+
     ImGuiIO& io = ImGui::GetIO();
 
     // Init default font
-    s_defaultFont = io.Fonts->AddFontDefault();
+    s_defaultFont = io.Fonts->AddFontFromMemoryTTF(fontRobotoMedium, sizeof(fontRobotoMedium), 14.0f * Configs.General.UIScale, nullptr, glyphRanges);
     if (!s_defaultFont) {
         LOG_ERROR("[ESPRenderer] Failed to load default font");
         return false;
     }
 
-    io.FontDefault = io.Fonts->AddFontDefault();
-    ImFontConfig config;
-    config.SizePixels = 13.0f * Configs.General.UIScale;
-    io.FontDefault = io.Fonts->AddFontDefault(&config);
-
     // Load all font sizes
-    if (!std::filesystem::exists(fontPath)) {
-        LOG_ERROR("[ESPRenderer] Font file not found at: %s", fontPath);
-        return false;
-    }
+    //if (!std::filesystem::exists(fontPath)) {
+    //    LOG_ERROR("[ESPRenderer] Font file not found at: %s", fontPath);
+    //    return false;
+    //}
 
     for (int size : FONT_SIZES) {
         ImFontConfig config;
         config.SizePixels = static_cast<float>(size);
+        config.GlyphRanges = glyphRanges;
 
-        ImFont* font = io.Fonts->AddFontFromFileTTF(fontPath,
+        ImFont* font = io.Fonts->AddFontFromMemoryTTF(fontRobotoRegular,
+            sizeof(fontRobotoRegular),
             static_cast<float>(size),
             &config);
 

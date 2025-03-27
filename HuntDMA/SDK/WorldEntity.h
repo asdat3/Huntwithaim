@@ -41,6 +41,7 @@ enum class EntityType : int
 	WorkbenchUpgrade,
 	WorkbenchOil,
 	Trait,
+	SealedTrait,
 
 	ResupplyStation,
 	ExtractionPoint,
@@ -126,7 +127,6 @@ private:
 	uint64_t TypeNamePointer1 = 0x0;
 	uint64_t TypeNamePointer2 = 0x0;
 	EntityNameStruct TypeName;
-	std::string CompactTypeName = "";
 
 	const uint64_t HpOffset1 = 0x198;
 	const uint64_t HpOffset2 = 0x20;
@@ -157,64 +157,66 @@ private:
 	bool Hidden = false;
 
 	bool Valid = true;
-	std::unordered_map<EntityType, std::string> Names = {
-		{EntityType::Unknown, "???"},
 
-		{EntityType::LocalPlayer, "Me, Myself and I"},
-		{EntityType::EnemyPlayer, "Hunter"},
-		{EntityType::FriendlyPlayer, "Teammate"},
-		{EntityType::DeadPlayer, "Dead"},
+	std::unordered_map<EntityType, std::string> Names = {
+		{EntityType::Unknown, "Unknown"},
+
+		{EntityType::LocalPlayer, "LocalPlayer"},
+		{EntityType::EnemyPlayer, "EnemyPlayer"},
+		{EntityType::FriendlyPlayer, "FriendlyPlayer"},
+		{EntityType::DeadPlayer, "DeadPlayer"},
 
 		{EntityType::Butcher, "Butcher"},
 		{EntityType::Assassin, "Assassin"},
-		{EntityType::Scrapbeak, "Screapbeak"},
+		{EntityType::Scrapbeak, "Scrapbeak"},
 		{EntityType::Spider, "Spider"},
 		{EntityType::Rotjaw, "Rotjaw"},
 		{EntityType::Hellborn, "Hellborn"},
 
-		{EntityType::CashRegister, "Cash Register"},
-		{EntityType::GoldCashRegister, "GOLD CASH REGISTER (STONKS)"},
+		{EntityType::CashRegister, "CashRegister"},
+		{EntityType::GoldCashRegister, "GoldCashRegister"},
 
 		{EntityType::Pouch, "Pouch"},
 		{EntityType::Poster, "Poster"},
-		{EntityType::WorkbenchUpgrade, "Blueprint"},
-		{EntityType::WorkbenchOil, "Gun Oi"},
+		{EntityType::WorkbenchUpgrade, "WorkbenchUpgrade"},
+		{EntityType::WorkbenchOil, "WorkbenchOil"},
 		{EntityType::Trait, "Trait"},
+		{EntityType::SealedTrait, "Sealed Trait"},
 
-		{EntityType::ResupplyStation, "Resupply"},
-		{EntityType::ExtractionPoint, "Extraction"},
+		{EntityType::ResupplyStation, "ResupplyStation"},
+		{EntityType::ExtractionPoint, "ExtractionPoint"},
 		{EntityType::Clue, "Clue"},
 
-		{EntityType::BearTrap, "Bear Trap"},
-		{EntityType::TripMine, "Trip Mine"},
-		{EntityType::DarksightDynamite, "C4"},
+		{EntityType::BearTrap, "BearTrap"},
+		{EntityType::TripMine, "TripMine"},
+		{EntityType::DarksightDynamite, "DarksightDynamite"},
 
-		{EntityType::OilBarrel, "Oil Barre"},
-		{EntityType::GunpowderBarrel, "Barre"},
-		{EntityType::BioBarrel, "Bio Barre"},
+		{EntityType::OilBarrel, "OilBarrel"},
+		{EntityType::GunpowderBarrel, "GunpowderBarrel"},
+		{EntityType::BioBarrel, "BioBarrel"},
 
-		{EntityType::AmmoSwapBox, "AmmoSwap Box"},
-		{EntityType::SpitzerBullets, "Spitzer Bullets"},
-		{EntityType::PoisonBullets, "Poison Bullets"},
-		{EntityType::HighVelocityBullets, "High Velocity Bullets"},
-		{EntityType::IncendiaryBullets, "Incendiary Bullets"},
-		{EntityType::DumDumBullets, "Dum Dum Bullets"},
-		{EntityType::ExplosiveBullets, "Explosive Bullets"},
-		{EntityType::FMJBullets, "FMJ Bullets"},
-		{EntityType::PoisonBolts, "Poison Bolts"},
-		{EntityType::ExplosiveBolts, "Explosive Bolts"},
-		{EntityType::IncendiaryShells, "Incendiary Shells"},
-		{EntityType::PennyShotShells, "Penny Shot Shells"},
-		{EntityType::FlechetteShells, "Flechette Shells"},
-		{EntityType::SlugShells, "Slug Shells"},
+		{EntityType::AmmoSwapBox, "AmmoSwapBox"},
+		{EntityType::SpitzerBullets, "SpitzerBullets"},
+		{EntityType::PoisonBullets, "PoisonBullets"},
+		{EntityType::HighVelocityBullets, "HighVelocityBullets"},
+		{EntityType::IncendiaryBullets, "IncendiaryBullets"},
+		{EntityType::DumDumBullets, "DumDumBullets"},
+		{EntityType::ExplosiveBullets, "ExplosiveBullets"},
+		{EntityType::FMJBullets, "FMJBullets"},
+		{EntityType::PoisonBolts, "PoisonBolts"},
+		{EntityType::ExplosiveBolts, "ExplosiveBolts"},
+		{EntityType::IncendiaryShells, "IncendiaryShells"},
+		{EntityType::PennyShotShells, "PennyShotShells"},
+		{EntityType::FlechetteShells, "FlechetteShells"},
+		{EntityType::SlugShells, "SlugShells"},
 
-		{EntityType::SupplyBox, "Supply Box"},
-		{EntityType::AmmoCrate, "Ammo Crate"},
-		{EntityType::SpecialAmmoCrate, "Special Ammo Crate"},
-		{EntityType::CompactAmmoPackage, "Compact Ammo Package"},
-		{EntityType::MediumAmmoPackage, "Medium Ammo Package"},
-		{EntityType::LongAmmoPackage, "Long Ammo Package"},
-		{EntityType::ShotgunAmmoPackage, "Shotgun Ammo Package"},
+		{EntityType::SupplyBox, "SupplyBox"},
+		{EntityType::AmmoCrate, "AmmoCrate"},
+		{EntityType::SpecialAmmoCrate, "SpecialAmmoCrate"},
+		{EntityType::CompactAmmoPackage, "CompactAmmoPackage"},
+		{EntityType::MediumAmmoPackage, "MediumAmmoPackage"},
+		{EntityType::LongAmmoPackage, "LongAmmoPackage"},
+		{EntityType::ShotgunAmmoPackage, "ShotgunAmmoPackage"},
 		{EntityType::Medkit, "Medkit"},
 
 		{EntityType::Event, "Event"},
@@ -229,7 +231,7 @@ public:
 	EntityNameStruct GetEntityName() { return EntityName; }
 	EntityNameStruct GetEntityClassName() { return ClassName; }
 	EntityNameStruct GetTypeName() { return TypeName; }
-	std::string GetCompactTypeName() { return CompactTypeName; }
+	std::string CompactTypeName = "";
 	Vector3 GetPosition() { return Position; }
 	RenderNode GetRenderNode() { return Node; }
 	HealthBar GetHealth() { return Health; }
@@ -248,7 +250,7 @@ public:
 	void SetHidden(bool isHidden) { Hidden = isHidden; }
 	bool GetValid() { return Valid; }
 	void SetValid(bool valid) { Valid = valid; }
-	std::string GetName() { return Names[Type]; };
+	std::string GetTypeAsString() { return Names[Type]; };
 	bool IsLocalPlayer();
 	Vector3 GetHeadPosition() const { return HeadPosition; }
 

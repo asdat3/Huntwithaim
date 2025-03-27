@@ -1,3 +1,7 @@
+# Build Guide
+
+https://youtu.be/qIy4P3Xe6nA
+
 # Install Guide
 
 ## Visual C++ Redistributable

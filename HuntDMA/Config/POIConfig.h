@@ -21,7 +21,6 @@ public:
     bool ShowBlueprints = false;
     bool ShowGunOil = false;
     bool ShowClues = false;
-    bool ShowTraits = true;
     bool ShowSeasonalDestructibles = false;
     ImVec4 TextColor = ImVec4(0.0f, 1.0f, 0.866666f, 1.0f);
     int FontSize = 12;
@@ -61,7 +60,6 @@ public:
         j[ConfigName][LIT("ShowBlueprints")] = ShowBlueprints;
         j[ConfigName][LIT("ShowGunOil")] = ShowGunOil;
         j[ConfigName][LIT("ShowClues")] = ShowClues;
-        j[ConfigName][LIT("ShowTraits")] = ShowTraits;
         j[ConfigName][LIT("ShowSeasonalDestructibles")] = ShowSeasonalDestructibles;
         ToJsonColor(&j, LIT("TextColor"), &TextColor);
 
@@ -97,8 +95,6 @@ public:
             ShowGunOil = j[ConfigName][LIT("ShowGunOil")];
         if (j[ConfigName].contains(LIT("ShowClues")))
             ShowClues = j[ConfigName][LIT("ShowClues")];
-        if (j[ConfigName].contains(LIT("ShowTraits")))
-            ShowTraits = j[ConfigName][LIT("ShowTraits")];
         if (j[ConfigName].contains(LIT("ShowSeasonalDestructibles")))
             ShowSeasonalDestructibles = j[ConfigName][LIT("ShowSeasonalDestructibles")];
         FromJsonColor(j, LIT("TextColor"), &TextColor);

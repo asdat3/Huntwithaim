@@ -4,11 +4,11 @@
 #include "CheatFunction.h"
 #include "ESPRenderer.h"
 #include "ConfigInstance.h"
-#include <WorldEntity.h>
+#include "WorldEntity.h"
 #include "ConfigUtilities.h"
+#include "Localization/Localization.h"
 
 std::shared_ptr<CheatFunction> UpdatePlayers = std::make_shared<CheatFunction>(1, [] {
-	
 	EnvironmentInstance->UpdatePlayerList();
 });
 std::shared_ptr<CheatFunction> UpdateBosses = std::make_shared<CheatFunction>(5, [] {
@@ -41,8 +41,8 @@ void DrawBossesEsp()
 				Vector2 pos = CameraInstance->WorldToScreen(ent->GetPosition());
 				if (pos.x <= 0 || pos.y <= 0)
 					continue;
-				std::string wname = Configs.Bosses.Name ? ent->GetName() : "";
-				std::string wdistance = Configs.Bosses.Distance ? "[" + std::to_string(distance) + "m]" : "";
+				std::string wname = Configs.Bosses.Name ? LOC("entity", ent->GetTypeAsString()) : "";
+				std::string wdistance = Configs.Bosses.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 				ESPRenderer::DrawText(
 					ImVec2(pos.x, pos.y),
 					wname + wdistance,
@@ -75,7 +75,7 @@ void DrawPlayersEsp()
 
 			auto playerPos = ent->GetPosition();
 
-			if (!Configs.Player.DrawFriends && ent->GetType() == EntityType::FriendlyPlayer)
+			if (!Configs.Player.DrawFriendsHP && ent->GetType() == EntityType::FriendlyPlayer)
 				continue;
 
 			if (!ent->GetValid() || ent->IsHidden()) // Has extracted
@@ -84,14 +84,20 @@ void DrawPlayersEsp()
 			auto isDead = false;
 			if (ent->GetType() != EntityType::FriendlyPlayer &&
 				(!IsValidHP(ent->GetHealth().current_hp) ||
-				!IsValidHP(ent->GetHealth().current_max_hp) ||
-				!IsValidHP(ent->GetHealth().regenerable_max_hp)))
+					!IsValidHP(ent->GetHealth().current_max_hp) ||
+					!IsValidHP(ent->GetHealth().regenerable_max_hp)))
 			{
 				ent->SetType(EntityType::DeadPlayer);
 				isDead = true;
 			}
 			else
-				ent->SetType(EntityType::EnemyPlayer);
+			{
+				if (ent->GetRenderNode().silhouettes_param == 0x8CD2FF || ent->GetRenderNode().silhouettes_param == 0x3322eeff)
+				{
+					ent->SetType(EntityType::FriendlyPlayer);
+				}
+				else ent->SetType(EntityType::EnemyPlayer);
+			}
 
 			if (!Configs.Player.ShowDead && isDead)
 				continue;
@@ -104,7 +110,7 @@ void DrawPlayersEsp()
 			Vector2 feetPos = CameraInstance->WorldToScreen(playerPos, false);
 			if (feetPos.IsZero())
 				continue;
-			
+
 			tempPos.z = playerPos.z + 1.7f;
 			Vector2 headPos;
 			if (Configs.Player.DrawHeadInFrames && !isDead)
@@ -141,7 +147,7 @@ void DrawPlayersEsp()
 				offset = normal / (2.0f * 2);
 			}
 
-			if (Configs.Player.DrawFrames && !isDead)
+			if (Configs.Player.DrawFrames && !isDead && ent->GetType() != EntityType::FriendlyPlayer)
 			{
 				Vector2 A1 = feetPos + offset;
 				Vector2 A2 = feetPos - offset;
@@ -214,7 +220,7 @@ void DrawPlayersEsp()
 				ESPRenderer::DrawLine(                             // current health
 					ImVec2(Health1.x, Health1.y),
 					ImVec2(currentHpPos.x, currentHpPos.y),
-					ImVec4(0.784313f, 0.039215f, 0.039215f, 1.0f),
+					ent->GetType() == EntityType::FriendlyPlayer ? ImVec4(0.058823f, 0.407843f, 0.909803f, 1.0f) : ImVec4(0.784313f, 0.039215f, 0.039215f, 1.0f),
 					lineHeight
 				);
 				ESPRenderer::DrawLine(                             // regenerable black health
@@ -237,11 +243,11 @@ void DrawPlayersEsp()
 				);
 			}
 
-			if (!Configs.Player.Enable)
+			if (!Configs.Player.Enable || ent->GetType() == EntityType::FriendlyPlayer)
 				continue;
 
-			std::string wname = (Configs.Player.Name || isDead) ? ent->GetName() : "";
-			std::string wdistance = Configs.Player.Distance ? "[" + std::to_string(distance) + "m]" : "";
+			std::string wname = (Configs.Player.Name || isDead) ? LOC("entity", ent->GetTypeAsString()) : "";
+			std::string wdistance = Configs.Player.Distance ? std::vformat(LOC("menu", "esp.Meters"), std::make_format_args(distance)) : "";
 			std::string whealth = Configs.Player.HP ? std::to_string(ent->GetHealth().current_hp) + "/" + std::to_string(ent->GetHealth().current_max_hp) + "[" + std::to_string(ent->GetHealth().regenerable_max_hp) + "]" : "";
 			ESPRenderer::DrawText(
 				ImVec2(feetPos.x, feetPos.y),

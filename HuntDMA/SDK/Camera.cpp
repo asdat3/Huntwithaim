@@ -6,10 +6,10 @@
 
 void Camera::UpdateCamera(VMMDLL_SCATTER_HANDLE handle)
 {
-    uintptr_t systemBase = EnvironmentInstance->GetpSystem() + CameraBase;
-    TargetProcess.AddScatterReadRequest(handle, systemBase + CameraPosOffset, &Position, sizeof(Vector3));
-    TargetProcess.AddScatterReadRequest(handle, systemBase + ViewMatrixOffset, &RenderMatrix, sizeof(ViewMatrix));
-    TargetProcess.AddScatterReadRequest(handle, systemBase + ProjectionMatrixOffset, &ProjectionMatrix, sizeof(ViewMatrix));
+    uint64_t CameraBase = TargetProcess.Read<uint64_t>(EnvironmentInstance->GetpSystem() + CameraBaseOffset);
+    TargetProcess.AddScatterReadRequest(handle, CameraBase + CameraPosOffset, &Position, sizeof(Vector3));
+    TargetProcess.AddScatterReadRequest(handle, CameraBase + ViewMatrixOffset, &RenderMatrix, sizeof(ViewMatrix));
+    TargetProcess.AddScatterReadRequest(handle, CameraBase + ProjectionMatrixOffset, &ProjectionMatrix, sizeof(ViewMatrix));
 }
 
 Vector2 Camera::WorldToScreen(Vector3 pos, bool clamp)

@@ -36,6 +36,7 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP, Overlay mode.
   * Friendly Color
   * Cham Color
   * Player list
+  * Hold TAB for radar
 * Boss ESP
   *  Name
   *  Distance
@@ -59,7 +60,7 @@ Fully Featured Hunt DMA Cheat With Chams, Fuser ESP, Overlay mode.
   * Save
 * Spectating alarm
 * FPS
-* Auto SystemGlobalEnvironment offset detection (thanks [@spookykokojunge](https://github.com/spookykokojunge))
+* Auto SystemGlobalEnvironment offset detection (thanks [@Spookyisnice](https://github.com/spookyisnice))
 * Crosshair rendering
 * Overlay mode
   * Prevent recording
@@ -100,7 +101,6 @@ Now can be controlled only via mouse: if you stick your cursor to the edge of th
 \-
 
 # Todo
-- [ ] Optimize players read
 - [ ] Beetle ESP
 - [ ] Auto medkit esp turn on when low hp
 - [ ] Teams

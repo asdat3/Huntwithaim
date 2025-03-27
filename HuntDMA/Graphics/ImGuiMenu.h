@@ -32,6 +32,7 @@ private:
     void RenderBloodBondsESPTab();
     void RenderTrapESPTab();
     void RenderPOIESPTab();
+    void RenderTraitESPTab();
     void RenderOverlayTab();
     void RenderAimbotTab();
     void RenderSettingsTab();

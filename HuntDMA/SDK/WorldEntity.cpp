@@ -14,7 +14,7 @@ void WorldEntity::SetUp(VMMDLL_SCATTER_HANDLE handle)
 	TargetProcess.AddScatterReadRequest(handle, this->Class + HpOffset1, &HpPointer1, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle, this->Class + PosOffset, &Position, sizeof(Vector3));
 	TargetProcess.AddScatterReadRequest(handle, this->Class + StringBufferOffset, &EntityNamePointer, sizeof(uint64_t));
-	TargetProcess.AddScatterReadRequest(handle, this->Class + ClassPointerOffset,&ClassPointer, sizeof(uint64_t));
+	TargetProcess.AddScatterReadRequest(handle, this->Class + ClassPointerOffset, &ClassPointer, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle, this->Class + TypeNameOffset1, &TypeNamePointer1, sizeof(uint64_t));
 	if (Class != 0)
 		TargetProcess.AddScatterReadRequest(handle, this->Class + SlotsPointerOffset, &SlotsPointer, sizeof(uint64_t));
@@ -26,7 +26,7 @@ void WorldEntity::SetUp1(VMMDLL_SCATTER_HANDLE handle)
 	TargetProcess.AddScatterReadRequest(handle, this->SpecCountPointer1 + SpecCountOffset2, &SpecCountPointer2, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle, this->HpPointer1 + HpOffset2, &HpPointer2, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle,this->EntityNamePointer, &EntityName, sizeof(EntityNameStruct));
-	TargetProcess.AddScatterReadRequest(handle, this->ClassPointer + StringBufferOffset,&ClassNamePointer, sizeof(uint64_t));
+	TargetProcess.AddScatterReadRequest(handle, this->ClassPointer + StringBufferOffset, &ClassNamePointer, sizeof(uint64_t));
 	TargetProcess.AddScatterReadRequest(handle, this->TypeNamePointer1 + TypeNameOffset2, &TypeNamePointer2, sizeof(uint64_t));
 	if (SlotsPointer != 0)
 		TargetProcess.AddScatterReadRequest(handle, this->SlotsPointer, &Slot, sizeof(uint64_t));
