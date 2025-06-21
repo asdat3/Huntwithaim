@@ -25,13 +25,36 @@ int ConditionalSwapPlayer(std::vector<std::shared_ptr<WorldEntity>>& entities, i
 	Vector2 Centerofscreen = GetCenterOfScreen();
 	for (int j = low; j < high; ++j)
 	{
-		
-		if (Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(entities[j]->GetPosition())) < Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(pivot->GetPosition())))
+		if (Configs.Aimbot.Priority == 2)
 		{
-			++i;
-			std::swap(entities[i], entities[j]);
+			if (Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(entities[j]->GetPosition())) < Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(pivot->GetPosition())))
+			{
+				++i;
+				std::swap(entities[i], entities[j]);
+				continue;
+			}
+			if (Vector3::Distance(CameraInstance->GetPosition(), entities[j]->GetPosition()) < Vector3::Distance(CameraInstance->GetPosition(), pivot->GetPosition()))
+			{
+				++i;
+				std::swap(entities[i], entities[j]);
+			}
 		}
-		
+		if (Configs.Aimbot.Priority == 0)
+		{
+			if (Vector3::Distance(CameraInstance->GetPosition(), entities[j]->GetPosition()) < Vector3::Distance(CameraInstance->GetPosition(), pivot->GetPosition()))
+			{
+				++i;
+				std::swap(entities[i], entities[j]);
+			}
+		}
+		if (Configs.Aimbot.Priority == 1)
+		{
+			if (Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(entities[j]->GetPosition())) < Vector2::Distance(Centerofscreen, CameraInstance->WorldToScreen(pivot->GetPosition())))
+			{
+				++i;
+				std::swap(entities[i], entities[j]);
+			}
+		}
 	}
 	std::swap(entities[i + 1], entities[high]);
 	return i + 1;
@@ -79,8 +102,8 @@ void GetAimbotTarget()
 		return;
 	if (!Configs.Aimbot.Enable)
 		return;
-	// if(StickTarget())
-	// 	return;
+	if(StickTarget())
+		return;
 	Vector2 Centerofscreen = GetCenterOfScreen();
 
 	std::vector<std::shared_ptr<WorldEntity>> templist;
@@ -117,13 +140,28 @@ void GetAimbotTarget()
 	AimbotTarget = nullptr;
 }
 
-bool AimKeyDown = true;
+bool AimKeyDown = false;
 
+std::shared_ptr<CheatFunction> UpdateAimKey = std::make_shared<CheatFunction>(50, [] {
+	if (EnvironmentInstance == nullptr)
+		return;
+	if (EnvironmentInstance->GetObjectCount() < 10)
+		return;
+	if (Keyboard::IsKeyDown(Configs.Aimbot.Aimkey))
+	{
+		AimKeyDown = true;
+	}
+	else
+	{
+		AimKeyDown = false;
+	}
+});
 
 std::chrono::system_clock::time_point KmboxStart;
 
 void Aimbot()
 {  
+	UpdateAimKey->Execute();
 	if (!kmbox::connected || !AimKeyDown)
 	{
 		AimbotTarget = nullptr;

@@ -50,15 +50,6 @@ namespace kmbox
 		return "";
 	}
 
-	void SendCommand(const std::string& command)
-	{
-		DWORD bytesWritten;
-		if (!WriteFile(serial_handle, command.c_str(), command.length(), &bytesWritten, NULL))
-		{
-			LOG_ERROR("Failed to write to serial port!");
-		}
-	}
-
 	void KmboxInitialize(std::string port)
 	{
 
@@ -136,8 +127,16 @@ namespace kmbox
 		}
 
 		LOG_INFO("Connected to KMBOX on port %s", std::string(port).c_str());
-		SendCommand("def move_with_check(x,y):\r\n  if not km.side1()==0:\r\n    km.move(x,y,1)\r\n\r\n\r\n\r\n\r\n\r\n");
 		connected = true;
+	}
+
+	void SendCommand(const std::string& command)
+	{
+		DWORD bytesWritten;
+		if (!WriteFile(serial_handle, command.c_str(), command.length(), &bytesWritten, NULL))
+		{
+			//LOG_ERROR("Failed to write to serial port!");
+		}
 	}
 
 	void move(int x, int y)
@@ -149,7 +148,7 @@ namespace kmbox
 		}
 		x = clamp(x);
 		y = clamp(y);
-		std::string command = "move_with_check(" + std::to_string(x) + "," + std::to_string(y) + ")\r\n";
+		std::string command = "km.move(" + std::to_string(x) + "," + std::to_string(y) + ")\r\n";
 		SendCommand(command.c_str());
 	}
 
